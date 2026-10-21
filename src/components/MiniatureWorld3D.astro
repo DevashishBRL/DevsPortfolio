@@ -23,6 +23,8 @@ interface DestinationInfo {
   locationLabel: string;
 }
 
+const base = import.meta.env.BASE_URL;
+
 const destinations: DestinationInfo[] = [
   {
     id: 'lab',
@@ -33,7 +35,7 @@ const destinations: DestinationInfo[] = [
     description:
       'Where mechanical hardware and firmware converge: modular articulated robotic arms, wearable medical device enclosures (TORUS), and accessible prosthetic research (EasyProsthetics).',
     actionLabel: 'Explore Engineering & Research',
-    actionHref: '#work',
+    actionHref: `${base}work/`,
     targetPos: [-14, 0, -14],
     cameraOffset: [26, 32, 26],
     themeColor: '#f59e0b', // Amber
@@ -48,7 +50,7 @@ const destinations: DestinationInfo[] = [
     description:
       'The software workshop building DraftGrid, AraLoom, TabZones, and JobPal — focused digital tools in development to organize thoughts and de-stress workflows.',
     actionLabel: 'View KLA Products',
-    actionHref: '#kla',
+    actionHref: `${base}studio/`,
     targetPos: [14, 0, -14],
     cameraOffset: [26, 32, 26],
     themeColor: '#38bdf8', // Cyan / Sky
@@ -63,7 +65,7 @@ const destinations: DestinationInfo[] = [
     description:
       'An open atelier and writing observatory dedicated to usability observation, human factors, design principles, and essays on practical design thinking.',
     actionLabel: 'Read Design Writing',
-    actionHref: '#writing',
+    actionHref: `${base}writing/`,
     targetPos: [14, 0, 14],
     cameraOffset: [26, 32, 26],
     themeColor: '#fb923c', // Terracotta / Warm Orange
@@ -78,7 +80,7 @@ const destinations: DestinationInfo[] = [
     description:
       'The experimental maker yard: CNC gantry mockups, 3D printing beds, digital agriculture IoT telemetry boards, and physical test fixtures.',
     actionLabel: 'Discover Yard Prototypes',
-    actionHref: '#work',
+    actionHref: `${base}experiments/`,
     targetPos: [-14, 0, 14],
     cameraOffset: [26, 32, 26],
     themeColor: '#34d399', // Emerald / Sage
@@ -92,8 +94,8 @@ const destinations: DestinationInfo[] = [
     tagline: 'Mentoring, Teaching & Collaborative Spaces',
     description:
       'The shared open quadrangle representing community contributions, hackathons, engineering mentorship, teaching, and cross-disciplinary collaborations.',
-    actionLabel: 'Learn About Devashish',
-    actionHref: '#about',
+    actionLabel: 'Community & Mentorship',
+    actionHref: `${base}people/`,
     targetPos: [0, 0, 0],
     cameraOffset: [34, 40, 34],
     themeColor: '#a78bfa', // Purple / Iris
@@ -107,8 +109,8 @@ const destinations: DestinationInfo[] = [
     tagline: 'Background, Publications & Future Horizons',
     description:
       'The elevated vantage point overlooking external publications, verified press mentions, career history, and future technical research vectors.',
-    actionLabel: 'View Mentions & Background',
-    actionHref: '#in-the-wild',
+    actionLabel: 'View Mentions & Press',
+    actionHref: `${base}in-the-wild/`,
     targetPos: [0, 8, -2],
     cameraOffset: [24, 30, 24],
     themeColor: '#f43f5e', // Rose
@@ -250,6 +252,8 @@ const destinations: DestinationInfo[] = [
 <script>
   import * as THREE from 'three';
 
+  const base = import.meta.env.BASE_URL;
+
   // Destination Data
   const destinationsData = [
     {
@@ -261,7 +265,7 @@ const destinations: DestinationInfo[] = [
       description:
         'Where mechanical hardware and firmware converge: modular articulated robotic arms, wearable medical device enclosures (TORUS), and accessible prosthetic research (EasyProsthetics).',
       actionLabel: 'Explore Engineering & Research',
-      actionHref: '#work',
+      actionHref: `${base}work/`,
       targetPos: [-14, 0, -14],
       cameraOffset: [22, 28, 22],
       themeColor: '#f59e0b',
@@ -276,7 +280,7 @@ const destinations: DestinationInfo[] = [
       description:
         'The software workshop building DraftGrid, AraLoom, TabZones, and JobPal — focused digital tools in development to organize thoughts and de-stress workflows.',
       actionLabel: 'View KLA Products',
-      actionHref: '#kla',
+      actionHref: `${base}studio/`,
       targetPos: [14, 0, -14],
       cameraOffset: [22, 28, 22],
       themeColor: '#38bdf8',
@@ -291,7 +295,7 @@ const destinations: DestinationInfo[] = [
       description:
         'An open atelier and writing observatory dedicated to usability observation, human factors, design principles, and essays on practical design thinking.',
       actionLabel: 'Read Design Writing',
-      actionHref: '#writing',
+      actionHref: `${base}writing/`,
       targetPos: [14, 0, 14],
       cameraOffset: [22, 28, 22],
       themeColor: '#fb923c',
@@ -306,7 +310,7 @@ const destinations: DestinationInfo[] = [
       description:
         'The experimental maker yard: CNC gantry mockups, 3D printing beds, digital agriculture IoT telemetry boards, and physical test fixtures.',
       actionLabel: 'Discover Yard Prototypes',
-      actionHref: '#work',
+      actionHref: `${base}experiments/`,
       targetPos: [-14, 0, 14],
       cameraOffset: [22, 28, 22],
       themeColor: '#34d399',
@@ -320,8 +324,8 @@ const destinations: DestinationInfo[] = [
       tagline: 'Mentoring, Teaching & Collaborative Spaces',
       description:
         'The shared open quadrangle representing community contributions, hackathons, engineering mentorship, teaching, and cross-disciplinary collaborations.',
-      actionLabel: 'Learn About Devashish',
-      actionHref: '#about',
+      actionLabel: 'Community & Mentorship',
+      actionHref: `${base}people/`,
       targetPos: [0, 0, 0],
       cameraOffset: [34, 40, 34],
       themeColor: '#a78bfa',
@@ -335,8 +339,8 @@ const destinations: DestinationInfo[] = [
       tagline: 'Background, Publications & Future Horizons',
       description:
         'The elevated vantage point overlooking external publications, verified press mentions, career history, and future technical research vectors.',
-      actionLabel: 'View Mentions & Background',
-      actionHref: '#in-the-wild',
+      actionLabel: 'View Mentions & Press',
+      actionHref: `${base}in-the-wild/`,
       targetPos: [0, 8, -2],
       cameraOffset: [24, 30, 24],
       themeColor: '#f43f5e',

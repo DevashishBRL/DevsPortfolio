@@ -1,0 +1,104 @@
+---
+/**
+ * /work/ — Engineering & research projects index.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import { engineeringProjects } from '../../data/content';
+
+const base = import.meta.env.BASE_URL;
+const byStatus = {
+  active:    engineeringProjects.filter(p => p.status === 'active'),
+  ongoing:   engineeringProjects.filter(p => p.status === 'ongoing'),
+  completed: engineeringProjects.filter(p => p.status === 'completed'),
+};
+---
+
+<PageLayout
+  title="Work"
+  description="Engineering projects, research and technical case studies by Devashish Tambade — spanning wearable hardware, prosthetic mechanisms, embedded IoT and digital products."
+  label="01 — Work"
+  heading="Building at the edge of hardware and software"
+  subheading="Engineering projects spanning wearable enclosures, assistive devices, embedded telemetry and technical product development."
+>
+  <section class="section" aria-label="All projects">
+    <div class="container">
+
+      {(byStatus.active.length > 0 || byStatus.ongoing.length > 0) && (
+        <div class="work-group">
+          <h2 class="work-group-label">Active & Ongoing</h2>
+          <div class="card-grid">
+            {[...byStatus.active, ...byStatus.ongoing].map((project, i) => (
+              <a
+                href={project.href ?? '#'}
+                class="project-card"
+                aria-label={`${project.title} — ${project.subtitle}`}
+                style={`animation-delay:${i * 60}ms`}
+              >
+                <div class="card-status">
+                  <span class={`status-dot status-dot--${project.status}`} aria-hidden="true"></span>
+                  <span>{project.status === 'active' ? 'Active' : 'Ongoing'}</span>
+                  {project.year && <span class="status-year"> · {project.year}</span>}
+                </div>
+                <h3 class="card-title">{project.title}</h3>
+                <p class="card-subtitle">{project.subtitle}</p>
+                <p class="card-description">{project.description}</p>
+                {project.tags.length > 0 && (
+                  <ul class="card-tags" aria-label="Technologies" role="list">
+                    {project.tags.map(tag => <li class="tag">{tag}</li>)}
+                  </ul>
+                )}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {byStatus.completed.length > 0 && (
+        <div class="work-group">
+          <h2 class="work-group-label">Completed</h2>
+          <div class="card-grid">
+            {byStatus.completed.map((project, i) => (
+              <a
+                href={project.href ?? '#'}
+                class="project-card"
+                aria-label={`${project.title} — ${project.subtitle}`}
+                style={`animation-delay:${i * 60}ms`}
+              >
+                <div class="card-status">
+                  <span class="status-dot status-dot--completed" aria-hidden="true"></span>
+                  <span>Completed</span>
+                  {project.year && <span class="status-year"> · {project.year}</span>}
+                </div>
+                <h3 class="card-title">{project.title}</h3>
+                <p class="card-subtitle">{project.subtitle}</p>
+                <p class="card-description">{project.description}</p>
+                {project.tags.length > 0 && (
+                  <ul class="card-tags" aria-label="Technologies" role="list">
+                    {project.tags.map(tag => <li class="tag">{tag}</li>)}
+                  </ul>
+                )}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .work-group {
+    margin-bottom: var(--space-16);
+  }
+  .work-group-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--colour-label);
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--colour-border-subtle);
+  }
+</style>

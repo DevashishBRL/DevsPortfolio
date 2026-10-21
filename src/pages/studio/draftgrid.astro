@@ -1,0 +1,54 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+---
+<PageLayout
+  title="DraftGrid — KLA Interactives"
+  description="DraftGrid is a structured writing and drafting tool built to help technical thinkers organise complex ideas before writing. In active development under KLA Interactives."
+  label="KLA Interactives — In Development"
+  heading="DraftGrid"
+  subheading="Structured writing for technical thinkers"
+>
+  <article class="case-study">
+    <div class="container case-study-grid">
+      <div class="case-main">
+        <section class="case-section">
+          <h2 class="cs-heading">The Idea</h2>
+          <p>Most writing tools assume you already know what you want to say. DraftGrid is built for the messier reality: you have a complex technical idea, many connected parts, and you need to find the structure before you can write the document.</p>
+          <p>It is a structured drafting canvas — not a document editor, not a notes app, but a space for building architecture before prose.</p>
+        </section>
+        <section class="case-section">
+          <h2 class="cs-heading">Who It Is For</h2>
+          <p>Engineers writing technical reports, researchers drafting papers, and product builders who need to think before they type. People who find blank documents paralyzing because they need structure first.</p>
+        </section>
+        <section class="case-section">
+          <h2 class="cs-heading">Current Status</h2>
+          <div class="case-note">
+            <p>DraftGrid is in active development. It is not yet publicly available. No release date has been set. This page describes the product concept and design direction.</p>
+          </div>
+        </section>
+      </div>
+      <aside class="case-meta">
+        <div class="case-meta-card">
+          <dl class="case-meta-list">
+            <div class="case-meta-item"><dt>Studio</dt><dd>KLA Interactives</dd></div>
+            <div class="case-meta-item"><dt>Type</dt><dd>Writing & Drafting Tool</dd></div>
+            <div class="case-meta-item"><dt>Status</dt><dd>In Development</dd></div>
+            <div class="case-meta-item"><dt>Platform</dt><dd>Web (planned)</dd></div>
+          </dl>
+          <div class="case-meta-tags">
+            {['Writing Tools', 'Information Architecture', 'UX', 'Product Design'].map(t => (
+              <span class="tag">{t}</span>
+            ))}
+          </div>
+        </div>
+        <a href={`${import.meta.env.BASE_URL}studio/`} class="back-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+          </svg>
+          All products
+        </a>
+      </aside>
+    </div>
+  </article>
+</PageLayout>
+

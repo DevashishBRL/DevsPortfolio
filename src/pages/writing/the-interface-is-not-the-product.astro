@@ -1,0 +1,55 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+---
+<PageLayout
+  title="The Interface Is Not the Product — AnyBody Can Design"
+  description="Separating the experience from the tool — and why what people feel when they use something matters more than what they see."
+  label="AnyBody Can Design — Mar 2024"
+  heading="The Interface Is Not the Product"
+  subheading="On experience, surface, and what actually matters."
+>
+  <article class="case-study" aria-label="Article">
+    <div class="container case-study-grid">
+      <div class="case-main">
+        <div class="article-body">
+          <p>There is a conversation about design that happens mostly at the level of the interface — about visual hierarchy, spacing, colour, animation, affordances. This is a useful conversation. It produces better screens. But it is not a conversation about the product.</p>
+
+          <p>The product is not the interface. The product is what happens to the person using it — what they are able to do, how they feel doing it, what changes in their world as a result. The interface is the surface through which that happens. It matters enormously. But it is not the thing.</p>
+
+          <h2>The mismatch between surface and substance</h2>
+          <p>A beautifully designed interface can sit on top of a deeply frustrating product. The interface is responsive and elegant; the underlying workflow is confused. The person using it notices the confusion long before they notice the typography.</p>
+
+          <p>Conversely, a functionally ugly product can be extraordinarily useful — because the thing it does maps perfectly onto what the person needs to do. The interface is a detail in that equation.</p>
+
+          <blockquote>What people feel when they use something matters more than what they see.</blockquote>
+
+          <h2>Designing the experience, not the screen</h2>
+          <p>This distinction changes where the design work happens. If you are designing the interface, you are working at the level of components and states and visual logic. If you are designing the experience, you begin earlier — with the moment before the product opens, the context the person is in, the thing they are trying to do, and the feeling they have when they have done it or failed to do it.</p>
+
+          <p>The interface work still matters. But it is in service of something larger: a moment in someone's day that is easier, clearer, or more capable because of what you built.</p>
+
+          <p>That is what makes something a product, rather than a screen.</p>
+        </div>
+      </div>
+      <aside class="case-meta">
+        <div class="case-meta-card">
+          <dl class="case-meta-list">
+            <div class="case-meta-item"><dt>Series</dt><dd>AnyBody Can Design</dd></div>
+            <div class="case-meta-item"><dt>Published</dt><dd>March 2024</dd></div>
+            <div class="case-meta-item"><dt>Topics</dt><dd>UX, Product Design, Philosophy</dd></div>
+          </dl>
+          <div class="case-meta-tags">
+            {['UX', 'Product Design', 'Philosophy'].map(t => <span class="tag">{t}</span>)}
+          </div>
+        </div>
+        <a href={`${import.meta.env.BASE_URL}writing/`} class="back-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+          </svg>
+          All articles
+        </a>
+      </aside>
+    </div>
+  </article>
+</PageLayout>
+

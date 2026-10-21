@@ -1,0 +1,163 @@
+---
+/**
+ * /experiments/ — Exploratory work, prototypes and side projects.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import { experiments } from '../../data/content';
+
+const featured = experiments.filter(e => e.featured);
+const rest = experiments.filter(e => !e.featured);
+const all = [...featured, ...rest];
+
+const statusLabel: Record<string, string> = {
+  active: 'Active', archived: 'Archived', ongoing: 'Ongoing', prototype: 'Prototype'
+};
+---
+
+<PageLayout
+  title="Experiments"
+  description="Exploratory projects, prototypes, 3D work and side experiments by Devashish Tambade."
+  label="Experiments & Side Projects"
+  heading="Experiments"
+  subheading="Not every project is a polished case study. These are the ones where the learning matters more than the result."
+>
+  <section class="section" aria-labelledby="exp-intro-heading">
+    <div class="container">
+      <div class="exp-intro-note">
+        <p>Experiments are presented honestly — including what did not work. Prototypes are prototypes. Archived work may be incomplete. The value is in what was learned.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="exp-list-heading">
+    <div class="container">
+      <h2 class="section-title" id="exp-list-heading" style="margin-bottom: var(--space-8);">All experiments</h2>
+      <div class="exp-list">
+        {all.map((exp, i) => (
+          <article class="exp-card" aria-label={exp.title}>
+            <div class="exp-card-inner">
+              <div class="exp-meta">
+                <div class="card-status">
+                  <span class={`status-dot status-dot--${exp.status === 'active' || exp.status === 'ongoing' ? 'active' : 'completed'}`} aria-hidden="true"></span>
+                  <span>{statusLabel[exp.status]}</span>
+                  {exp.date && <span class="status-year"> · {exp.date}</span>}
+                </div>
+              </div>
+              <div class="exp-body">
+                <h3 class="exp-title">
+                  {exp.externalUrl || exp.href ? (
+                    <a href={exp.href ?? exp.externalUrl ?? '#'} class="exp-title-link">
+                      {exp.title}
+                    </a>
+                  ) : exp.title}
+                </h3>
+                {exp.subtitle && <p class="exp-subtitle">{exp.subtitle}</p>}
+                <p class="exp-description">{exp.description}</p>
+                {exp.honest && (
+                  <div class="exp-honest">
+                    <span class="exp-honest-label">Honest take</span>
+                    <p>{exp.honest}</p>
+                  </div>
+                )}
+                {exp.tools && exp.tools.length > 0 && (
+                  <ul class="card-tags" role="list" style="margin-top: var(--space-4);">
+                    {exp.tools.map(t => <li class="tag">{t}</li>)}
+                  </ul>
+                )}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .exp-intro-note {
+    padding: var(--space-4) var(--space-5);
+    border-left: 3px solid var(--colour-accent);
+    background: var(--colour-bg-subtle);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    max-width: 640px;
+  }
+  .exp-intro-note p {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    font-style: italic;
+    max-width: none;
+  }
+  .exp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--colour-border-subtle);
+    border: 1px solid var(--colour-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .exp-card {
+    background: var(--colour-surface);
+    padding: var(--space-6) var(--space-6);
+    transition: background var(--duration-fast) var(--ease-out);
+  }
+  .exp-card:hover { background: var(--colour-bg-subtle); }
+  .exp-card-inner {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: var(--space-6);
+    align-items: start;
+  }
+  .exp-meta { padding-top: 3px; }
+  .exp-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    letter-spacing: var(--tracking-tight);
+    color: var(--colour-fg);
+    margin-bottom: var(--space-1);
+  }
+  .exp-title-link {
+    color: inherit;
+    text-decoration: none;
+  }
+  .exp-title-link:hover { color: var(--colour-accent); }
+  .exp-subtitle {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-subtle);
+    margin-bottom: var(--space-3);
+    max-width: none;
+  }
+  .exp-description {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-normal);
+    max-width: 65ch;
+    margin-bottom: var(--space-3);
+  }
+  .exp-honest {
+    background: var(--colour-bg-subtle);
+    border: 1px solid var(--colour-border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    margin-top: var(--space-3);
+  }
+  .exp-honest-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--colour-label);
+    display: block;
+    margin-bottom: var(--space-1);
+  }
+  .exp-honest p {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    font-style: italic;
+    max-width: none;
+    margin: 0;
+  }
+  @media (max-width: 640px) {
+    .exp-card-inner { grid-template-columns: 1fr; gap: var(--space-3); }
+  }
+</style>

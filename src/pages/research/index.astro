@@ -1,0 +1,214 @@
+---
+/**
+ * /research/ — Research overview for technical collaborators and prospective supervisors.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import { researchAreas, engineeringProjects, workHistory } from '../../data/content';
+
+const base = import.meta.env.BASE_URL;
+const current = workHistory.find(w => w.current && w.type === 'research');
+---
+
+<PageLayout
+  title="Research"
+  description="Research areas, technical interests and engineering work by Devashish Tambade — spanning human-robot interaction, wearable hardware, embedded systems and human-centred engineering."
+  label="Research & Technical Work"
+  heading="Research & Engineering"
+  subheading="Working at the intersection of robotics, hardware design and human-centred engineering."
+>
+
+  <!-- Context -->
+  <section class="section" aria-labelledby="research-context-heading">
+    <div class="container">
+      <div class="research-intro">
+        <div class="research-intro-text">
+          <h2 class="section-title" id="research-context-heading">Context</h2>
+          <p class="section-description" style="margin-top: var(--space-4);">
+            I am a robotics engineering student at the University of Bristol with a practical focus on hardware design, embedded systems and human-centred approaches to engineering problems.
+          </p>
+          <p class="section-description" style="margin-top: var(--space-4);">
+            My research interests are shaped by project work across wearable medical hardware, accessible prosthetic mechanisms and agricultural IoT systems. I am interested in pursuing doctoral research in human–robot interaction or wearable robotics.
+          </p>
+          <div class="research-notice">
+            <p>This page presents research interests and verified project work. I do not claim publications, citations or research results beyond those I can document.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Research areas -->
+  <section class="section" aria-labelledby="research-areas-heading">
+    <div class="container">
+      <h2 class="section-title" id="research-areas-heading">Research Areas</h2>
+      <p class="section-description" style="margin-top: var(--space-3); margin-bottom: var(--space-8);">
+        These are the areas I am actively working in or currently exploring.
+      </p>
+      <div class="research-areas-grid">
+        {researchAreas.map(area => (
+          <div class="research-area-card">
+            <div class="research-area-status">
+              <span class={`status-dot status-dot--${area.status === 'active' ? 'active' : area.status === 'exploring' ? 'ongoing' : 'completed'}`} aria-hidden="true"></span>
+              <span class="research-area-status-label">{area.status === 'active' ? 'Active' : area.status === 'exploring' ? 'Exploring' : 'Past'}</span>
+            </div>
+            <h3 class="research-area-title">{area.title}</h3>
+            <p class="research-area-desc">{area.description}</p>
+            <div class="card-tags" style="margin-top: var(--space-4);">
+              {area.tags.map(t => <span class="tag">{t}</span>)}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Methods & Approach -->
+  <section class="section" aria-labelledby="research-methods-heading">
+    <div class="container">
+      <h2 class="section-title" id="research-methods-heading">Methods & Approach</h2>
+      <div class="methods-grid">
+        {[
+          { title: 'Iterative Prototyping', desc: 'Building physical and digital prototypes early and often — using the prototype as a research tool, not just a deliverable.' },
+          { title: 'User Context Grounding', desc: 'Starting from observed use context rather than assumed requirements. Watching how people actually use things.' },
+          { title: 'Cross-disciplinary Thinking', desc: 'Drawing on mechanical engineering, software, design and cognitive science simultaneously — not sequentially.' },
+          { title: 'Honest Documentation', desc: 'Recording what did not work and why, alongside what did. Learning is part of the research output.' },
+        ].map(m => (
+          <div class="method-card">
+            <h3 class="method-title">{m.title}</h3>
+            <p class="method-desc">{m.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Related work -->
+  <section class="section" aria-labelledby="research-projects-heading">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-meta">
+          <p class="section-label" aria-hidden="true">Related Work</p>
+          <h2 class="section-title" id="research-projects-heading">Engineering projects</h2>
+        </div>
+        <a href={`${base}work/`} class="section-link">
+          All projects
+          <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+      <div class="card-grid">
+        {engineeringProjects.map((project, i) => (
+          <a href={project.href ?? '#'} class="project-card" style={`animation-delay:${i*60}ms`}>
+            <div class="card-status">
+              <span class={`status-dot status-dot--${project.status}`} aria-hidden="true"></span>
+              <span>{project.status.charAt(0).toUpperCase() + project.status.slice(1)}</span>
+            </div>
+            <h3 class="card-title">{project.title}</h3>
+            <p class="card-subtitle">{project.subtitle}</p>
+            <p class="card-description">{project.description}</p>
+            <ul class="card-tags" role="list">
+              {project.tags.map(t => <li class="tag">{t}</li>)}
+            </ul>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Future -->
+  <section class="section" aria-labelledby="research-future-heading">
+    <div class="container">
+      <div class="research-future">
+        <h2 class="section-title" id="research-future-heading">What I am looking for</h2>
+        <p class="section-description" style="margin-top: var(--space-4);">
+          I am interested in doctoral research opportunities in human–robot interaction, wearable robotics, and accessible assistive technology. I am drawn to projects that sit between hardware and people — where the quality of the engineering is measured by whether it actually helps someone.
+        </p>
+        <p class="section-description" style="margin-top: var(--space-4);">
+          If you are a research collaborator or potential doctoral supervisor working in these areas, I would welcome a conversation.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</PageLayout>
+
+<style>
+  .research-intro { max-width: 740px; }
+  .research-notice {
+    margin-top: var(--space-6);
+    padding: var(--space-4) var(--space-5);
+    background: var(--colour-bg-subtle);
+    border-left: 3px solid var(--colour-accent);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    font-style: italic;
+  }
+  .research-notice p { max-width: none; margin: 0; }
+  .research-areas-grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+  }
+  .research-area-card {
+    padding: var(--space-6);
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+  }
+  .research-area-status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+  .research-area-status-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--colour-fg-subtle);
+  }
+  .research-area-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    letter-spacing: var(--tracking-tight);
+    color: var(--colour-fg);
+    margin-bottom: var(--space-3);
+  }
+  .research-area-desc {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-normal);
+    max-width: none;
+  }
+  .methods-grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+    margin-top: var(--space-6);
+  }
+  .method-card {
+    padding: var(--space-5);
+    background: var(--colour-bg-subtle);
+    border: 1px solid var(--colour-border-subtle);
+    border-radius: var(--radius-lg);
+  }
+  .method-title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--colour-fg);
+    margin-bottom: var(--space-2);
+  }
+  .method-desc {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-normal);
+    max-width: none;
+  }
+  .research-future {
+    max-width: 640px;
+  }
+</style>

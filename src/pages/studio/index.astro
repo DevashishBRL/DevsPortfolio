@@ -1,0 +1,112 @@
+---
+/**
+ * /studio/ — KLA Interactives product studio index.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import { klaProducts } from '../../data/content';
+
+const base = import.meta.env.BASE_URL;
+
+const statusLabel: Record<string, string> = {
+  concept: 'Concept', active: 'In Development', beta: 'Beta', launched: 'Launched'
+};
+---
+
+<PageLayout
+  title="Studio — KLA Interactives"
+  description="KLA Interactives: a small studio building digital tools for people who think. DraftGrid, AraLoom, TabZones and JobPal."
+  label="KLA Interactives"
+  heading="A studio for thoughtful digital tools"
+  subheading="KLA Interactives builds products around how people think and work — not how software expects them to."
+>
+
+  <!-- Studio intro -->
+  <section class="section" aria-labelledby="studio-intro-heading">
+    <div class="container">
+      <div class="studio-intro-grid">
+        <div class="studio-intro-text">
+          <h2 class="section-title" id="studio-intro-heading">About KLA Interactives</h2>
+          <p class="section-description" style="margin-top: var(--space-4);">
+            KLA Interactives is a product design studio founded to build tools that work the way people actually think — structured, spatial, and honest about complexity.
+          </p>
+          <p class="section-description" style="margin-top: var(--space-4);">
+            The current product family is in active development. Nothing listed here is publicly available or commercially released. Every product listed is a genuine work in progress.
+          </p>
+        </div>
+        <div class="studio-meta-card">
+          <dl class="studio-meta-list">
+            <div class="case-meta-item"><dt>Founded</dt><dd>2023</dd></div>
+            <div class="case-meta-item"><dt>Focus</dt><dd>Digital productivity tools</dd></div>
+            <div class="case-meta-item"><dt>Status</dt><dd>Pre-launch — building in public</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products -->
+  <section class="section" aria-labelledby="studio-products-heading">
+    <div class="container">
+      <h2 class="section-title" id="studio-products-heading">Products</h2>
+      <p class="section-description" style="margin-top: var(--space-3); margin-bottom: var(--space-8);">
+        Four tools, one design philosophy: make thinking easier.
+      </p>
+      <div class="card-grid card-grid--2">
+        {klaProducts.map((product, i) => (
+          <a href={product.href ?? '#'} class="project-card" style={`animation-delay:${i*60}ms`}>
+            <div class="card-status">
+              <span class="status-dot status-dot--active" aria-hidden="true"></span>
+              <span>{statusLabel[product.status]}</span>
+            </div>
+            <h3 class="card-title">{product.title}</h3>
+            <p class="card-subtitle">{product.subtitle}</p>
+            <p class="card-description">{product.description}</p>
+            {product.note && (
+              <p class="product-availability-note">{product.note}</p>
+            )}
+            <ul class="card-tags" role="list">
+              {product.tags.map(t => <li class="tag">{t}</li>)}
+            </ul>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</PageLayout>
+
+<style>
+  .studio-intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: var(--space-10);
+    align-items: start;
+  }
+  .studio-meta-card {
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
+  }
+  .studio-meta-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .product-availability-note {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--colour-fg-subtle);
+    background: var(--colour-bg-subtle);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    margin-top: var(--space-2);
+    margin-bottom: var(--space-2);
+    max-width: none;
+  }
+  @media (max-width: 700px) {
+    .studio-intro-grid { grid-template-columns: 1fr; }
+  }
+</style>

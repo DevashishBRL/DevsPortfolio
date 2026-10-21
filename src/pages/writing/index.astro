@@ -1,0 +1,72 @@
+---
+/**
+ * /writing/ — AnyBody Can Design articles index.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import { authoredArticles } from '../../data/content';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<PageLayout
+  title="Writing — AnyBody Can Design"
+  description="AnyBody Can Design: design thinking, usability observations and practical engineering writing by Devashish Tambade."
+  label="Writing — AnyBody Can Design"
+  heading="AnyBody Can Design"
+  subheading="An independent space for design thinking, usability observations and writing about how things work."
+>
+
+  <section class="section" aria-labelledby="writing-series-heading">
+    <div class="container">
+      <div class="writing-intro">
+        <p class="writing-intro-text">
+          <strong>AnyBody Can Design</strong> is a writing series about design — not as a profession, but as a way of seeing. Each piece explores an idea through observation, engineering, or lived experience.
+        </p>
+      </div>
+      <h2 class="section-title" id="writing-series-heading" style="margin-top: var(--space-10); margin-bottom: var(--space-6);">Articles</h2>
+      <div class="article-list" role="list">
+        {authoredArticles.map(article => {
+          const href = article.href ?? article.externalUrl ?? '#';
+          const date = new Date(article.date);
+          const formattedDate = date.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+          return (
+            <div role="listitem">
+              <a href={href} class="article-card" aria-label={`Read: ${article.title}`}>
+                <time class="article-date" datetime={article.date}>{formattedDate}</time>
+                <div class="article-content">
+                  <h3 class="article-title">{article.title}</h3>
+                  <p class="article-excerpt">{article.description}</p>
+                  <ul class="article-tags" role="list">
+                    {article.tags.map(t => <li class="tag">{t}</li>)}
+                  </ul>
+                </div>
+                <div class="article-arrow" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </div>
+              </a>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+</PageLayout>
+
+<style>
+  .writing-intro {
+    max-width: 640px;
+    padding: var(--space-6);
+    background: var(--colour-bg-subtle);
+    border-left: 3px solid var(--colour-accent);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+  .writing-intro-text {
+    font-size: var(--text-md);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-loose);
+    max-width: none;
+  }
+</style>

@@ -1,16 +1,18 @@
----
+﻿---
 /**
  * Header — fixed site navigation.
- * Keyboard accessible, mobile-responsive with animated toggle.
+ * Links to real section pages. Keyboard accessible, mobile-responsive.
  */
 
+const base = import.meta.env.BASE_URL;
+
 const navLinks = [
-  { label: 'Work',                href: '#work' },
-  { label: 'KLA Interactives',    href: '#kla' },
-  { label: 'AnyBody Can Design',  href: '#writing' },
-  { label: 'In the Wild',         href: '#in-the-wild' },
-  { label: 'About',               href: '#about' },
-  { label: 'CV',                  href: '#cv-placeholder' },
+  { label: 'Work',        href: `${base}work/` },
+  { label: 'Research',    href: `${base}research/` },
+  { label: 'Studio',      href: `${base}studio/` },
+  { label: 'Writing',     href: `${base}writing/` },
+  { label: 'People',      href: `${base}people/` },
+  { label: 'About',       href: `${base}about/` },
 ];
 ---
 
@@ -18,7 +20,7 @@ const navLinks = [
   <div class="container">
     <div class="header-inner">
       <!-- Logo / wordmark -->
-      <a href={import.meta.env.BASE_URL} class="site-logo" aria-label="Devashish Tambade — Home">
+      <a href={base} class="site-logo" aria-label="Devashish Tambade — Home">
         <span class="logo-mark" aria-hidden="true">DT</span>
         <span class="logo-name">Devashish Tambade</span>
       </a>
@@ -28,7 +30,11 @@ const navLinks = [
         <ul class="nav-list" role="list">
           {navLinks.map((link) => (
             <li>
-              <a href={link.href} class="nav-link">
+              <a
+                href={link.href}
+                class="nav-link"
+                aria-current={Astro.url.pathname === link.href ? 'page' : undefined}
+              >
                 {link.label}
               </a>
             </li>
@@ -64,7 +70,6 @@ const navLinks = [
       nav.classList.toggle('is-open', !expanded);
     });
 
-    // Close on outside click
     document.addEventListener('click', (e) => {
       if (!toggle.contains(e.target as Node) && !nav.contains(e.target as Node)) {
         toggle.setAttribute('aria-expanded', 'false');
@@ -72,7 +77,6 @@ const navLinks = [
       }
     });
 
-    // Close on Escape
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         toggle.setAttribute('aria-expanded', 'false');
@@ -81,7 +85,6 @@ const navLinks = [
       }
     });
 
-    // Close nav when a link is clicked (SPA-style anchors)
     nav.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => {
         toggle.setAttribute('aria-expanded', 'false');

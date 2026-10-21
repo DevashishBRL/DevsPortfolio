@@ -1,0 +1,275 @@
+---
+/**
+ * /about/ — Editorial biography and professional narrative.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import { workHistory } from '../../data/content';
+
+const base = import.meta.env.BASE_URL;
+const current = workHistory.filter(w => w.current);
+---
+
+<PageLayout
+  title="About"
+  description="Devashish Tambade — robotics engineer, research technologist and product builder working across hardware, software and human-centred design."
+  label="About"
+  heading={`Hello. I'm Devashish.`}
+  subheading="Robotics engineer, research technologist and product builder."
+>
+
+  <!-- Biography -->
+  <section class="section" aria-labelledby="about-bio-heading">
+    <div class="container about-grid">
+      <div class="about-narrative">
+        <h2 class="about-section-label" id="about-bio-heading">The longer version</h2>
+
+        <p class="about-para">I build things that make problems smaller. That is the clearest way I can describe what I do — whether the problem is a wearable device that has to fit and seal and last, a prosthetic mechanism that has to work reliably for someone who depends on it, or a digital tool that has to make a complicated workflow feel less complicated.</p>
+
+        <p class="about-para">I am currently completing an MEng in Robotics Engineering at the University of Bristol. My engineering work sits at the junction of mechanical hardware, embedded intelligence and human-centred software — places where the physics and the person meet.</p>
+
+        <p class="about-para">Alongside the engineering, I run <strong>KLA Interactives</strong> — a small product studio building digital tools for how people think and work. DraftGrid, AraLoom, TabZones and JobPal are all in active development. None are launched yet. That honesty matters to me.</p>
+
+        <p class="about-para">I write for <em>AnyBody Can Design</em>, where I think out loud about design — not as a profession, but as a way of seeing. What makes something work for the person using it. Why complexity is not the same as depth. Why listening is an engineering skill.</p>
+
+        <p class="about-para">I invest time in people: mentoring fellow engineers, facilitating design workshops, building communities where knowledge is shared rather than gatekept. I believe the quality of a technical team is shaped as much by how people help each other as by the technical skills they bring.</p>
+
+        <p class="about-para">I am interested in doctoral research — particularly at the intersection of human–robot interaction, wearable robotics and accessible assistive technology. I am drawn to research that is grounded in real use contexts, that cares about whether it actually helps someone.</p>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="about-sidebar" aria-label="Key facts">
+        <div class="about-sidebar-card">
+          <h3 class="about-sidebar-title">Currently</h3>
+          <dl class="about-sidebar-list">
+            {current.map(w => (
+              <div class="about-sidebar-item">
+                <dt>{w.type === 'research' ? 'Studying' : 'Building'}</dt>
+                <dd>{w.role}</dd>
+                <dd class="about-sidebar-org">{w.organisation}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        <div class="about-sidebar-card" style="margin-top: var(--space-4);">
+          <h3 class="about-sidebar-title">Focus areas</h3>
+          <ul class="about-focus-list" role="list">
+            {['Robotics & Mechatronics', 'Wearable Hardware', 'Embedded Systems', 'HCI & Prosthetics', 'Product Design', 'Design Thinking'].map(f => (
+              <li>{f}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="about-sidebar-actions">
+          <a href={`${base}cv/`} class="btn btn-ghost" style="width: 100%; justify-content: center;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            View CV
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Work history -->
+  <section class="section" aria-labelledby="about-work-heading">
+    <div class="container">
+      <h2 class="section-title" id="about-work-heading">Background</h2>
+      <div class="timeline" style="margin-top: var(--space-8);">
+        {workHistory.map(entry => (
+          <div class="timeline-entry">
+            <div class="timeline-period">
+              <span>{entry.period}</span>
+              {entry.current && <span class="timeline-current">Now</span>}
+            </div>
+            <div class="timeline-body">
+              <h3 class="timeline-role">{entry.role}</h3>
+              <p class="timeline-org">{entry.organisation}{entry.location ? ` — ${entry.location}` : ''}</p>
+              <p class="timeline-desc">{entry.description}</p>
+              {entry.highlights && entry.highlights.length > 0 && (
+                <ul class="timeline-highlights">
+                  {entry.highlights.map(h => <li>{h}</li>)}
+                </ul>
+              )}
+              {entry.tags && entry.tags.length > 0 && (
+                <ul class="card-tags" role="list" style="margin-top: var(--space-4);">
+                  {entry.tags.map(t => <li class="tag">{t}</li>)}
+                </ul>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</PageLayout>
+
+<style>
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: clamp(var(--space-8), 6vw, var(--space-16));
+    align-items: start;
+  }
+  .about-section-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--colour-label);
+    margin-bottom: var(--space-6);
+  }
+  .about-para {
+    font-size: var(--text-md);
+    line-height: var(--leading-loose);
+    color: var(--colour-fg-muted);
+    max-width: 65ch;
+    margin-bottom: var(--space-5);
+  }
+  .about-para:last-child { margin-bottom: 0; }
+  .about-sidebar { position: sticky; top: 6rem; }
+  .about-sidebar-card {
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-sm);
+  }
+  .about-sidebar-title {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--colour-label);
+    margin-bottom: var(--space-4);
+  }
+  .about-sidebar-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .about-sidebar-item { display: flex; flex-direction: column; gap: 2px; }
+  .about-sidebar-item dt {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--colour-fg-subtle);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+  }
+  .about-sidebar-item dd { font-size: var(--text-sm); font-weight: 500; color: var(--colour-fg); }
+  .about-sidebar-org { font-weight: 400; color: var(--colour-fg-muted); }
+  .about-focus-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+  }
+  .about-focus-list li::before {
+    content: '— ';
+    color: var(--colour-accent);
+    font-family: var(--font-mono);
+  }
+  .about-sidebar-actions { margin-top: var(--space-4); }
+  /* Timeline */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-left: 2px solid var(--colour-border);
+    padding-left: var(--space-6);
+    max-width: 720px;
+  }
+  .timeline-entry {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: var(--space-6);
+    padding-bottom: var(--space-10);
+    position: relative;
+  }
+  .timeline-entry::before {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--space-6) - 5px);
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--colour-accent);
+    border: 2px solid var(--colour-bg);
+  }
+  .timeline-period {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding-top: 2px;
+  }
+  .timeline-period span:first-child {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--colour-fg-subtle);
+    letter-spacing: var(--tracking-wide);
+  }
+  .timeline-current {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: hsl(150, 60%, 40%);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+  }
+  .timeline-role {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    letter-spacing: var(--tracking-tight);
+    color: var(--colour-fg);
+    margin-bottom: var(--space-1);
+  }
+  .timeline-org {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    margin-bottom: var(--space-3);
+    max-width: none;
+  }
+  .timeline-desc {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-normal);
+    max-width: 55ch;
+    margin-bottom: var(--space-3);
+  }
+  .timeline-highlights {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-left: 0;
+  }
+  .timeline-highlights li {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    padding-left: var(--space-4);
+    position: relative;
+  }
+  .timeline-highlights li::before {
+    content: '?';
+    position: absolute;
+    left: 0;
+    color: var(--colour-accent);
+    font-family: var(--font-mono);
+  }
+  @media (max-width: 860px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .about-sidebar { position: static; order: -1; }
+    .timeline-entry { grid-template-columns: 1fr; gap: var(--space-3); }
+  }
+  @media (max-width: 640px) {
+    .timeline { padding-left: var(--space-5); }
+  }
+</style>

@@ -1,0 +1,92 @@
+---
+/**
+ * TORUS Wearable Medical Device Enclosure — project detail page.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+---
+
+<PageLayout
+  title="TORUS Wearable Medical Device Enclosure"
+  description="Engineering a wearable enclosure for a medical monitoring device — patient ergonomics, environmental sealing and biocompatible materials."
+  label="Engineering — Completed"
+  heading="TORUS Wearable Medical Device Enclosure"
+  subheading="Medical Device Hardware & Ergonomics"
+>
+  <article class="case-study" aria-label="Project case study">
+    <div class="container case-study-grid">
+
+      <!-- Main narrative -->
+      <div class="case-main">
+
+        <section class="case-section" aria-labelledby="cs-problem">
+          <h2 class="cs-heading" id="cs-problem">The Problem</h2>
+          <p>Medical monitoring wearables face a compound design challenge: they must be clinically reliable, comfortable enough for extended wear, robust against real-world conditions, and manufacturable without specialist tooling. TORUS required an enclosure that addressed all of these constraints without compromising sensor access or device function.</p>
+        </section>
+
+        <section class="case-section" aria-labelledby="cs-role">
+          <h2 class="cs-heading" id="cs-role">My Role</h2>
+          <p>I led the mechanical enclosure design — responsible for ergonomic form development, material selection research, environmental sealing strategy, and iterative prototyping. I worked within constraints defined by the device's electronic components and clinical use context.</p>
+        </section>
+
+        <section class="case-section" aria-labelledby="cs-approach">
+          <h2 class="cs-heading" id="cs-approach">Approach</h2>
+          <p>The process began with a user context review — understanding how, where, and for how long the device would be worn. This informed key decisions around form factor, strap integration, and surface texture. Material options were evaluated against biocompatibility standards, durability requirements, and prototyping feasibility.</p>
+          <p>Iterative CAD modelling in Fusion 360 was used to explore enclosure geometries before 3D-printed functional prototypes were evaluated against fit, comfort, and assembly requirements.</p>
+        </section>
+
+        <section class="case-section" aria-labelledby="cs-outcome">
+          <h2 class="cs-heading" id="cs-outcome">Outcome</h2>
+          <p>A set of enclosure designs that met ergonomic, sealing, and material constraints. The project produced documented design rationale and a prototype series demonstrating the key engineering trade-offs.</p>
+          <div class="case-note">
+            <p><strong>Note:</strong> Detailed results and device imagery are not published here. This is a project-level summary based on verified work completed.</p>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Sidebar metadata -->
+      <aside class="case-meta" aria-label="Project details">
+        <div class="case-meta-card">
+          <dl class="case-meta-list">
+            <div class="case-meta-item">
+              <dt>Type</dt>
+              <dd>Engineering Case Study</dd>
+            </div>
+            <div class="case-meta-item">
+              <dt>Status</dt>
+              <dd>Completed</dd>
+            </div>
+            <div class="case-meta-item">
+              <dt>Discipline</dt>
+              <dd>Medical Device Hardware</dd>
+            </div>
+            <div class="case-meta-item">
+              <dt>Key skills</dt>
+              <dd>Mechanical Design, Ergonomics, Rapid Prototyping, Material Selection</dd>
+            </div>
+            <div class="case-meta-item">
+              <dt>Tools</dt>
+              <dd>Fusion 360, 3D Printing</dd>
+            </div>
+          </dl>
+          <div class="case-meta-tags">
+            {['Hardware Design', 'Ergonomics', 'Medical Devices', 'Rapid Prototyping'].map(t => (
+              <span class="tag">{t}</span>
+            ))}
+          </div>
+        </div>
+        <a href={`${import.meta.env.BASE_URL}work/`} class="back-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+          </svg>
+          All projects
+        </a>
+      </aside>
+
+    </div>
+  </article>
+</PageLayout>
+
+<style>
+  
+</style>

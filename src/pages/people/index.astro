@@ -1,0 +1,136 @@
+---
+/**
+ * /people/ — Teaching, mentoring, leadership and community.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import { communityActivities } from '../../data/content';
+---
+
+<PageLayout
+  title="People"
+  description="Mentoring, teaching, leadership and community work by Devashish Tambade — people-centred contributions alongside engineering and product work."
+  label="People & Community"
+  heading="People"
+  subheading="Engineering is about building things. But it is also about building the people around you."
+>
+
+  <section class="section" aria-labelledby="people-intro-heading">
+    <div class="container">
+      <div class="people-intro">
+        <p>Alongside projects and products, I invest time in mentoring fellow engineers, facilitating design thinking, and building communities of practice. This section documents that work — not as an appendix to the portfolio, but as a core part of how I work.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="people-activities-heading">
+    <div class="container">
+      <h2 class="section-title" id="people-activities-heading" style="margin-bottom: var(--space-8);">Activities</h2>
+      <div class="people-list">
+        {communityActivities.map(activity => (
+          <article class="people-card" aria-label={activity.title}>
+            <div class="people-card-header">
+              <div class="people-card-meta">
+                <span class="people-period">{activity.period}</span>
+                {activity.organisation && (
+                  <span class="people-org">{activity.organisation}</span>
+                )}
+              </div>
+              <div class="people-role-badge">{activity.role}</div>
+            </div>
+            <h3 class="people-title">{activity.title}</h3>
+            <p class="people-desc">{activity.description}</p>
+            <ul class="card-tags" role="list" style="margin-top: var(--space-4);">
+              {activity.tags.map(t => <li class="tag">{t}</li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="people-philosophy-heading">
+    <div class="container">
+      <div class="people-philosophy">
+        <h2 class="section-title" id="people-philosophy-heading">Why this matters</h2>
+        <p class="section-description" style="margin-top: var(--space-4);">
+          Technical skills are the foundation. But the engineers I have most respected are the ones who also helped other people improve — who shared knowledge without gatekeeping it, who made teams better rather than just projects better.
+        </p>
+        <p class="section-description" style="margin-top: var(--space-4);">
+          That is the kind of engineer I want to be. The people work is part of the engineering, not separate from it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</PageLayout>
+
+<style>
+  .people-intro {
+    max-width: 620px;
+    font-size: var(--text-md);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-loose);
+  }
+  .people-intro p { max-width: none; }
+  .people-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+  .people-card {
+    padding: var(--space-6);
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+  }
+  .people-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-3);
+  }
+  .people-card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .people-period {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--colour-label);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+  .people-org {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+  }
+  .people-role-badge {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--colour-fg-subtle);
+    background: var(--colour-bg-subtle);
+    border: 1px solid var(--colour-border);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+  }
+  .people-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    letter-spacing: var(--tracking-tight);
+    color: var(--colour-fg);
+    margin-bottom: var(--space-3);
+  }
+  .people-desc {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-normal);
+    max-width: 65ch;
+    margin-bottom: 0;
+  }
+  .people-philosophy { max-width: 640px; }
+</style>

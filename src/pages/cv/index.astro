@@ -1,0 +1,250 @@
+---
+/**
+ * /cv/ — CV overview and download.
+ * No CV PDF currently exists in the repository — flagged clearly.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import { workHistory, researchAreas, engineeringProjects } from '../../data/content';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<PageLayout
+  title="CV — Devashish Tambade"
+  description="CV and professional background for Devashish Tambade — robotics engineer, research technologist and product builder."
+  label="CV & Background"
+  heading="Curriculum Vitae"
+  subheading="MEng Robotics Engineering · KLA Interactives · AnyBody Can Design"
+>
+
+  <section class="section" aria-labelledby="cv-notice-heading">
+    <div class="container">
+      <div class="cv-download-notice">
+        <div>
+          <h2 class="cv-notice-title" id="cv-notice-heading">PDF Download</h2>
+          <p class="cv-notice-text">A downloadable CV PDF will be linked here once it has been added to the site. The structured overview below contains the same information.</p>
+        </div>
+        <div class="cv-download-placeholder" role="note" aria-label="CV PDF not yet available">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          <span>CV PDF — coming soon</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Education & Background -->
+  <section class="section" aria-labelledby="cv-education-heading">
+    <div class="container cv-section-grid">
+      <h2 class="cv-section-label" id="cv-education-heading">Education</h2>
+      <div class="cv-entries">
+        <div class="cv-entry">
+          <div class="cv-entry-period">2022 – present</div>
+          <div class="cv-entry-body">
+            <h3 class="cv-entry-title">MEng Robotics Engineering</h3>
+            <p class="cv-entry-org">University of Bristol, Bristol UK</p>
+            <p class="cv-entry-desc">Integrated master's programme in robotics engineering. Core study areas include mechatronics, embedded systems, control theory, human-robot interaction and engineering design methodology.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Work & Projects -->
+  <section class="section" aria-labelledby="cv-work-heading">
+    <div class="container cv-section-grid">
+      <h2 class="cv-section-label" id="cv-work-heading">Projects & Experience</h2>
+      <div class="cv-entries">
+        {workHistory.map(entry => (
+          <div class="cv-entry">
+            <div class="cv-entry-period">{entry.period}</div>
+            <div class="cv-entry-body">
+              <h3 class="cv-entry-title">{entry.role}</h3>
+              <p class="cv-entry-org">{entry.organisation}</p>
+              <p class="cv-entry-desc">{entry.description}</p>
+              {entry.highlights && (
+                <ul class="cv-highlights">
+                  {entry.highlights.map(h => <li>{h}</li>)}
+                </ul>
+              )}
+            </div>
+          </div>
+        ))}
+        {engineeringProjects.map(proj => (
+          <div class="cv-entry">
+            <div class="cv-entry-period">{proj.year ?? '—'}</div>
+            <div class="cv-entry-body">
+              <h3 class="cv-entry-title">{proj.title}</h3>
+              <p class="cv-entry-org">{proj.subtitle}</p>
+              <p class="cv-entry-desc">{proj.description}</p>
+              <ul class="card-tags" role="list" style="margin-top: var(--space-3);">
+                {proj.tags.map(t => <li class="tag">{t}</li>)}
+              </ul>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Research interests -->
+  <section class="section" aria-labelledby="cv-research-heading">
+    <div class="container cv-section-grid">
+      <h2 class="cv-section-label" id="cv-research-heading">Research Interests</h2>
+      <div class="cv-research-list">
+        {researchAreas.map(area => (
+          <div class="cv-research-item">
+            <h3 class="cv-research-title">{area.title}</h3>
+            <p class="cv-research-desc">{area.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</PageLayout>
+
+<style>
+  .cv-download-notice {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+    padding: var(--space-6);
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+  }
+  .cv-notice-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    letter-spacing: var(--tracking-tight);
+    color: var(--colour-fg);
+    margin-bottom: var(--space-2);
+  }
+  .cv-notice-text {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    max-width: 55ch;
+  }
+  .cv-download-placeholder {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-5);
+    border: 1px dashed var(--colour-border);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    color: var(--colour-fg-subtle);
+    font-family: var(--font-mono);
+    white-space: nowrap;
+  }
+  .cv-section-grid {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: var(--space-10);
+    align-items: start;
+  }
+  .cv-section-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--colour-label);
+    padding-top: 4px;
+    position: sticky;
+    top: 6rem;
+  }
+  .cv-entries {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+  .cv-entry {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: var(--space-6);
+    padding-bottom: var(--space-8);
+    border-bottom: 1px solid var(--colour-border-subtle);
+  }
+  .cv-entry:last-child { border-bottom: none; padding-bottom: 0; }
+  .cv-entry-period {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--colour-fg-subtle);
+    letter-spacing: var(--tracking-wide);
+    padding-top: 4px;
+  }
+  .cv-entry-title {
+    font-size: var(--text-md);
+    font-weight: 700;
+    letter-spacing: var(--tracking-tight);
+    color: var(--colour-fg);
+    margin-bottom: var(--space-1);
+  }
+  .cv-entry-org {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    margin-bottom: var(--space-3);
+    max-width: none;
+  }
+  .cv-entry-desc {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-normal);
+    max-width: 60ch;
+  }
+  .cv-highlights {
+    list-style: none;
+    margin-top: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .cv-highlights li {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    padding-left: var(--space-4);
+    position: relative;
+  }
+  .cv-highlights li::before {
+    content: '?';
+    position: absolute;
+    left: 0;
+    color: var(--colour-accent);
+    font-family: var(--font-mono);
+  }
+  .cv-research-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+  .cv-research-item {
+    padding: var(--space-5);
+    background: var(--colour-bg-subtle);
+    border: 1px solid var(--colour-border-subtle);
+    border-radius: var(--radius-md);
+  }
+  .cv-research-title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--colour-fg);
+    margin-bottom: var(--space-2);
+  }
+  .cv-research-desc {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-normal);
+    max-width: none;
+    margin: 0;
+  }
+  @media (max-width: 768px) {
+    .cv-section-grid { grid-template-columns: 1fr; gap: var(--space-4); }
+    .cv-section-label { position: static; }
+    .cv-entry { grid-template-columns: 1fr; gap: var(--space-2); }
+  }
+</style>

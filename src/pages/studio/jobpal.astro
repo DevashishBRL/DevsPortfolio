@@ -1,0 +1,48 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+---
+<PageLayout
+  title="JobPal — KLA Interactives"
+  description="JobPal is a streamlined job application companion — organising, tracking and de-stressing technical application workflows. In active development."
+  label="KLA Interactives — In Development"
+  heading="JobPal"
+  subheading="Job search, made human"
+>
+  <article class="case-study">
+    <div class="container case-study-grid">
+      <div class="case-main">
+        <section class="case-section">
+          <h2 class="cs-heading">The Idea</h2>
+          <p>Technical job applications involve a sprawling, exhausting process: researching roles, tracking applications, preparing materials, following up, managing rejections. JobPal brings clarity and calm to that process — a focused companion rather than a full recruitment platform.</p>
+        </section>
+        <section class="case-section">
+          <h2 class="cs-heading">Current Status</h2>
+          <div class="case-note">
+            <p>JobPal is in active development. It is not yet publicly available. No release date has been confirmed.</p>
+          </div>
+        </section>
+      </div>
+      <aside class="case-meta">
+        <div class="case-meta-card">
+          <dl class="case-meta-list">
+            <div class="case-meta-item"><dt>Studio</dt><dd>KLA Interactives</dd></div>
+            <div class="case-meta-item"><dt>Type</dt><dd>Web Application</dd></div>
+            <div class="case-meta-item"><dt>Status</dt><dd>In Development</dd></div>
+          </dl>
+          <div class="case-meta-tags">
+            {['Web App', 'Workflow', 'Productivity'].map(t => (
+              <span class="tag">{t}</span>
+            ))}
+          </div>
+        </div>
+        <a href={`${import.meta.env.BASE_URL}studio/`} class="back-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+          </svg>
+          All products
+        </a>
+      </aside>
+    </div>
+  </article>
+</PageLayout>
+

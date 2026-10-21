@@ -1,0 +1,97 @@
+﻿---
+/**
+ * PageLayout — editorial shell for all inner section pages.
+ * Provides a consistent page hero, breadcrumb, and slot for content.
+ */
+
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  label?: string;       // e.g. "01 — Work"
+  heading: string;
+  subheading?: string;
+  ogImage?: string;
+}
+
+const { title, description, label, heading, subheading, ogImage } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} ogImage={ogImage}>
+  <!-- Page hero -->
+  <section class="page-hero" aria-labelledby="page-heading">
+    <div class="container">
+      <div class="page-hero-inner">
+        {label && <p class="page-label">{label}</p>}
+        <h1 class="page-heading" id="page-heading">{heading}</h1>
+        {subheading && <p class="page-subheading">{subheading}</p>}
+      </div>
+    </div>
+  </section>
+
+  <!-- Page body -->
+  <div class="page-body">
+    <slot />
+  </div>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding-block-start: clamp(5.5rem, 11vw, 9rem);
+    padding-block-end: clamp(2rem, 4vw, 3.5rem);
+    border-bottom: 1px solid var(--colour-border-subtle);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Subtle grid texture matching hero */
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--colour-border-subtle) 1px, transparent 1px),
+      linear-gradient(90deg, var(--colour-border-subtle) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.3;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 80% 70% at 30% 0%, black 30%, transparent 100%);
+  }
+
+  .page-hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+  }
+
+  .page-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--colour-label);
+    margin-bottom: var(--space-4);
+    max-width: none;
+  }
+
+  .page-heading {
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    color: var(--colour-fg);
+    margin-bottom: var(--space-4);
+  }
+
+  .page-subheading {
+    font-size: var(--text-lg);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-loose);
+    max-width: 60ch;
+  }
+
+  .page-body {
+    /* Sections within page body handle their own spacing */
+  }
+</style>

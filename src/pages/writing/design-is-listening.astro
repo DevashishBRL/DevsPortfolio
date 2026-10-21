@@ -1,0 +1,62 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+---
+<PageLayout
+  title="Design is Listening — AnyBody Can Design"
+  description="On the overlooked skill of observation — how watching people use things teaches you more than any brief ever could."
+  label="AnyBody Can Design — Sep 2024"
+  heading="Design is Listening"
+  subheading="On the overlooked skill of observation."
+>
+  <article class="case-study" aria-label="Article">
+    <div class="container case-study-grid">
+      <div class="case-main">
+        <div class="article-body">
+          <p>There is a version of design that begins with the brief. It accepts the problem as stated, treats the constraints as fixed, and gets to work. It is not bad design. It is just not design in the fullest sense.</p>
+
+          <p>The fullest sense begins earlier — with watching. With being present in the space where the problem lives. With noticing what people do, rather than what they say they do.</p>
+
+          <h2>What observation actually teaches</h2>
+          <p>When you watch someone try to use something — really watch, without a clipboard, without a question list, without an agenda — you learn things that no interview would surface. You see the workarounds they have stopped noticing. You see the hesitation before an action they have made a hundred times. You see the moment their attention drifts because the interface made them wait.</p>
+
+          <p>None of this appears in a brief. It rarely appears in user research unless the researcher is patient enough to be quiet.</p>
+
+          <blockquote>Listening is not passive. It is the most active form of attention there is.</blockquote>
+
+          <h2>The problem with asking</h2>
+          <p>People are not always good witnesses to their own behaviour. They report what they think they do, or what they think you want to hear, or what sounds reasonable when said out loud. They adapt in the moment of being asked. The act of asking changes the answer.</p>
+
+          <p>This is not a criticism of interviews. Interviews give you things observation cannot — motivations, context, history, aspiration. But they do not give you the behaviour itself. For that, you have to look.</p>
+
+          <h2>Designing from what you see</h2>
+          <p>The discipline is in not reaching for the solution too quickly. The instinct, when you spot a problem, is to solve it immediately. But the problem you spot first is usually the symptom. What you are looking for, under the workaround and the hesitation, is the condition that made them necessary.</p>
+
+          <p>That takes time. It takes being willing to watch something fail slowly without interrupting. It takes holding the solution back until you are confident you understand what the solution is actually for.</p>
+
+          <p>Design that begins from observation is harder to get started. It takes more patience up front. But what it produces is solutions that work for people in the conditions people actually exist in — not the idealised, well-briefed, clearly-motivated people that briefs tend to describe.</p>
+
+          <p>The listening is not the soft part. It is the work.</p>
+        </div>
+      </div>
+      <aside class="case-meta">
+        <div class="case-meta-card">
+          <dl class="case-meta-list">
+            <div class="case-meta-item"><dt>Series</dt><dd>AnyBody Can Design</dd></div>
+            <div class="case-meta-item"><dt>Published</dt><dd>September 2024</dd></div>
+            <div class="case-meta-item"><dt>Topics</dt><dd>Design, Observation, Human Behaviour</dd></div>
+          </dl>
+          <div class="case-meta-tags">
+            {['Design', 'Observation', 'Human Behaviour'].map(t => <span class="tag">{t}</span>)}
+          </div>
+        </div>
+        <a href={`${import.meta.env.BASE_URL}writing/`} class="back-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+          </svg>
+          All articles
+        </a>
+      </aside>
+    </div>
+  </article>
+</PageLayout>
+

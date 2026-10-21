@@ -1,0 +1,122 @@
+---
+/**
+ * /in-the-wild/ — External publications, interviews and confirmed mentions.
+ * Distinct from authored AnyBody Can Design articles.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import { externalMentions } from '../../data/content';
+
+const hasRealMentions = externalMentions.length > 0 &&
+  !externalMentions.every(m => m.id === 'placeholder-mention-1');
+---
+
+<PageLayout
+  title="In the Wild"
+  description="External publications, interviews and confirmed mentions of Devashish Tambade and their work. Distinct from authored writing."
+  label="External Publications & Press"
+  heading="In the Wild"
+  subheading="External articles, interviews, publications and confirmed mentions."
+>
+
+  <section class="section" aria-labelledby="wild-note-heading">
+    <div class="container">
+      <div class="wild-distinction">
+        <p><strong>This section is separate from <a href={`${import.meta.env.BASE_URL}writing/`}>AnyBody Can Design</a></strong> — it contains only external coverage, mentions, or publications by others, not writing authored by Devashish.</p>
+      </div>
+
+      {hasRealMentions ? (
+        <div class="card-grid" role="list" style="margin-top: var(--space-10);">
+          {externalMentions.map(mention => (
+            <div role="listitem">
+              <article class="mention-card">
+                <div class="mention-body">
+                  <p class="mention-type">{mention.type}</p>
+                  <p class="mention-pub">{mention.publication}</p>
+                  <p class="mention-title">{mention.title}</p>
+                  <p class="mention-desc">{mention.description}</p>
+                  {mention.url && (
+                    <a href={mention.url} class="mention-link" target="_blank" rel="noopener noreferrer">
+                      Read original
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                        <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+                      </svg>
+                    </a>
+                  )}
+                </div>
+              </article>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div class="wild-empty-state" role="status" aria-labelledby="wild-empty-heading">
+          <div class="wild-empty-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+          <h2 class="wild-empty-title" id="wild-empty-heading">Nothing here yet</h2>
+          <p class="wild-empty-text">Verified external publications, interviews and mentions will appear here as they are confirmed. This section will not show invented or unverified items.</p>
+          <p class="wild-empty-text">In the meantime, you can read <a href={`${import.meta.env.BASE_URL}writing/`}>writing by Devashish</a> in the AnyBody Can Design section.</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+</PageLayout>
+
+<style>
+  .wild-distinction {
+    padding: var(--space-4) var(--space-5);
+    background: var(--colour-bg-subtle);
+    border-left: 3px solid var(--colour-accent);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    max-width: 640px;
+  }
+  .wild-distinction p {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    max-width: none;
+  }
+  .wild-distinction a { color: var(--colour-accent); text-decoration: underline; }
+  .wild-empty-state {
+    margin-top: var(--space-10);
+    text-align: center;
+    padding: var(--space-16) var(--space-8);
+    border: 1px dashed var(--colour-border);
+    border-radius: var(--radius-xl);
+    background: var(--colour-surface);
+    max-width: 560px;
+  }
+  .wild-empty-icon {
+    color: var(--colour-fg-faint);
+    margin-bottom: var(--space-5);
+    display: flex;
+    justify-content: center;
+  }
+  .wild-empty-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    letter-spacing: var(--tracking-tight);
+    color: var(--colour-fg);
+    margin-bottom: var(--space-4);
+  }
+  .wild-empty-text {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-loose);
+    max-width: 42ch;
+    margin-inline: auto;
+    margin-bottom: var(--space-3);
+  }
+  .wild-empty-text a { color: var(--colour-accent); text-decoration: underline; }
+  .mention-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--colour-accent);
+    margin-top: var(--space-3);
+    text-decoration: underline;
+  }
+</style>
