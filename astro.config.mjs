@@ -2,8 +2,8 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://devashishtambade.github.io',
-  base: '/',
+  site: 'https://devashishbrl.github.io',
+  base: '/DevsPortfolio/',
   output: 'static',
   build: {
     assets: '_assets',
