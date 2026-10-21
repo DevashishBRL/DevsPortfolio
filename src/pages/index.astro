@@ -16,7 +16,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import ArticleCard from '../components/ArticleCard.astro';
-import MiniatureWorld from '../components/MiniatureWorld.astro';
+import MiniatureWorld3D from '../components/MiniatureWorld3D.astro';
 
 import { engineeringProjects, klaProjects, authoredArticles, externalMentions } from '../data/content';
 
@@ -56,7 +56,7 @@ const featuredArticles = authoredArticles.slice(0, 3);
 
         <!-- Primary & Secondary Actions -->
         <div class="hero-actions">
-          <a href="#work" class="btn btn-primary">
+          <a href="#miniature-world" class="btn btn-primary" id="hero-explore-btn">
             Explore my work
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <line x1="5" y1="12" x2="19" y2="12"/>
@@ -69,9 +69,9 @@ const featuredArticles = authoredArticles.slice(0, 3);
     </div>
   </section>
 
-  <!-- ── Interactive Isometric Miniature World (Dark Immersive Mode) ── -->
+  <!-- ── Explorable 3D Isometric Miniature World ── -->
   <section id="miniature-world" aria-labelledby="mw-heading">
-    <MiniatureWorld />
+    <MiniatureWorld3D />
   </section>
 
   <!-- ── Selected Work ─────────────────────────────────────────────────── -->

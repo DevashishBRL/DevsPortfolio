@@ -1,0 +1,1425 @@
+---
+/**
+ * MiniatureWorld3D.astro
+ * 
+ * Explorable 3D Isometric Portfolio World for Devashish Tambade.
+ * Powered by Three.js with an Orthographic Camera, directional warm sunlight,
+ * layered geometric architecture, interactive destination raycasting,
+ * camera animation between destinations, and graceful degradation fallback.
+ */
+
+interface DestinationInfo {
+  id: string;
+  num: string;
+  category: string;
+  title: string;
+  tagline: string;
+  description: string;
+  actionLabel: string;
+  actionHref: string;
+  targetPos: [number, number, number]; // [x, y, z] target in 3D world
+  cameraOffset: [number, number, number]; // [x, y, z] camera offset relative to target
+  themeColor: string;
+  locationLabel: string;
+}
+
+const destinations: DestinationInfo[] = [
+  {
+    id: 'lab',
+    num: '01 / LAB',
+    category: 'Engineering & Robotics',
+    title: 'The Lab',
+    tagline: 'Autonomous Systems, Hardware & Biomechatronics',
+    description:
+      'Where mechanical hardware and firmware converge: modular articulated robotic arms, wearable medical device enclosures (TORUS), and accessible prosthetic research (EasyProsthetics).',
+    actionLabel: 'Explore Engineering & Research',
+    actionHref: '#work',
+    targetPos: [-14, 0, -14],
+    cameraOffset: [26, 32, 26],
+    themeColor: '#f59e0b', // Amber
+    locationLabel: 'North Pavilion · Robotics & Mechatronics Bay',
+  },
+  {
+    id: 'foundry',
+    num: '02 / FOUNDRY',
+    category: 'Product Studio',
+    title: 'The Foundry',
+    tagline: 'KLA Interactives & Digital Thought Tools',
+    description:
+      'The software workshop building DraftGrid, AraLoom, TabZones, and JobPal — focused digital tools in development to organize thoughts and de-stress workflows.',
+    actionLabel: 'View KLA Products',
+    actionHref: '#kla',
+    targetPos: [14, 0, -14],
+    cameraOffset: [26, 32, 26],
+    themeColor: '#38bdf8', // Cyan / Sky
+    locationLabel: 'East Tower · Interactive Systems Studio',
+  },
+  {
+    id: 'observatory',
+    num: '03 / OBSERVATORY',
+    category: 'Design & Ideas',
+    title: 'The Observatory',
+    tagline: 'AnyBody Can Design & Visual Thinking',
+    description:
+      'An open atelier and writing observatory dedicated to usability observation, human factors, design principles, and essays on practical design thinking.',
+    actionLabel: 'Read Design Writing',
+    actionHref: '#writing',
+    targetPos: [14, 0, 14],
+    cameraOffset: [26, 32, 26],
+    themeColor: '#fb923c', // Terracotta / Warm Orange
+    locationLabel: 'South Gallery · Observation Deck',
+  },
+  {
+    id: 'yard',
+    num: '04 / YARD',
+    category: 'Experiments & Prototyping',
+    title: 'The Yard',
+    tagline: 'Rapid Fabrication, Rigs & 3D Exploration',
+    description:
+      'The experimental maker yard: CNC gantry mockups, 3D printing beds, digital agriculture IoT telemetry boards, and physical test fixtures.',
+    actionLabel: 'Discover Yard Prototypes',
+    actionHref: '#work',
+    targetPos: [-14, 0, 14],
+    cameraOffset: [26, 32, 26],
+    themeColor: '#34d399', // Emerald / Sage
+    locationLabel: 'West Yard · Rapid Fabrication Depot',
+  },
+  {
+    id: 'commons',
+    num: '05 / COMMONS',
+    category: 'Leadership & Community',
+    title: 'The Commons',
+    tagline: 'Mentoring, Teaching & Collaborative Spaces',
+    description:
+      'The shared open quadrangle representing community contributions, hackathons, engineering mentorship, teaching, and cross-disciplinary collaborations.',
+    actionLabel: 'Learn About Devashish',
+    actionHref: '#about',
+    targetPos: [0, 0, 0],
+    cameraOffset: [34, 40, 34],
+    themeColor: '#a78bfa', // Purple / Iris
+    locationLabel: 'Central Quad · Collaboration Agora',
+  },
+  {
+    id: 'outlook',
+    num: '06 / OUTLOOK',
+    category: 'Direction & Press',
+    title: 'The Outlook',
+    tagline: 'Background, Publications & Future Horizons',
+    description:
+      'The elevated vantage point overlooking external publications, verified press mentions, career history, and future technical research vectors.',
+    actionLabel: 'View Mentions & Background',
+    actionHref: '#in-the-wild',
+    targetPos: [0, 8, -2],
+    cameraOffset: [24, 30, 24],
+    themeColor: '#f43f5e', // Rose
+    locationLabel: 'High Beacon · Horizon Mast',
+  },
+];
+---
+
+<div class="mw3d-wrapper" id="miniature-world-3d">
+  <div class="mw3d-container">
+    <!-- Header Section Meta -->
+    <div class="section-meta mw3d-header">
+      <div class="mw3d-status-badge">
+        <span class="mw3d-pulse-dot" aria-hidden="true"></span>
+        <span>Interactive 3D Miniature Campus · Isometric Exploration</span>
+      </div>
+      <h2 class="section-title mw3d-title" id="mw-heading">
+        An Explorable Miniature World
+      </h2>
+      <p class="section-description mw3d-subtitle">
+        A tactile architectural model of Devashish's engineering laboratory, software foundry, and design observatory. Drag to pivot, click or tap destinations, or pick a place below.
+      </p>
+    </div>
+
+    <!-- Main Stage: 3D Canvas + Integrated Field-Note Panel -->
+    <div class="mw3d-stage">
+      <!-- ── 3D Viewport Frame ── -->
+      <div class="mw3d-canvas-wrap" id="mw3d-canvas-container" tabindex="0" role="region" aria-label="3D Interactive Miniature World Canvas">
+        <div class="mw3d-loading-overlay" id="mw3d-loading">
+          <div class="mw3d-spinner"></div>
+          <p>Assembling Miniature World...</p>
+        </div>
+
+        <canvas id="mw3d-webgl-canvas" class="mw3d-canvas"></canvas>
+
+        <!-- Static Fallback if WebGL unavailable -->
+        <noscript>
+          <div class="mw3d-fallback-notice">
+            <p><strong>JavaScript is disabled.</strong> You can explore all destinations through the accessible controls below.</p>
+          </div>
+        </noscript>
+        <div class="mw3d-fallback-notice" id="mw3d-webgl-error" style="display: none;">
+          <p><strong>WebGL acceleration is unavailable.</strong> All destinations and portfolio links remain fully accessible below.</p>
+        </div>
+
+        <!-- On-Canvas Ambient HUD Controls -->
+        <div class="mw3d-hud" aria-hidden="true">
+          <div class="mw3d-hud-left">
+            <span class="hud-coord" id="hud-active-dest">CAMPUS OVERVIEW</span>
+            <span class="hud-sep">/</span>
+            <span class="hud-sub">ELEVATED ISOMETRIC</span>
+          </div>
+          <div class="mw3d-hud-right">
+            <button type="button" class="hud-btn" id="hud-reset-view" title="Reset to Campus Overview">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+              </svg>
+              <span>Overview</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Right / Floating Field-Note Information Panel ── -->
+      <aside class="mw3d-field-panel" id="mw3d-info-panel" aria-live="polite" aria-atomic="true">
+        <div class="field-panel-badge">
+          <span class="field-indicator" id="mw3d-panel-indicator" aria-hidden="true"></span>
+          <span class="field-district-num" id="mw3d-panel-num">01 / LAB</span>
+          <span class="field-sep" aria-hidden="true">·</span>
+          <span class="field-coords" id="mw3d-panel-coords">North Pavilion · Robotics Bay</span>
+        </div>
+
+        <div class="field-panel-content">
+          <p class="field-category" id="mw3d-panel-category">Engineering &amp; Robotics</p>
+          <h3 class="field-title" id="mw3d-panel-title">The Lab</h3>
+          <p class="field-tagline" id="mw3d-panel-tagline">Autonomous Systems, Hardware &amp; Biomechatronics</p>
+          <p class="field-description" id="mw3d-panel-desc">
+            Where mechanical hardware and firmware converge: modular articulated robotic arms, wearable medical device enclosures (TORUS), and accessible prosthetic research (EasyProsthetics).
+          </p>
+        </div>
+
+        <div class="field-panel-actions">
+          <a href="#work" class="btn btn-mw3d-action" id="mw3d-panel-action-btn">
+            <span id="mw3d-panel-action-text">Explore Engineering &amp; Research</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Quick 6-Destination Selector Strip -->
+        <div class="field-selector-strip" role="tablist" aria-label="Destinations quick selector">
+          {destinations.map((dest, idx) => (
+            <button
+              type="button"
+              role="tab"
+              class={`field-tab-btn ${idx === 0 ? 'is-active' : ''}`}
+              id={`tab-btn-${dest.id}`}
+              aria-selected={idx === 0 ? 'true' : 'false'}
+              aria-controls="mw3d-info-panel"
+              data-district={dest.id}
+              style={`--tab-color: ${dest.themeColor};`}
+            >
+              <span class="tab-index">{dest.num.split('/')[0]}</span>
+              <span class="tab-name">{dest.title.replace('The ', '')}</span>
+            </button>
+          ))}
+        </div>
+      </aside>
+    </div>
+
+    <!-- ── Lower 6-Destination Cards Strip (Direct Accessible Touch Navigation) ── -->
+    <div class="mw3d-destinations-grid" role="list" aria-label="Campus destinations">
+      {destinations.map((dest, idx) => (
+        <button
+          type="button"
+          class={`mw3d-nav-card ${idx === 0 ? 'is-selected' : ''}`}
+          role="listitem"
+          data-target={dest.id}
+          aria-pressed={idx === 0 ? 'true' : 'false'}
+          style={`--dest-accent: ${dest.themeColor};`}
+        >
+          <div class="nav-card-top">
+            <span class="nav-card-num">{dest.num}</span>
+            <span class="nav-card-dot" aria-hidden="true"></span>
+          </div>
+          <span class="nav-card-title">{dest.title}</span>
+          <span class="nav-card-cat">{dest.category}</span>
+          <span class="nav-card-desc">{dest.tagline}</span>
+        </button>
+      ))}
+    </div>
+  </div>
+</div>
+
+<!-- Three.js Interactive 3D World Script -->
+<script>
+  import * as THREE from 'three';
+
+  // Destination Data
+  const destinationsData = [
+    {
+      id: 'lab',
+      num: '01 / LAB',
+      category: 'Engineering & Robotics',
+      title: 'The Lab',
+      tagline: 'Autonomous Systems, Hardware & Biomechatronics',
+      description:
+        'Where mechanical hardware and firmware converge: modular articulated robotic arms, wearable medical device enclosures (TORUS), and accessible prosthetic research (EasyProsthetics).',
+      actionLabel: 'Explore Engineering & Research',
+      actionHref: '#work',
+      targetPos: [-14, 0, -14],
+      cameraOffset: [22, 28, 22],
+      themeColor: '#f59e0b',
+      locationLabel: 'North Pavilion · Robotics & Mechatronics Bay',
+    },
+    {
+      id: 'foundry',
+      num: '02 / FOUNDRY',
+      category: 'Product Studio',
+      title: 'The Foundry',
+      tagline: 'KLA Interactives & Digital Thought Tools',
+      description:
+        'The software workshop building DraftGrid, AraLoom, TabZones, and JobPal — focused digital tools in development to organize thoughts and de-stress workflows.',
+      actionLabel: 'View KLA Products',
+      actionHref: '#kla',
+      targetPos: [14, 0, -14],
+      cameraOffset: [22, 28, 22],
+      themeColor: '#38bdf8',
+      locationLabel: 'East Tower · Interactive Systems Studio',
+    },
+    {
+      id: 'observatory',
+      num: '03 / OBSERVATORY',
+      category: 'Design & Ideas',
+      title: 'The Observatory',
+      tagline: 'AnyBody Can Design & Visual Thinking',
+      description:
+        'An open atelier and writing observatory dedicated to usability observation, human factors, design principles, and essays on practical design thinking.',
+      actionLabel: 'Read Design Writing',
+      actionHref: '#writing',
+      targetPos: [14, 0, 14],
+      cameraOffset: [22, 28, 22],
+      themeColor: '#fb923c',
+      locationLabel: 'South Gallery · Observation Deck',
+    },
+    {
+      id: 'yard',
+      num: '04 / YARD',
+      category: 'Experiments & Prototyping',
+      title: 'The Yard',
+      tagline: 'Rapid Fabrication, Rigs & 3D Exploration',
+      description:
+        'The experimental maker yard: CNC gantry mockups, 3D printing beds, digital agriculture IoT telemetry boards, and physical test fixtures.',
+      actionLabel: 'Discover Yard Prototypes',
+      actionHref: '#work',
+      targetPos: [-14, 0, 14],
+      cameraOffset: [22, 28, 22],
+      themeColor: '#34d399',
+      locationLabel: 'West Yard · Rapid Fabrication Depot',
+    },
+    {
+      id: 'commons',
+      num: '05 / COMMONS',
+      category: 'Leadership & Community',
+      title: 'The Commons',
+      tagline: 'Mentoring, Teaching & Collaborative Spaces',
+      description:
+        'The shared open quadrangle representing community contributions, hackathons, engineering mentorship, teaching, and cross-disciplinary collaborations.',
+      actionLabel: 'Learn About Devashish',
+      actionHref: '#about',
+      targetPos: [0, 0, 0],
+      cameraOffset: [34, 40, 34],
+      themeColor: '#a78bfa',
+      locationLabel: 'Central Quad · Collaboration Agora',
+    },
+    {
+      id: 'outlook',
+      num: '06 / OUTLOOK',
+      category: 'Direction & Press',
+      title: 'The Outlook',
+      tagline: 'Background, Publications & Future Horizons',
+      description:
+        'The elevated vantage point overlooking external publications, verified press mentions, career history, and future technical research vectors.',
+      actionLabel: 'View Mentions & Background',
+      actionHref: '#in-the-wild',
+      targetPos: [0, 8, -2],
+      cameraOffset: [24, 30, 24],
+      themeColor: '#f43f5e',
+      locationLabel: 'High Beacon · Horizon Mast',
+    },
+  ];
+
+  function initWorld() {
+    const container = document.getElementById('mw3d-canvas-container');
+    const canvas = document.getElementById('mw3d-webgl-canvas') as HTMLCanvasElement;
+    const loading = document.getElementById('mw3d-loading');
+    const errNotice = document.getElementById('mw3d-webgl-error');
+
+    if (!container || !canvas) return;
+
+    // Check if already initialized on this canvas
+    if (canvas.dataset.initialized === 'true') return;
+    canvas.dataset.initialized = 'true';
+
+    // UI elements
+    const infoPanel = document.getElementById('mw3d-info-panel');
+    const panelNum = document.getElementById('mw3d-panel-num');
+    const panelCoords = document.getElementById('mw3d-panel-coords');
+    const panelCategory = document.getElementById('mw3d-panel-category');
+    const panelTitle = document.getElementById('mw3d-panel-title');
+    const panelTagline = document.getElementById('mw3d-panel-tagline');
+    const panelDesc = document.getElementById('mw3d-panel-desc');
+    const panelActionBtn = document.getElementById('mw3d-panel-action-btn');
+    const panelActionText = document.getElementById('mw3d-panel-action-text');
+    const panelIndicator = document.getElementById('mw3d-panel-indicator');
+    const hudActiveDest = document.getElementById('hud-active-dest');
+    const hudResetBtn = document.getElementById('hud-reset-view');
+
+    const tabBtns = document.querySelectorAll('.field-tab-btn');
+    const navCards = document.querySelectorAll('.mw3d-nav-card');
+
+    // ── Three.js Scene Setup ──
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0c1018); // Deep architectural slate
+    scene.fog = new THREE.FogExp2(0x0c1018, 0.012);
+
+    // ── Orthographic Isometric Camera ──
+    const aspect = container.clientWidth / container.clientHeight;
+    const frustumSize = 58;
+    const camera = new THREE.OrthographicCamera(
+      (-frustumSize * aspect) / 2,
+      (frustumSize * aspect) / 2,
+      frustumSize / 2,
+      -frustumSize / 2,
+      0.1,
+      1000
+    );
+
+    // Default overview camera setup
+    const overviewTarget = new THREE.Vector3(0, 0, 0);
+    const overviewCamPos = new THREE.Vector3(38, 44, 38);
+    camera.position.copy(overviewCamPos);
+    camera.lookAt(overviewTarget);
+
+    // Renderer
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      powerPreference: 'high-performance',
+    });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    // ── Architectural Materials ──
+    const matIslandTop = new THREE.MeshStandardMaterial({
+      color: 0x1a2233,
+      roughness: 0.85,
+      metalness: 0.1,
+    });
+    const matIslandSide = new THREE.MeshStandardMaterial({
+      color: 0x0f1522,
+      roughness: 0.9,
+    });
+    const matPlaza = new THREE.MeshStandardMaterial({
+      color: 0x222d42,
+      roughness: 0.7,
+      metalness: 0.15,
+    });
+    const matPath = new THREE.MeshStandardMaterial({
+      color: 0x2d3a54,
+      roughness: 0.6,
+    });
+
+    // Building materials
+    const matConcreteLight = new THREE.MeshStandardMaterial({ color: 0x3d4b68, roughness: 0.6 });
+    const matConcreteDark  = new THREE.MeshStandardMaterial({ color: 0x263248, roughness: 0.8 });
+    const matGlassLab      = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.4, emissive: 0xf59e0b, emissiveIntensity: 0.35 });
+    const matGlassFoundry  = new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.2, metalness: 0.5, emissive: 0x0284c7, emissiveIntensity: 0.45 });
+    const matGlassAtelier  = new THREE.MeshStandardMaterial({ color: 0xfb923c, roughness: 0.3, metalness: 0.3, emissive: 0xea580c, emissiveIntensity: 0.3 });
+    const matWorkshop      = new THREE.MeshStandardMaterial({ color: 0x34d399, roughness: 0.4, metalness: 0.2, emissive: 0x059669, emissiveIntensity: 0.3 });
+    const matMetalBrass    = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.3, metalness: 0.8 });
+    const matMetalSteel    = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.4, metalness: 0.7 });
+    const matFoliage       = new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.8 });
+    const matTrunk         = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.9 });
+
+    // ── Lighting ──
+    const ambientLight = new THREE.AmbientLight(0xdbeafe, 0.75);
+    scene.add(ambientLight);
+
+    // Warm Sun Directional Light
+    const sunLight = new THREE.DirectionalLight(0xfff7ed, 1.8);
+    sunLight.position.set(45, 60, 30);
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.width = 2048;
+    sunLight.shadow.mapSize.height = 2048;
+    sunLight.shadow.camera.near = 0.5;
+    sunLight.shadow.camera.far = 160;
+    sunLight.shadow.camera.left = -35;
+    sunLight.shadow.camera.right = 35;
+    sunLight.shadow.camera.top = 35;
+    sunLight.shadow.camera.bottom = -35;
+    sunLight.shadow.bias = -0.0005;
+    scene.add(sunLight);
+
+    // Cool rim fill light
+    const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.45);
+    fillLight.position.set(-30, 20, -30);
+    scene.add(fillLight);
+
+    // ── World Geometry ──
+    const worldGroup = new THREE.Group();
+    scene.add(worldGroup);
+
+    // 1. Layered Island Plinth
+    const plinthGeo = new THREE.CylinderGeometry(28, 30, 4, 8);
+    plinthGeo.rotateY(Math.PI / 8);
+    const plinthMesh = new THREE.Mesh(plinthGeo, [matIslandSide, matIslandTop, matIslandSide]);
+    plinthMesh.position.y = -2;
+    plinthMesh.receiveShadow = true;
+    worldGroup.add(plinthMesh);
+
+    // Island Top Paver / Stepped Terrains
+    const terraceGeo = new THREE.BoxGeometry(42, 0.6, 42);
+    const terraceMesh = new THREE.Mesh(terraceGeo, matIslandTop);
+    terraceMesh.position.y = 0.3;
+    terraceMesh.receiveShadow = true;
+    worldGroup.add(terraceMesh);
+
+    // Cross-axis Paved Pathways
+    const pathNorthSouth = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.7, 42), matPath);
+    pathNorthSouth.position.y = 0.36;
+    pathNorthSouth.receiveShadow = true;
+    worldGroup.add(pathNorthSouth);
+
+    const pathEastWest = new THREE.Mesh(new THREE.BoxGeometry(42, 0.7, 4.5), matPath);
+    pathEastWest.position.y = 0.36;
+    pathEastWest.receiveShadow = true;
+    worldGroup.add(pathEastWest);
+
+    // Central Commons Plaza
+    const plazaMesh = new THREE.Mesh(new THREE.CylinderGeometry(7, 7, 0.8, 16), matPlaza);
+    plazaMesh.position.y = 0.4;
+    plazaMesh.receiveShadow = true;
+    worldGroup.add(plazaMesh);
+
+    // Interactive clickable meshes container
+    const interactiveMeshes: { mesh: THREE.Object3D; id: string }[] = [];
+
+    // Helper: Add clickable anchor to district
+    function registerInteractive(obj: THREE.Object3D, id: string) {
+      obj.userData.districtId = id;
+      interactiveMeshes.push({ mesh: obj, id });
+    }
+
+    // ── Destination 1: THE LAB (Robotics & Research) ──
+    const labGroup = new THREE.Group();
+    labGroup.position.set(-14, 0.6, -14);
+
+    // Main Lab Building
+    const labMain = new THREE.Mesh(new THREE.BoxGeometry(9, 6.5, 9), matConcreteLight);
+    labMain.position.y = 3.25;
+    labMain.castShadow = true;
+    labMain.receiveShadow = true;
+    labGroup.add(labMain);
+    registerInteractive(labMain, 'lab');
+
+    // Lab Upper Observation Bay
+    const labBay = new THREE.Mesh(new THREE.BoxGeometry(6, 2.5, 6), matGlassLab);
+    labBay.position.y = 7.75;
+    labBay.castShadow = true;
+    labGroup.add(labBay);
+
+    // Articulated Robot Arm in outdoor proving ground
+    const armBase = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.4, 0.8, 12), matMetalSteel);
+    armBase.position.set(5.5, 0.4, 5.5);
+    armBase.castShadow = true;
+    labGroup.add(armBase);
+
+    const armSegment1 = new THREE.Mesh(new THREE.BoxGeometry(0.5, 3.5, 0.5), matMetalBrass);
+    armSegment1.position.set(5.5, 2.2, 5.5);
+    armSegment1.rotation.z = -0.3;
+    armSegment1.castShadow = true;
+    labGroup.add(armSegment1);
+
+    const armSegment2 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 2.8, 0.4), matConcreteLight);
+    armSegment2.position.set(6.4, 4.0, 5.5);
+    armSegment2.rotation.z = 0.6;
+    armSegment2.castShadow = true;
+    labGroup.add(armSegment2);
+
+    // Precision Antenna / Dish
+    const labAntenna = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 3, 6), matMetalSteel);
+    labAntenna.position.set(-3.5, 9.5, -3.5);
+    labGroup.add(labAntenna);
+
+    const labDish = new THREE.Mesh(new THREE.SphereGeometry(1.2, 8, 8, 0, Math.PI * 2, 0, Math.PI * 0.4), matMetalSteel);
+    labDish.position.set(-3.5, 11, -3.5);
+    labDish.rotation.x = -Math.PI / 4;
+    labGroup.add(labDish);
+
+    worldGroup.add(labGroup);
+
+    // ── Destination 2: THE FOUNDRY (KLA Interactives) ──
+    const foundryGroup = new THREE.Group();
+    foundryGroup.position.set(14, 0.6, -14);
+
+    // Multi-tier Modern Product Studio
+    const foundryTier1 = new THREE.Mesh(new THREE.BoxGeometry(10, 5, 8), matConcreteDark);
+    foundryTier1.position.y = 2.5;
+    foundryTier1.castShadow = true;
+    foundryTier1.receiveShadow = true;
+    foundryGroup.add(foundryTier1);
+    registerInteractive(foundryTier1, 'foundry');
+
+    // Cantilevered Upper Studio with glowing cyan ribbon
+    const foundryTier2 = new THREE.Mesh(new THREE.BoxGeometry(8, 4.5, 10), matGlassFoundry);
+    foundryTier2.position.set(1, 7.25, 1);
+    foundryTier2.castShadow = true;
+    foundryGroup.add(foundryTier2);
+
+    // Digital Mast / Antenna
+    const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.2, 6, 8), matMetalSteel);
+    mast.position.set(-2, 12.5, -2);
+    foundryGroup.add(mast);
+
+    const mastBeacon = new THREE.Mesh(new THREE.SphereGeometry(0.6, 12, 12), matGlassFoundry);
+    mastBeacon.position.set(-2, 15.5, -2);
+    foundryGroup.add(mastBeacon);
+
+    worldGroup.add(foundryGroup);
+
+    // ── Destination 3: THE OBSERVATORY (AnyBody Can Design) ──
+    const observatoryGroup = new THREE.Group();
+    observatoryGroup.position.set(14, 0.6, 14);
+
+    // Stepped Sawtooth Atelier
+    const obsBase = new THREE.Mesh(new THREE.BoxGeometry(9, 3.5, 9), matConcreteLight);
+    obsBase.position.y = 1.75;
+    obsBase.castShadow = true;
+    obsBase.receiveShadow = true;
+    observatoryGroup.add(obsBase);
+    registerInteractive(obsBase, 'observatory');
+
+    // Sawtooth Glass Roof Modules
+    for (let i = -2.5; i <= 2.5; i += 2.5) {
+      const tooth = new THREE.Mesh(new THREE.ConeGeometry(1.8, 2.2, 4), matGlassAtelier);
+      tooth.rotation.y = Math.PI / 4;
+      tooth.position.set(i, 4.6, 0);
+      tooth.castShadow = true;
+      observatoryGroup.add(tooth);
+    }
+
+    // Architectural Tree (Human-centred & Organic Thinking)
+    const treeTrunk = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.4, 2.5, 6), matTrunk);
+    treeTrunk.position.set(-5.5, 1.25, 4.5);
+    treeTrunk.castShadow = true;
+    observatoryGroup.add(treeTrunk);
+
+    const treeFoliage = new THREE.Mesh(new THREE.DodecahedronGeometry(2), matFoliage);
+    treeFoliage.position.set(-5.5, 3.6, 4.5);
+    treeFoliage.castShadow = true;
+    observatoryGroup.add(treeFoliage);
+
+    worldGroup.add(observatoryGroup);
+
+    // ── Destination 4: THE YARD (Experiments & Prototypes) ──
+    const yardGroup = new THREE.Group();
+    yardGroup.position.set(-14, 0.6, 14);
+
+    // Vaulted Maker Hangar
+    const hangar = new THREE.Mesh(new THREE.CylinderGeometry(4.5, 4.5, 9, 16, 1, false, 0, Math.PI), matConcreteDark);
+    hangar.rotation.z = Math.PI / 2;
+    hangar.rotation.y = Math.PI / 4;
+    hangar.position.y = 3.5;
+    hangar.castShadow = true;
+    hangar.receiveShadow = true;
+    yardGroup.add(hangar);
+    registerInteractive(hangar, 'yard');
+
+    // Outdoor CNC / 3D Printer Gantry
+    const gantryLeg1 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 4, 0.4), matMetalSteel);
+    gantryLeg1.position.set(4, 2, 3);
+    yardGroup.add(gantryLeg1);
+
+    const gantryLeg2 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 4, 0.4), matMetalSteel);
+    gantryLeg2.position.set(4, 2, -1);
+    yardGroup.add(gantryLeg2);
+
+    const gantryBeam = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 4.5), matWorkshop);
+    gantryBeam.position.set(4, 3.8, 1);
+    yardGroup.add(gantryBeam);
+
+    // Agricultural Telemetry sensor bed
+    const sensorBed = new THREE.Mesh(new THREE.BoxGeometry(4, 0.4, 3), matConcreteLight);
+    sensorBed.position.set(-3.5, 0.2, 5);
+    sensorBed.receiveShadow = true;
+    yardGroup.add(sensorBed);
+
+    worldGroup.add(yardGroup);
+
+    // ── Destination 5: THE COMMONS (Mentoring & Community) ──
+    const commonsGroup = new THREE.Group();
+    commonsGroup.position.set(0, 0.6, 0);
+
+    // Central Circular Agora / Stepped Amphitheatre
+    const ring1 = new THREE.Mesh(new THREE.CylinderGeometry(5.2, 5.4, 0.5, 16), matConcreteLight);
+    ring1.position.y = 0.25;
+    ring1.receiveShadow = true;
+    commonsGroup.add(ring1);
+    registerInteractive(ring1, 'commons');
+
+    const ring2 = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 3.8, 0.7, 16), matConcreteDark);
+    ring2.position.y = 0.4;
+    ring2.receiveShadow = true;
+    commonsGroup.add(ring2);
+
+    // Miniature Central Plinth Landmark
+    const centerTotem = new THREE.Mesh(new THREE.OctahedronGeometry(1.2), new THREE.MeshStandardMaterial({
+      color: 0xa78bfa,
+      emissive: 0x7c3aed,
+      emissiveIntensity: 0.5,
+      roughness: 0.2,
+    }));
+    centerTotem.position.y = 2.2;
+    centerTotem.castShadow = true;
+    commonsGroup.add(centerTotem);
+
+    worldGroup.add(commonsGroup);
+
+    // ── Destination 6: THE OUTLOOK (Horizon Mast & Beacon) ──
+    const outlookGroup = new THREE.Group();
+    outlookGroup.position.set(0, 0.6, -17);
+
+    const outlookTower = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 2.2, 9, 8), matConcreteDark);
+    outlookTower.position.y = 4.5;
+    outlookTower.castShadow = true;
+    outlookTower.receiveShadow = true;
+    outlookGroup.add(outlookTower);
+    registerInteractive(outlookTower, 'outlook');
+
+    const outlookDeck = new THREE.Mesh(new THREE.CylinderGeometry(3.2, 2.5, 1, 8), matConcreteLight);
+    outlookDeck.position.y = 9.5;
+    outlookDeck.castShadow = true;
+    outlookGroup.add(outlookDeck);
+
+    // Rose Beacon
+    const outlookBeacon = new THREE.Mesh(new THREE.SphereGeometry(0.9, 12, 12), new THREE.MeshStandardMaterial({
+      color: 0xf43f5e,
+      emissive: 0xe11d48,
+      emissiveIntensity: 0.6,
+      roughness: 0.1,
+    }));
+    outlookBeacon.position.y = 11.2;
+    outlookGroup.add(outlookBeacon);
+
+    worldGroup.add(outlookGroup);
+
+    // ── Camera Animation State ──
+    let currentLookAt = new THREE.Vector3().copy(overviewTarget);
+    let targetLookAt  = new THREE.Vector3().copy(overviewTarget);
+    let currentCamPos = new THREE.Vector3().copy(overviewCamPos);
+    let targetCamPos  = new THREE.Vector3().copy(overviewCamPos);
+    let isTransitioning = false;
+    let transitionProgress = 1;
+
+    function moveTo(newCamPos: THREE.Vector3, newLookAt: THREE.Vector3) {
+      targetCamPos.copy(newCamPos);
+      targetLookAt.copy(newLookAt);
+      transitionProgress = 0;
+      isTransitioning = true;
+    }
+
+    // ── UI Selection Synchronizer ──
+    function selectDestination(id: string) {
+      const dest = destinationsData.find((d) => d.id === id);
+      if (!dest) return;
+
+      // Update Panel Content
+      if (panelNum) panelNum.textContent = dest.num;
+      if (panelCoords) panelCoords.textContent = dest.locationLabel;
+      if (panelCategory) panelCategory.textContent = dest.category;
+      if (panelTitle) panelTitle.textContent = dest.title;
+      if (panelTagline) panelTagline.textContent = dest.tagline;
+      if (panelDesc) panelDesc.textContent = dest.description;
+      if (panelActionText) panelActionText.textContent = dest.actionLabel;
+      if (panelActionBtn) panelActionBtn.setAttribute('href', dest.actionHref);
+      if (panelIndicator) panelIndicator.style.backgroundColor = dest.themeColor;
+      if (infoPanel) infoPanel.style.setProperty('--panel-accent', dest.themeColor);
+
+      // Update HUD
+      if (hudActiveDest) hudActiveDest.textContent = dest.title.toUpperCase();
+
+      // Update Tabs
+      tabBtns.forEach((btn) => {
+        const isMatch = btn.getAttribute('data-district') === id;
+        btn.classList.toggle('is-active', isMatch);
+        btn.setAttribute('aria-selected', String(isMatch));
+      });
+
+      // Update Lower Nav Cards
+      navCards.forEach((card) => {
+        const isMatch = card.getAttribute('data-target') === id;
+        card.classList.toggle('is-selected', isMatch);
+        card.setAttribute('aria-pressed', String(isMatch));
+      });
+
+      // Camera Fly to Destination
+      const tPos = new THREE.Vector3(...dest.targetPos);
+      const cPos = new THREE.Vector3(
+        dest.targetPos[0] + dest.cameraOffset[0],
+        dest.targetPos[1] + dest.cameraOffset[1],
+        dest.targetPos[2] + dest.cameraOffset[2]
+      );
+      moveTo(cPos, tPos);
+    }
+
+    function resetToOverview() {
+      if (hudActiveDest) hudActiveDest.textContent = 'CAMPUS OVERVIEW';
+      moveTo(overviewCamPos, overviewTarget);
+    }
+
+    if (hudResetBtn) {
+      hudResetBtn.addEventListener('click', resetToOverview);
+    }
+
+    // Tab Listeners
+    tabBtns.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const id = tab.getAttribute('data-district');
+        if (id) selectDestination(id);
+      });
+    });
+
+    // Card Listeners
+    navCards.forEach((card) => {
+      card.addEventListener('click', () => {
+        const id = card.getAttribute('data-target');
+        if (id) selectDestination(id);
+      });
+    });
+
+    // ── Raycasting on 3D Canvas ──
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    canvas.addEventListener('click', (event) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const hits = raycaster.intersectObjects(interactiveMeshes.map((m) => m.mesh), true);
+
+      if (hits.length > 0) {
+        let hitObj: THREE.Object3D | null = hits[0].object;
+        while (hitObj && !hitObj.userData.districtId) {
+          hitObj = hitObj.parent;
+        }
+        if (hitObj && hitObj.userData.districtId) {
+          selectDestination(hitObj.userData.districtId);
+        }
+      }
+    });
+
+    // Interactive Drag to Pivot Camera Orbit
+    let isDragging = false;
+    let prevMouseX = 0;
+    canvas.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      prevMouseX = e.clientX;
+    });
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const deltaX = e.clientX - prevMouseX;
+      prevMouseX = e.clientX;
+      worldGroup.rotation.y += deltaX * 0.005;
+    });
+
+    // Touch Support for Pivot
+    let prevTouchX = 0;
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        prevTouchX = e.touches[0].clientX;
+      }
+    });
+    canvas.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1) {
+        const deltaX = e.touches[0].clientX - prevTouchX;
+        prevTouchX = e.touches[0].clientX;
+        worldGroup.rotation.y += deltaX * 0.006;
+      }
+    });
+
+    // ── Resize Handler ──
+    function onResize() {
+      if (!container || !renderer || !camera) return;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      const newAspect = w / h;
+      camera.left = (-frustumSize * newAspect) / 2;
+      camera.right = (frustumSize * newAspect) / 2;
+      camera.top = frustumSize / 2;
+      camera.bottom = -frustumSize / 2;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }
+    window.addEventListener('resize', onResize);
+
+    // ── Animation Loop ──
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = clock.getDelta();
+      const time = clock.getElapsedTime();
+
+      // Ambient detail pulses
+      mastBeacon.position.y = 15.5 + Math.sin(time * 3) * 0.3;
+      centerTotem.rotation.y += delta * 0.4;
+      centerTotem.position.y = 2.2 + Math.sin(time * 2) * 0.15;
+      armSegment2.rotation.z = 0.6 + Math.sin(time * 1.5) * 0.12;
+
+      // Smooth Camera Lerp
+      if (isTransitioning) {
+        transitionProgress += delta * 1.6;
+        if (transitionProgress >= 1) {
+          transitionProgress = 1;
+          isTransitioning = false;
+        }
+        // Smooth step
+        const t = transitionProgress * transitionProgress * (3 - 2 * transitionProgress);
+        currentCamPos.lerpVectors(currentCamPos, targetCamPos, t);
+        currentLookAt.lerpVectors(currentLookAt, targetLookAt, t);
+
+        camera.position.copy(currentCamPos);
+        camera.lookAt(currentLookAt);
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Remove loading overlay
+    if (loading) {
+      loading.style.opacity = '0';
+      setTimeout(() => {
+        loading.style.display = 'none';
+      }, 300);
+    }
+
+    // Initialize with The Lab
+    selectDestination('lab');
+  }
+
+  // Mount on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initWorld);
+  } else {
+    initWorld();
+  }
+</script>
+
+<style>
+  /* ── 3D Miniature World Scoped Styles ────────────────────────────────── */
+
+  .mw3d-wrapper {
+    background: var(--colour-mw-bg);
+    color: var(--colour-mw-fg);
+    padding-block: var(--section-gap);
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid var(--colour-mw-border);
+    border-bottom: 1px solid var(--colour-mw-border);
+  }
+
+  .mw3d-container {
+    width: 100%;
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .mw3d-header {
+    margin-bottom: var(--space-8);
+  }
+
+  .mw3d-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--colour-mw-accent);
+    margin-bottom: var(--space-3);
+  }
+
+  .mw3d-pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--colour-mw-accent);
+    box-shadow: 0 0 10px var(--colour-mw-accent);
+    animation: pulseDot 2.4s ease-in-out infinite;
+  }
+
+  @keyframes pulseDot {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.5; }
+  }
+
+  .mw3d-title {
+    color: var(--colour-mw-fg);
+    margin-bottom: var(--space-2);
+  }
+
+  .mw3d-subtitle {
+    color: var(--colour-mw-fg-muted);
+    max-width: 65ch;
+  }
+
+  /* Stage Layout (Desktop: Side-by-Side 3D Canvas + Integrated Field-Note Panel) */
+  .mw3d-stage {
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: var(--space-6);
+    align-items: stretch;
+    background: var(--colour-mw-bg-subtle);
+    border: 1px solid var(--colour-mw-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  /* 3D Canvas Container */
+  .mw3d-canvas-wrap {
+    position: relative;
+    background: radial-gradient(circle at 50% 50%, #151e2e 0%, #0a0e17 90%);
+    border: 1px solid var(--colour-mw-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    min-height: 520px;
+    display: flex;
+    outline: none;
+    cursor: grab;
+  }
+
+  .mw3d-canvas-wrap:active {
+    cursor: grabbing;
+  }
+
+  .mw3d-canvas-wrap:focus-visible {
+    box-shadow: 0 0 0 2px var(--colour-mw-accent);
+  }
+
+  .mw3d-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Loading Overlay */
+  .mw3d-loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: #0c1018;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    z-index: 10;
+    color: var(--colour-mw-fg-muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    transition: opacity 300ms ease;
+  }
+
+  .mw3d-spinner {
+    width: 28px;
+    height: 28px;
+    border: 2px solid var(--colour-mw-border);
+    border-top-color: var(--colour-mw-accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Fallback */
+  .mw3d-fallback-notice {
+    position: absolute;
+    inset: var(--space-6);
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px dashed var(--colour-mw-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--colour-mw-fg);
+  }
+
+  /* On-Canvas Ambient HUD */
+  .mw3d-hud {
+    position: absolute;
+    top: var(--space-4);
+    left: var(--space-4);
+    right: var(--space-4);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .mw3d-hud-left {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(12, 16, 24, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--colour-mw-border);
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+
+  .hud-coord {
+    color: var(--colour-mw-accent);
+    font-weight: 600;
+  }
+
+  .hud-sep {
+    color: var(--colour-mw-fg-muted);
+    opacity: 0.5;
+  }
+
+  .hud-sub {
+    color: var(--colour-mw-fg-muted);
+  }
+
+  .hud-btn {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(12, 16, 24, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--colour-mw-border);
+    border-radius: 9999px;
+    padding: 6px 14px;
+    color: var(--colour-mw-fg);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-out);
+    min-height: 44px;
+  }
+
+  .hud-btn:hover {
+    border-color: var(--colour-mw-accent);
+    color: #ffffff;
+    background: #111827;
+  }
+
+  .hud-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--colour-mw-accent);
+  }
+
+  /* Field-Note Exhibit Information Panel */
+  .mw3d-field-panel {
+    --panel-accent: #f59e0b;
+    background: hsl(222, 22%, 11%);
+    border: 1px solid var(--colour-mw-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    border-left: 3px solid var(--panel-accent);
+    transition: border-color var(--duration-normal) var(--ease-out);
+  }
+
+  .field-panel-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--colour-mw-fg-muted);
+    margin-bottom: var(--space-4);
+  }
+
+  .field-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--panel-accent);
+    flex-shrink: 0;
+  }
+
+  .field-district-num {
+    color: var(--panel-accent);
+    font-weight: 600;
+  }
+
+  .field-coords {
+    color: var(--colour-mw-fg-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .field-category {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    color: var(--panel-accent);
+    letter-spacing: var(--tracking-wide);
+    margin-bottom: var(--space-1);
+  }
+
+  .field-title {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    letter-spacing: var(--tracking-tight);
+    color: var(--colour-mw-fg);
+    margin-bottom: var(--space-2);
+    line-height: var(--leading-tight);
+  }
+
+  .field-tagline {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    color: var(--panel-accent);
+    font-weight: 500;
+    margin-bottom: var(--space-4);
+  }
+
+  .field-description {
+    font-size: var(--text-base);
+    color: var(--colour-mw-fg-muted);
+    line-height: var(--leading-loose);
+    margin-bottom: var(--space-6);
+  }
+
+  .btn-mw3d-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-6);
+    background: var(--panel-accent);
+    color: #0b0f19;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all var(--duration-fast) var(--ease-out);
+    min-height: 44px;
+    width: 100%;
+  }
+
+  .btn-mw3d-action:hover {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  .btn-mw3d-action:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--panel-accent);
+  }
+
+  /* Quick Selector Tabs */
+  .field-selector-strip {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+    margin-top: var(--space-6);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--colour-mw-border);
+  }
+
+  .field-tab-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: var(--space-2) 2px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    color: var(--colour-mw-fg-muted);
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-out);
+    min-height: 44px;
+  }
+
+  .field-tab-btn:hover {
+    color: var(--colour-mw-fg);
+    background: var(--colour-mw-bg-card);
+  }
+
+  .field-tab-btn.is-active {
+    color: var(--colour-mw-fg);
+    background: var(--colour-mw-bg-card);
+    border-color: var(--tab-color);
+  }
+
+  .field-tab-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--tab-color);
+  }
+
+  .tab-index {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--tab-color);
+  }
+
+  .tab-name {
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+
+  /* Lower 6-Destination Cards Grid */
+  .mw3d-destinations-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .mw3d-nav-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-4);
+    background: var(--colour-mw-bg-subtle);
+    border: 1px solid var(--colour-mw-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-align: left;
+    color: var(--colour-mw-fg);
+    transition: all var(--duration-fast) var(--ease-out);
+    min-height: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mw3d-nav-card:hover {
+    border-color: var(--dest-accent);
+    background: hsl(222, 22%, 16%);
+    transform: translateY(-2px);
+  }
+
+  .mw3d-nav-card.is-selected {
+    border-color: var(--dest-accent);
+    background: hsl(222, 22%, 17%);
+    box-shadow: 0 0 0 1px var(--dest-accent), 0 4px 18px rgba(0, 0, 0, 0.4);
+  }
+
+  .mw3d-nav-card:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--dest-accent);
+  }
+
+  .nav-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: var(--space-1);
+  }
+
+  .nav-card-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--dest-accent);
+  }
+
+  .nav-card-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--dest-accent);
+  }
+
+  .nav-card-title {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--colour-mw-fg);
+    margin-bottom: 2px;
+  }
+
+  .nav-card-cat {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--dest-accent);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .nav-card-desc {
+    font-size: 11px;
+    color: var(--colour-mw-fg-muted);
+    line-height: var(--leading-normal);
+  }
+
+  /* ── Responsive Rules ────────────────────────────────────────────────── */
+
+  @media (max-width: 1080px) {
+    .mw3d-stage {
+      grid-template-columns: 1fr;
+    }
+
+    .mw3d-canvas-wrap {
+      min-height: 440px;
+    }
+
+    .mw3d-destinations-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .mw3d-stage {
+      padding: var(--space-4);
+      gap: var(--space-4);
+    }
+
+    .mw3d-canvas-wrap {
+      min-height: 340px;
+    }
+
+    .mw3d-destinations-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .field-selector-strip {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mw3d-pulse-dot {
+      animation: none !important;
+    }
+  }
+</style>
