@@ -1,0 +1,57 @@
+---
+/**
+ * ArticleCard — a single authored article row for the writing section.
+ */
+
+import type { AuthoredArticle } from '../types/content';
+
+interface Props {
+  article: AuthoredArticle;
+}
+
+const { article } = Astro.props;
+
+const href = article.href ?? article.externalUrl ?? '#';
+const isExternal = !!article.externalUrl && !article.href;
+
+// Format date
+const date = new Date(article.date);
+const formattedDate = date.toLocaleDateString('en-GB', {
+  month: 'short',
+  year: 'numeric',
+});
+---
+
+<a
+  href={href}
+  class="article-card"
+  aria-label={`Read: ${article.title}`}
+  {...isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {}}
+>
+  <time
+    class="article-date"
+    datetime={article.date}
+    aria-label={`Published ${formattedDate}`}
+  >
+    {formattedDate}
+  </time>
+
+  <div class="article-content">
+    <h3 class="article-title">{article.title}</h3>
+    <p class="article-excerpt">{article.description}</p>
+    {article.tags.length > 0 && (
+      <ul class="article-tags" aria-label="Article topics" role="list">
+        {article.tags.map((tag) => (
+          <li class="tag">{tag}</li>
+        ))}
+      </ul>
+    )}
+  </div>
+
+  <div class="article-arrow" aria-hidden="true">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="5" y1="12" x2="19" y2="12"/>
+      <polyline points="12 5 19 12 12 19"/>
+    </svg>
+  </div>
+</a>

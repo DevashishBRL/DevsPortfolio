@@ -1,0 +1,178 @@
+---
+/**
+ * Homepage — Devashish Tambade
+ * 
+ * Sections:
+ * 1. Hero
+ * 2. Engineering & Research
+ * 3. KLA Interactives
+ * 4. AnyBody Can Design
+ * 5. In the Wild
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+
+import { engineeringProjects, klaProjects, authoredArticles, externalMentions } from '../data/content';
+
+const featuredEngineering = engineeringProjects.filter((p) => p.featured);
+const featuredKla = klaProjects.filter((p) => p.featured);
+const featuredArticles = authoredArticles.slice(0, 3);
+---
+
+<BaseLayout
+  title="Devashish Tambade"
+  description="Robotics engineer, research technologist and product builder working across robotics, software and human-centred design."
+>
+  <!-- ── Hero ─────────────────────────────────────────────────────────── -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="container">
+      <div class="hero-inner">
+        <!-- Identity tags -->
+        <div class="hero-identity" role="list" aria-label="Professional identity">
+          <span class="identity-tag" role="listitem">Robotics Engineer</span>
+          <span class="identity-sep" aria-hidden="true">·</span>
+          <span class="identity-tag" role="listitem">Research Technologist</span>
+          <span class="identity-sep" aria-hidden="true">·</span>
+          <span class="identity-tag" role="listitem">Builder</span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="hero-heading" id="hero-heading">
+          I build things that make<br />
+          <em>problems smaller.</em>
+        </h1>
+
+        <!-- Supporting text -->
+        <p class="hero-body">
+          I work across robotics, software and human-centred design —
+          exploring problems and building useful solutions.
+        </p>
+
+        <!-- CTAs -->
+        <div class="hero-actions">
+          <a href="#work" class="btn btn-primary">
+            Explore my work
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </a>
+          <a href="/about" class="btn btn-ghost">About me</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Engineering & Research ────────────────────────────────────────── -->
+  <section class="section" id="work" aria-labelledby="engineering-heading">
+    <div class="container">
+      <SectionHeader
+        label="01 — Engineering & Research"
+        title="Building at the edge of hardware and software"
+        description="Robotics, prototyping, embedded systems, simulation and technical research — work that lives between disciplines."
+        linkHref="/work"
+        linkLabel="All projects"
+      />
+
+      <div class="card-grid" role="list">
+        {featuredEngineering.map((project, i) => (
+          <div role="listitem">
+            <ProjectCard project={project} index={i} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── KLA Interactives ──────────────────────────────────────────────── -->
+  <section class="section" id="products" aria-labelledby="kla-heading">
+    <div class="container">
+      <!-- Custom header with KLA badge -->
+      <div class="section-header">
+        <div class="section-meta">
+          <div class="kla-header-bar">
+            <p class="section-label" aria-hidden="true">02 — Products</p>
+            <span class="kla-badge" aria-label="KLA Interactives brand">KLA Interactives</span>
+          </div>
+          <h2 class="section-title" id="kla-heading">A growing family of digital products</h2>
+          <p class="section-description">
+            DraftGrid, AraLoom, TabZones and JobPal — tools built around how people actually think and work.
+          </p>
+        </div>
+        <a href="/products" class="section-link">
+          All products
+          <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="card-grid card-grid--2" role="list">
+        {featuredKla.map((project, i) => (
+          <div role="listitem">
+            <ProjectCard project={project} index={i} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── AnyBody Can Design ────────────────────────────────────────────── -->
+  <section class="section" id="writing" aria-labelledby="writing-heading">
+    <div class="container">
+      <SectionHeader
+        label="03 — Writing"
+        title="AnyBody Can Design"
+        description="Personal writing about design, usability, observation and human interaction. For anyone who thinks about how things work."
+        linkHref="/writing"
+        linkLabel="All articles"
+      />
+
+      <div class="article-list" role="list">
+        {featuredArticles.map((article) => (
+          <div role="listitem">
+            <ArticleCard article={article} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── In the Wild ───────────────────────────────────────────────────── -->
+  <section class="section" id="in-the-wild" aria-labelledby="wild-heading">
+    <div class="container">
+      <SectionHeader
+        label="04 — External"
+        title="In the Wild"
+        description="External publications, articles, interviews and other mentions featuring Devashish or his work."
+        linkHref="/mentions"
+        linkLabel="All mentions"
+      />
+
+      {externalMentions.length === 1 && externalMentions[0].id === 'placeholder-mention-1' ? (
+        <p class="mention-placeholder">
+          External mentions and publications will appear here as they are added.
+        </p>
+      ) : (
+        <div class="card-grid" role="list">
+          {externalMentions.map((mention) => (
+            <div role="listitem">
+              <article class="mention-card">
+                <div class="mention-body">
+                  <p class="mention-type">{mention.type}</p>
+                  <p class="mention-pub">{mention.publication}</p>
+                  <p class="mention-title">{mention.title}</p>
+                  <p class="mention-desc">{mention.description}</p>
+                </div>
+              </article>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

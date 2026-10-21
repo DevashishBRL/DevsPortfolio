@@ -1,0 +1,93 @@
+---
+/**
+ * BaseLayout — root HTML shell used by all pages.
+ * Handles meta, fonts, global CSS, and site chrome.
+ */
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  canonicalURL?: string;
+}
+
+const {
+  title,
+  description,
+  ogImage = '/og-default.png',
+  canonicalURL = Astro.url.href,
+} = Astro.props;
+
+const siteName = 'Devashish Tambade';
+const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="author" content="Devashish Tambade" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={ogImage} />
+
+    <!-- Twitter/X card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Favicon placeholder -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Preconnect for Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <title>{fullTitle}</title>
+  </head>
+  <body>
+    <a href="#main-content" class="visually-hidden" id="skip-nav">Skip to main content</a>
+    <Header />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style is:global>
+  @import '../styles/global.css';
+
+  /* Skip nav — visible on focus */
+  #skip-nav:focus {
+    position: fixed;
+    top: var(--space-4);
+    left: var(--space-4);
+    z-index: 9999;
+    padding: var(--space-3) var(--space-5);
+    background: var(--colour-accent);
+    color: var(--colour-bg);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    width: auto;
+    height: auto;
+    clip: auto;
+    overflow: visible;
+  }
+</style>

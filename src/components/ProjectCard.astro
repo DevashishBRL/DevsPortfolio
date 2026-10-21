@@ -1,0 +1,55 @@
+---
+/**
+ * ProjectCard — a single project card for Engineering or KLA sections.
+ */
+
+import type { Project } from '../types/content';
+
+interface Props {
+  project: Project;
+  index?: number;
+}
+
+const { project, index = 0 } = Astro.props;
+
+const statusLabels: Record<Project['status'], string> = {
+  active: 'Active',
+  ongoing: 'Ongoing',
+  completed: 'Completed',
+};
+
+const href = project.href ?? project.externalUrl ?? '#';
+const isExternal = !!project.externalUrl && !project.href;
+---
+
+<a
+  href={href}
+  class="project-card"
+  aria-label={`${project.title} — ${project.subtitle}`}
+  {...isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {}}
+  style={`animation-delay: ${index * 60}ms`}
+>
+  <!-- Status -->
+  <div class="card-status">
+    <span
+      class={`status-dot status-dot--${project.status}`}
+      aria-hidden="true"
+    ></span>
+    <span>{statusLabels[project.status]}</span>
+    {project.year && <span class="status-year"> · {project.year}</span>}
+  </div>
+
+  <!-- Content -->
+  <h3 class="card-title">{project.title}</h3>
+  <p class="card-subtitle">{project.subtitle}</p>
+  <p class="card-description">{project.description}</p>
+
+  <!-- Tags -->
+  {project.tags.length > 0 && (
+    <ul class="card-tags" aria-label="Technologies and topics" role="list">
+      {project.tags.map((tag) => (
+        <li class="tag">{tag}</li>
+      ))}
+    </ul>
+  )}
+</a>

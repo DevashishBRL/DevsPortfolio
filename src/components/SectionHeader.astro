@@ -1,0 +1,36 @@
+---
+/**
+ * SectionHeader — reusable section heading block.
+ * Shows a monospaced label, a main title, optional description,
+ * and an optional "see all" link.
+ */
+
+interface Props {
+  label: string;
+  title: string;
+  description?: string;
+  linkHref?: string;
+  linkLabel?: string;
+}
+
+const { label, title, description, linkHref, linkLabel } = Astro.props;
+---
+
+<div class="section-header">
+  <div class="section-meta">
+    <p class="section-label" aria-hidden="true">{label}</p>
+    <h2 class="section-title">{title}</h2>
+    {description && (
+      <p class="section-description">{description}</p>
+    )}
+  </div>
+  {linkHref && linkLabel && (
+    <a href={linkHref} class="section-link">
+      {linkLabel}
+      <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+        <polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </a>
+  )}
+</div>
