@@ -1,0 +1,1072 @@
+---
+/**
+ * MiniatureWorld.astro
+ * 
+ * Interactive Isometric Miniature World Navigation Experience.
+ * Art-directed isometric architectural scene built with modular SVG/CSS layers,
+ * keyboard/touch/mouse destination selection, dynamic field-note info panel,
+ * and ambient robotic/laboratory lighting details.
+ */
+
+interface Destination {
+  id: string;
+  num: string;
+  title: string;
+  tagline: string;
+  description: string;
+  actionLabel: string;
+  actionHref: string;
+  themeColor: string;
+  locationLabel: string;
+}
+
+const destinations: Destination[] = [
+  {
+    id: 'robotics-research',
+    num: '01 / LAB',
+    title: 'Robotics & Research',
+    tagline: 'Autonomous Systems, Hardware & Biomechatronics',
+    description:
+      'A technical proving ground housing modular robotic arm testbeds, wearable medical device prototypes (TORUS), and accessible prosthetic research (EasyProsthetics).',
+    actionLabel: 'Explore Engineering & Research',
+    actionHref: '#work',
+    themeColor: '#f59e0b', // amber
+    locationLabel: 'North Pavilion · Robotics Bay',
+  },
+  {
+    id: 'kla-interactives',
+    num: '02 / STUDIO',
+    title: 'KLA Interactives',
+    tagline: 'Product Studio & Thought Software',
+    description:
+      'The creative software workshop developing DraftGrid, AraLoom, TabZones, and JobPal — focused digital tools built to de-clutter workflows and organize complex thoughts.',
+    actionLabel: 'View KLA Products',
+    actionHref: '#kla',
+    themeColor: '#38bdf8', // sky / cyan
+    locationLabel: 'East Tower · Interactive Studio',
+  },
+  {
+    id: 'design-ideas',
+    num: '03 / OBSERVATORY',
+    title: 'Design & Ideas',
+    tagline: 'AnyBody Can Design & Visual Thinking',
+    description:
+      'An open atelier and writing observatory dedicated to usability observation, human factors, and design reflections published under AnyBody Can Design.',
+    actionLabel: 'Read Design Writing',
+    actionHref: '#writing',
+    themeColor: '#fb923c', // terracotta / warm orange
+    locationLabel: 'South Gallery · Design Observatory',
+  },
+  {
+    id: 'experiments-lab',
+    num: '04 / WORKSHOP',
+    title: 'Experiments',
+    tagline: 'Rapid Prototypes & Exploratory Mechanisms',
+    description:
+      'A sandbox workshop filled with rapid mechanical prototypes, agricultural IoT boards, physical test rigs, and experimental 3D iterations.',
+    actionLabel: 'Discover Experiments & Background',
+    actionHref: '#about',
+    themeColor: '#34d399', // emerald / muted sage
+    locationLabel: 'West Workshop · Prototyping Yard',
+  },
+];
+---
+
+<div class="miniature-world-wrapper" id="miniature-world-app">
+  <div class="mw-container">
+    <!-- Header meta -->
+    <div class="section-meta mw-header">
+      <div class="mw-status-badge">
+        <span class="mw-pulse-dot" aria-hidden="true"></span>
+        <span>Interactive District Map · Isometric View</span>
+      </div>
+      <h2 class="section-title mw-title" id="mw-heading">
+        An Isometric Miniature World
+      </h2>
+      <p class="section-description mw-subtitle">
+        An interactive architectural model of Devashish's engineering studio, product lab, and design workshop. Select a quarter to inspect.
+      </p>
+    </div>
+
+    <!-- Main Interactive Stage (Grid layout: Scene + Info Panel) -->
+    <div class="mw-stage">
+      <!-- ── Left/Center: Isometric Diorama Scene ── -->
+      <div class="mw-scene-frame">
+        <div class="mw-scene-ambient-glow" aria-hidden="true"></div>
+
+        <!-- Accessible SVG Isometric Scene -->
+        <svg
+          class="mw-iso-svg"
+          viewBox="0 0 1000 680"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-label="Isometric illustration of Devashish's creative district with four interactive quarters: Robotics Lab, Product Studio, Design Observatory, and Prototyping Workshop"
+        >
+          <defs>
+            <!-- Isometric Grids & Gradients -->
+            <linearGradient id="islandBaseTop" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#1e2638" />
+              <stop offset="100%" stop-color="#151b28" />
+            </linearGradient>
+            <linearGradient id="islandBaseLeft" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#111622" />
+              <stop offset="100%" stop-color="#090d15" />
+            </linearGradient>
+            <linearGradient id="islandBaseRight" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#161d2d" />
+              <stop offset="100%" stop-color="#0b1019" />
+            </linearGradient>
+
+            <!-- District Glow Filters -->
+            <filter id="glowGold" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+            <filter id="glowCyan" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+
+          <!-- ══════ BASE ISLAND FOUNDATION ══════ -->
+          <!-- Ambient shadow on void -->
+          <polygon
+            points="500,640 880,450 880,480 500,670 120,480 120,450"
+            fill="rgba(0, 0, 0, 0.45)"
+            filter="blur(14px)"
+          />
+
+          <!-- Island Plinth Extrusion Left & Right -->
+          <polygon points="120,380 500,570 500,620 120,430" fill="url(#islandBaseLeft)" />
+          <polygon points="500,570 880,380 880,430 500,620" fill="url(#islandBaseRight)" />
+
+          <!-- Island Main Top Surface (Isometric Diamond) -->
+          <polygon points="500,190 880,380 500,570 120,380" fill="url(#islandBaseTop)" stroke="#2a354c" stroke-width="2" />
+
+          <!-- Grid Pavement Markings & Pathway Insets -->
+          <g class="mw-pathways" stroke="#263147" stroke-width="1.5" opacity="0.6">
+            <!-- Center Crossroads -->
+            <line x1="500" y1="190" x2="500" y2="570" />
+            <line x1="120" y1="380" x2="880" y2="380" />
+            <!-- Concentric Courtyard Diamond -->
+            <polygon points="500,320 620,380 500,440 380,380" fill="#182030" stroke="#33425e" stroke-width="1.5" />
+            <!-- Inner Plaza Marker -->
+            <polygon points="500,350 560,380 500,410 440,380" fill="#1b2436" stroke="#415377" stroke-dasharray="4 4" />
+          </g>
+
+          <!-- Central Beacon / Inventor's Compass -->
+          <g class="mw-central-beacon">
+            <ellipse cx="500" cy="380" rx="14" ry="7" fill="#2d3b55" />
+            <line x1="500" y1="380" x2="500" y2="330" stroke="#f59e0b" stroke-width="2" />
+            <circle cx="500" cy="328" r="4" fill="#fbbf24" filter="url(#glowGold)" />
+            <circle cx="500" cy="328" r="8" fill="none" stroke="#f59e0b" stroke-width="1" opacity="0.5" class="beacon-pulse" />
+          </g>
+
+
+          <!-- ══════ DISTRICT A: ROBOTICS & RESEARCH (North-West / Top-Left) ══════ -->
+          <g class="mw-district mw-district--robotics" data-district="robotics-research" id="zone-robotics">
+            <!-- Ground pad highlight -->
+            <polygon
+              class="zone-pad"
+              points="490,210 490,325 360,385 240,320"
+              fill="#222c40"
+              stroke="#f59e0b"
+              stroke-width="1.5"
+              stroke-dasharray="6 3"
+            />
+
+            <!-- Main Robotics High-Bay Lab -->
+            <!-- Base shadow -->
+            <polygon points="260,310 370,255 450,295 340,350" fill="rgba(0,0,0,0.3)" />
+
+            <!-- Building walls -->
+            <!-- Front-Left Wall -->
+            <polygon points="270,305 350,345 350,270 270,230" fill="#28344c" stroke="#3d4e70" stroke-width="1" />
+            <!-- Front-Right Wall -->
+            <polygon points="350,345 440,300 440,225 350,270" fill="#324260" stroke="#3d4e70" stroke-width="1" />
+            <!-- Roof Slab -->
+            <polygon points="270,230 350,270 440,225 360,185" fill="#42557a" stroke="#5a73a3" stroke-width="1" />
+
+            <!-- Skylight Aperture / Solar Matrix on Roof -->
+            <polygon points="310,225 350,245 400,220 360,200" fill="#1b2434" stroke="#f59e0b" stroke-width="1.5" />
+            <line x1="335" y1="235" x2="375" y2="215" stroke="#f59e0b" stroke-width="1" opacity="0.8" />
+
+            <!-- Laboratory Windows / Glowing Vents -->
+            <polygon points="365,280 395,265 395,250 365,265" fill="#f59e0b" opacity="0.85" filter="url(#glowGold)" />
+            <polygon points="405,260 425,250 425,238 405,248" fill="#f59e0b" opacity="0.85" filter="url(#glowGold)" />
+
+            <!-- Miniature Articulated Robotic Arm on exterior test pedestal -->
+            <g class="mw-robot-arm">
+              <ellipse cx="440" cy="330" rx="10" ry="5" fill="#1c2434" stroke="#f59e0b" stroke-width="1" />
+              <!-- Arm Base -->
+              <cylinder />
+              <line x1="440" y1="330" x2="435" y2="305" stroke="#e2e8f0" stroke-width="3.5" stroke-linecap="round" />
+              <!-- Joint 1 -->
+              <circle cx="435" cy="305" r="3.5" fill="#f59e0b" />
+              <!-- Arm Forearm -->
+              <line x1="435" y1="305" x2="455" y2="285" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" />
+              <!-- End Effector / Tool Tip -->
+              <circle cx="455" cy="285" r="2.5" fill="#ffffff" />
+              <line x1="455" y1="285" x2="460" y2="280" stroke="#f59e0b" stroke-width="2" />
+              <!-- Sensor Laser Line -->
+              <line x1="460" y1="280" x2="475" y2="310" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.85" />
+            </g>
+
+            <!-- Precision Telemetry Antenna / Dish -->
+            <line x1="285" y1="230" x2="285" y2="195" stroke="#cbd5e1" stroke-width="1.5" />
+            <ellipse cx="285" cy="195" rx="7" ry="4" fill="#64748b" transform="rotate(-20 285 195)" />
+            <circle cx="285" cy="190" r="2" fill="#f59e0b" class="mw-beacon-blink" />
+
+            <!-- Interactive Quarter Anchor Pin -->
+            <g class="district-pin">
+              <circle cx="360" cy="165" r="14" fill="#161e2e" stroke="#f59e0b" stroke-width="2" />
+              <text x="360" y="170" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#f59e0b" text-anchor="middle">01</text>
+            </g>
+          </g>
+
+
+          <!-- ══════ DISTRICT B: KLA INTERACTIVES (North-East / Top-Right) ══════ -->
+          <g class="mw-district mw-district--kla" data-district="kla-interactives" id="zone-kla">
+            <!-- Ground pad highlight -->
+            <polygon
+              class="zone-pad"
+              points="510,210 630,270 750,330 510,450"
+              fill="#1e273a"
+              stroke="#38bdf8"
+              stroke-width="1.5"
+              stroke-dasharray="6 3"
+            />
+
+            <!-- KLA Multi-Tier Product Studio Tower -->
+            <!-- Lower Glass Studio -->
+            <polygon points="560,285 640,325 640,255 560,215" fill="#1e2d44" stroke="#2563eb" stroke-width="1" />
+            <polygon points="640,325 720,285 720,215 640,255" fill="#283e5e" stroke="#2563eb" stroke-width="1" />
+            <polygon points="560,215 640,255 720,215 640,175" fill="#3b5984" stroke="#38bdf8" stroke-width="1" />
+
+            <!-- Upper Cantilevered Product Lounge -->
+            <polygon points="585,200 645,230 645,165 585,135" fill="#2d486d" stroke="#38bdf8" stroke-width="1" />
+            <polygon points="645,230 705,200 705,135 645,165" fill="#395c8c" stroke="#38bdf8" stroke-width="1" />
+            <polygon points="585,135 645,165 705,135 645,105" fill="#4d7bb8" stroke="#7dd3fc" stroke-width="1.5" />
+
+            <!-- Glowing UI Ribbon / Digital Display Panels (DraftGrid / AraLoom screens) -->
+            <polygon points="595,190 635,210 635,175 595,155" fill="#0284c7" opacity="0.9" filter="url(#glowCyan)" />
+            <line x1="600" y1="170" x2="630" y2="185" stroke="#e0f2fe" stroke-width="1.5" />
+            <line x1="600" y1="180" x2="625" y2="192" stroke="#bae6fd" stroke-width="1" />
+
+            <polygon points="655,205 695,185 695,150 655,170" fill="#0ea5e9" opacity="0.9" filter="url(#glowCyan)" />
+            <!-- Grid lines inside UI screen -->
+            <line x1="660" y1="185" x2="690" y2="170" stroke="#e0f2fe" stroke-width="1" />
+            <line x1="660" y1="195" x2="685" y2="182" stroke="#e0f2fe" stroke-width="1" />
+
+            <!-- Digital Transmission Mast -->
+            <line x1="645" y1="105" x2="645" y2="65" stroke="#7dd3fc" stroke-width="2" />
+            <circle cx="645" cy="60" r="4" fill="#38bdf8" filter="url(#glowCyan)" />
+            <!-- Floating Data Rings -->
+            <ellipse cx="645" cy="78" rx="10" ry="4" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.7" />
+
+            <!-- Interactive Quarter Anchor Pin -->
+            <g class="district-pin">
+              <circle cx="645" cy="40" r="14" fill="#101c2e" stroke="#38bdf8" stroke-width="2" />
+              <text x="645" y="45" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#38bdf8" text-anchor="middle">02</text>
+            </g>
+          </g>
+
+
+          <!-- ══════ DISTRICT C: DESIGN & IDEAS (South-East / Bottom-Right) ══════ -->
+          <g class="mw-district mw-district--design" data-district="design-ideas" id="zone-design">
+            <!-- Ground pad highlight -->
+            <polygon
+              class="zone-pad"
+              points="510,400 750,380 840,425 610,540"
+              fill="#26212b"
+              stroke="#fb923c"
+              stroke-width="1.5"
+              stroke-dasharray="6 3"
+            />
+
+            <!-- Open Architectural Atelier & Stepped Terraces -->
+            <!-- Terrace Base -->
+            <polygon points="650,440 730,480 810,440 730,400" fill="#352e3d" stroke="#4a3e56" stroke-width="1" />
+            <polygon points="650,440 730,480 730,495 650,455" fill="#27212e" />
+            <polygon points="730,480 810,440 810,455 730,495" fill="#1f1a25" />
+
+            <!-- Main Atelier Pavilion with Angled Sawtooth Glass Roof -->
+            <polygon points="620,400 680,430 680,360 620,330" fill="#3a3045" stroke="#fb923c" stroke-width="1" />
+            <polygon points="680,430 760,390 760,320 680,360" fill="#4d3f5c" stroke="#fb923c" stroke-width="1" />
+            <polygon points="620,330 680,360 760,320 700,290" fill="#69567e" stroke="#f97316" stroke-width="1" />
+
+            <!-- Distinctive Sawtooth Skylights (Natural studio lighting) -->
+            <polygon points="640,330 670,345 660,315" fill="#fde047" opacity="0.75" />
+            <polygon points="680,350 710,335 700,305" fill="#fde047" opacity="0.75" />
+
+            <!-- Miniature Geometric Sculptures on Studio Deck -->
+            <!-- 1. Icosahedron/Prism Sculpture -->
+            <polygon points="750,430 762,438 756,420" fill="#fb923c" />
+            <polygon points="762,438 774,432 756,420" fill="#fdba74" />
+            <polygon points="750,430 762,438 762,444 750,436" fill="#c2410c" />
+
+            <!-- 2. Drafting Board / Easel Model -->
+            <line x1="720" y1="440" x2="715" y2="422" stroke="#ea580c" stroke-width="2" />
+            <line x1="725" y1="442" x2="720" y2="424" stroke="#ea580c" stroke-width="2" />
+            <polygon points="710,422 725,430 725,415 710,407" fill="#fed7aa" stroke="#c2410c" stroke-width="1" />
+
+            <!-- Miniature Architectural Tree (Organic Design Metaphor) -->
+            <line x1="785" y1="450" x2="785" y2="435" stroke="#78350f" stroke-width="3" />
+            <polygon points="785,405 802,432 768,432" fill="#15803d" />
+            <polygon points="785,395 798,418 772,418" fill="#22c55e" />
+
+            <!-- Interactive Quarter Anchor Pin -->
+            <g class="district-pin">
+              <circle cx="750" cy="275" r="14" fill="#24172a" stroke="#fb923c" stroke-width="2" />
+              <text x="750" y="280" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#fb923c" text-anchor="middle">03</text>
+            </g>
+          </g>
+
+
+          <!-- ══════ DISTRICT D: EXPERIMENTS & PROTOTYPES (South-West / Bottom-Left) ══════ -->
+          <g class="mw-district mw-district--experiments" data-district="experiments-lab" id="zone-experiments">
+            <!-- Ground pad highlight -->
+            <polygon
+              class="zone-pad"
+              points="240,430 470,390 490,540 280,520"
+              fill="#1b2a26"
+              stroke="#34d399"
+              stroke-width="1.5"
+              stroke-dasharray="6 3"
+            />
+
+            <!-- Prototyping Workshop Shed / Maker Yard -->
+            <!-- Main Workshop Hangar -->
+            <polygon points="310,440 390,480 390,410 310,370" fill="#213832" stroke="#2dd4bf" stroke-width="1" />
+            <polygon points="390,480 470,440 470,370 390,410" fill="#2d4d44" stroke="#2dd4bf" stroke-width="1" />
+            <!-- Curved/Barrel Vaulted Industrial Roof -->
+            <path d="M310,370 Q350,335 390,410 Q430,335 470,370" fill="#3b665b" stroke="#34d399" stroke-width="1.5" />
+
+            <!-- Open Workshop Roller Door with Internal Glow (CNC / 3D Printer light) -->
+            <polygon points="330,450 370,470 370,430 330,410" fill="#042f2e" stroke="#34d399" stroke-width="1" />
+            <rect x="340" y="425" width="20" height="15" fill="#34d399" opacity="0.8" filter="url(#glowCyan)" />
+
+            <!-- Miniature 3D Printer / Gantry in Yard -->
+            <g class="mw-gantry">
+              <line x1="420" y1="465" x2="420" y2="445" stroke="#94a3b8" stroke-width="2" />
+              <line x1="445" y1="452" x2="445" y2="432" stroke="#94a3b8" stroke-width="2" />
+              <line x1="420" y1="445" x2="445" y2="432" stroke="#cbd5e1" stroke-width="2" />
+              <!-- Extruder Head -->
+              <circle cx="432" cy="438" r="2.5" fill="#34d399" />
+              <line x1="432" y1="438" x2="432" y2="450" stroke="#10b981" stroke-width="1" stroke-dasharray="1 1" />
+            </g>
+
+            <!-- Test Beds: Sensor Field / Agricultural Telemetry Board Mockup -->
+            <polygon points="260,460 295,477 320,465 285,448" fill="#1c2f29" stroke="#10b981" stroke-width="1" />
+            <circle cx="280" cy="460" r="2" fill="#34d399" />
+            <circle cx="295" cy="467" r="2" fill="#34d399" />
+            <circle cx="305" cy="460" r="2" fill="#34d399" />
+
+            <!-- Interactive Quarter Anchor Pin -->
+            <g class="district-pin">
+              <circle cx="290" cy="355" r="14" fill="#0d241d" stroke="#34d399" stroke-width="2" />
+              <text x="290" y="360" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#34d399" text-anchor="middle">04</text>
+            </g>
+          </g>
+        </svg>
+
+        <!-- Touch/Click Quarter Badges Overlaid for Precision Accessibility -->
+        <div class="mw-zone-hotspots" aria-hidden="true">
+          <button type="button" class="mw-hotspot-btn mw-hotspot--robotics" data-target="robotics-research" title="Focus Robotics & Research">
+            <span class="hotspot-ping"></span>
+            <span class="hotspot-label">01 / Robotics</span>
+          </button>
+          <button type="button" class="mw-hotspot-btn mw-hotspot--kla" data-target="kla-interactives" title="Focus KLA Interactives">
+            <span class="hotspot-ping"></span>
+            <span class="hotspot-label">02 / KLA</span>
+          </button>
+          <button type="button" class="mw-hotspot-btn mw-hotspot--design" data-target="design-ideas" title="Focus Design & Ideas">
+            <span class="hotspot-ping"></span>
+            <span class="hotspot-label">03 / Design</span>
+          </button>
+          <button type="button" class="mw-hotspot-btn mw-hotspot--experiments" data-target="experiments-lab" title="Focus Experiments">
+            <span class="hotspot-ping"></span>
+            <span class="hotspot-label">04 / Experiments</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Right/Bottom: Field-Note Exhibit Information Panel ── -->
+      <aside class="mw-field-panel" id="mw-info-panel" aria-live="polite" aria-atomic="true">
+        <!-- Exhibit Header Label -->
+        <div class="field-panel-badge">
+          <span class="field-indicator" id="panel-indicator" aria-hidden="true"></span>
+          <span class="field-district-num" id="panel-district-num">01 / LAB</span>
+          <span class="field-sep" aria-hidden="true">·</span>
+          <span class="field-coords" id="panel-coords">North Pavilion · Robotics Bay</span>
+        </div>
+
+        <!-- Exhibit Content -->
+        <div class="field-panel-content">
+          <h3 class="field-title" id="panel-title">Robotics &amp; Research</h3>
+          <p class="field-tagline" id="panel-tagline">Autonomous Systems, Hardware &amp; Biomechatronics</p>
+          <p class="field-description" id="panel-desc">
+            A technical proving ground housing modular robotic arm testbeds, wearable medical device prototypes (TORUS), and accessible prosthetic research (EasyProsthetics).
+          </p>
+        </div>
+
+        <!-- Exhibit Direct Action -->
+        <div class="field-panel-footer">
+          <a href="#work" class="btn btn-mw-action" id="panel-action-btn">
+            <span id="panel-action-text">Explore Engineering &amp; Research</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Quick Selector Tabs for Keyboard/Touch -->
+        <div class="field-selector-strip" role="tablist" aria-label="District selection tabs">
+          {destinations.map((dest, idx) => (
+            <button
+              type="button"
+              role="tab"
+              class={`field-tab-btn ${idx === 0 ? 'is-active' : ''}`}
+              id={`tab-${dest.id}`}
+              aria-selected={idx === 0 ? 'true' : 'false'}
+              aria-controls="mw-info-panel"
+              data-district={dest.id}
+            >
+              <span class="tab-index">{dest.num.split('/')[0]}</span>
+              <span class="tab-name">{dest.title.split('&')[0].trim()}</span>
+            </button>
+          ))}
+        </div>
+      </aside>
+    </div>
+
+    <!-- ── Lower Quarter Cards Strip (Ensures 100% accessible navigation) ── -->
+    <div class="mw-destinations-grid" role="list" aria-label="Miniature world navigation destinations">
+      {destinations.map((dest, idx) => (
+        <button
+          type="button"
+          class={`mw-nav-card ${idx === 0 ? 'is-selected' : ''}`}
+          role="listitem"
+          data-target={dest.id}
+          aria-pressed={idx === 0 ? 'true' : 'false'}
+          style={`--dest-accent: ${dest.themeColor};`}
+        >
+          <div class="nav-card-top">
+            <span class="nav-card-num">{dest.num}</span>
+            <span class="nav-card-dot" aria-hidden="true"></span>
+          </div>
+          <span class="nav-card-title">{dest.title}</span>
+          <span class="nav-card-sub">{dest.tagline}</span>
+        </button>
+      ))}
+    </div>
+  </div>
+</div>
+
+<!-- Structured Client-Side Script with Zero Dependencies -->
+<script is:inline define:vars={{ destinations }}>
+  (function () {
+    const root = document.getElementById('miniature-world-app');
+    if (!root) return;
+
+    // Elements
+    const infoPanel = document.getElementById('mw-info-panel');
+    const panelNum = document.getElementById('panel-district-num');
+    const panelCoords = document.getElementById('panel-coords');
+    const panelTitle = document.getElementById('panel-title');
+    const panelTagline = document.getElementById('panel-tagline');
+    const panelDesc = document.getElementById('panel-desc');
+    const panelActionBtn = document.getElementById('panel-action-btn');
+    const panelActionText = document.getElementById('panel-action-text');
+    const panelIndicator = document.getElementById('panel-indicator');
+
+    const svgDistricts = root.querySelectorAll('.mw-district');
+    const hotspotBtns = root.querySelectorAll('.mw-hotspot-btn');
+    const tabBtns = root.querySelectorAll('.field-tab-btn');
+    const navCards = root.querySelectorAll('.mw-nav-card');
+
+    let activeDistrictId = 'robotics-research';
+
+    function selectDistrict(id) {
+      const dest = destinations.find((d) => d.id === id);
+      if (!dest) return;
+
+      activeDistrictId = id;
+
+      // 1. Update SVG Districts
+      svgDistricts.forEach((group) => {
+        const isMatch = group.dataset.district === id;
+        group.classList.toggle('is-selected', isMatch);
+      });
+
+      // 2. Update Hotspot Buttons
+      hotspotBtns.forEach((btn) => {
+        btn.classList.toggle('is-active', btn.dataset.target === id);
+      });
+
+      // 3. Update Tabs
+      tabBtns.forEach((btn) => {
+        const isSelected = btn.dataset.district === id;
+        btn.classList.toggle('is-active', isSelected);
+        btn.setAttribute('aria-selected', String(isSelected));
+      });
+
+      // 4. Update Lower Cards
+      navCards.forEach((card) => {
+        const isSelected = card.dataset.target === id;
+        card.classList.toggle('is-selected', isSelected);
+        card.setAttribute('aria-pressed', String(isSelected));
+      });
+
+      // 5. Update Field-Note Panel Content
+      if (panelNum) panelNum.textContent = dest.num;
+      if (panelCoords) panelCoords.textContent = dest.locationLabel;
+      if (panelTitle) panelTitle.textContent = dest.title;
+      if (panelTagline) panelTagline.textContent = dest.tagline;
+      if (panelDesc) panelDesc.textContent = dest.description;
+      if (panelActionText) panelActionText.textContent = dest.actionLabel;
+      if (panelActionBtn) panelActionBtn.setAttribute('href', dest.actionHref);
+      if (panelIndicator) panelIndicator.style.backgroundColor = dest.themeColor;
+      if (infoPanel) infoPanel.style.setProperty('--panel-accent', dest.themeColor);
+    }
+
+    // Attach listeners to SVG district clicks
+    svgDistricts.forEach((district) => {
+      district.style.cursor = 'pointer';
+      district.addEventListener('click', () => {
+        const id = district.dataset.district;
+        if (id) selectDistrict(id);
+      });
+    });
+
+    // Attach listeners to Hotspots
+    hotspotBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.target;
+        if (id) selectDistrict(id);
+      });
+    });
+
+    // Attach listeners to Selector Tabs
+    tabBtns.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const id = tab.dataset.district;
+        if (id) selectDistrict(id);
+      });
+    });
+
+    // Attach listeners to Lower Cards
+    navCards.forEach((card) => {
+      card.addEventListener('click', () => {
+        const id = card.dataset.target;
+        if (id) selectDistrict(id);
+      });
+    });
+
+    // Initialize with first district
+    selectDistrict('robotics-research');
+  })();
+</script>
+
+<style>
+  /* ── Component Scoped Styles ────────────────────────────────────────── */
+
+  .miniature-world-wrapper {
+    background: var(--colour-mw-bg);
+    color: var(--colour-mw-fg);
+    padding-block: var(--section-gap);
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid var(--colour-mw-border);
+    border-bottom: 1px solid var(--colour-mw-border);
+  }
+
+  .mw-container {
+    width: 100%;
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* Header */
+  .mw-header {
+    margin-bottom: var(--space-8);
+  }
+
+  .mw-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--colour-mw-accent);
+    margin-bottom: var(--space-3);
+  }
+
+  .mw-pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--colour-mw-accent);
+    box-shadow: 0 0 8px var(--colour-mw-accent);
+    animation: pulseDot 2.4s ease-in-out infinite;
+  }
+
+  @keyframes pulseDot {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.35); opacity: 0.6; }
+  }
+
+  .mw-title {
+    color: var(--colour-mw-fg);
+    margin-bottom: var(--space-2);
+  }
+
+  .mw-subtitle {
+    color: var(--colour-mw-fg-muted);
+    max-width: 65ch;
+  }
+
+  /* Stage Layout (Desktop: Side-by-Side Diorama & Exhibit Panel) */
+  .mw-stage {
+    display: grid;
+    grid-template-columns: 1.45fr 1fr;
+    gap: var(--space-6);
+    align-items: stretch;
+    background: var(--colour-mw-bg-subtle);
+    border: 1px solid var(--colour-mw-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  }
+
+  /* Scene Frame */
+  .mw-scene-frame {
+    position: relative;
+    background: radial-gradient(circle at 50% 45%, #182236 0%, #0d131f 85%);
+    border: 1px solid var(--colour-mw-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 480px;
+  }
+
+  .mw-scene-ambient-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.08), transparent 70%);
+    pointer-events: none;
+  }
+
+  .mw-iso-svg {
+    width: 100%;
+    height: auto;
+    max-height: 540px;
+    display: block;
+    filter: drop-shadow(0 15px 30px rgba(0,0,0,0.5));
+    transition: transform var(--duration-normal) var(--ease-out);
+  }
+
+  /* SVG District Interactivity */
+  .mw-district {
+    transition: opacity var(--duration-normal) var(--ease-out);
+  }
+
+  .mw-district .zone-pad {
+    opacity: 0.4;
+    transition: opacity var(--duration-normal) var(--ease-out), fill var(--duration-normal) var(--ease-out);
+  }
+
+  .mw-district:hover .zone-pad {
+    opacity: 0.85;
+  }
+
+  .mw-district.is-selected .zone-pad {
+    opacity: 1;
+    stroke-width: 2.5;
+  }
+
+  .mw-district.is-selected .district-pin circle {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+
+  .district-pin circle {
+    transition: transform var(--duration-fast) var(--ease-out);
+    transform-origin: center;
+  }
+
+  /* Ambient Details */
+  .beacon-pulse {
+    animation: beaconRings 3s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+    transform-origin: 500px 328px;
+  }
+
+  @keyframes beaconRings {
+    0% { r: 5; opacity: 0.8; }
+    100% { r: 24; opacity: 0; }
+  }
+
+  .mw-beacon-blink {
+    animation: blinkBeacon 2s steps(2, start) infinite;
+  }
+
+  @keyframes blinkBeacon {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  /* Overlay Hotspot Buttons (Accessibility & Direct Touch) */
+  .mw-zone-hotspots {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .mw-hotspot-btn {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--colour-mw-border);
+    border-radius: 9999px;
+    color: var(--colour-mw-fg);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all var(--duration-fast) var(--ease-out);
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .mw-hotspot-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--colour-mw-accent);
+  }
+
+  .hotspot-ping {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .mw-hotspot--robotics { top: 22%; left: 16%; color: #f59e0b; }
+  .mw-hotspot--kla { top: 12%; right: 14%; color: #38bdf8; }
+  .mw-hotspot--design { bottom: 18%; right: 10%; color: #fb923c; }
+  .mw-hotspot--experiments { bottom: 16%; left: 14%; color: #34d399; }
+
+  .mw-hotspot-btn:hover,
+  .mw-hotspot-btn.is-active {
+    background: #0f172a;
+    border-color: currentColor;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+  }
+
+  /* Field-Note Information Panel */
+  .mw-field-panel {
+    --panel-accent: #f59e0b;
+    background: hsl(222, 22%, 11%);
+    border: 1px solid var(--colour-mw-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    border-left: 3px solid var(--panel-accent);
+    transition: border-color var(--duration-normal) var(--ease-out);
+  }
+
+  .field-panel-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--colour-mw-fg-muted);
+    margin-bottom: var(--space-5);
+  }
+
+  .field-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--panel-accent);
+    flex-shrink: 0;
+  }
+
+  .field-district-num {
+    color: var(--panel-accent);
+    font-weight: 600;
+  }
+
+  .field-coords {
+    color: var(--colour-mw-fg-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .field-title {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    letter-spacing: var(--tracking-tight);
+    color: var(--colour-mw-fg);
+    margin-bottom: var(--space-2);
+    line-height: var(--leading-tight);
+  }
+
+  .field-tagline {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    color: var(--panel-accent);
+    font-weight: 500;
+    margin-bottom: var(--space-4);
+  }
+
+  .field-description {
+    font-size: var(--text-base);
+    color: var(--colour-mw-fg-muted);
+    line-height: var(--leading-loose);
+    margin-bottom: var(--space-6);
+  }
+
+  /* Action button in panel */
+  .btn-mw-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-6);
+    background: var(--panel-accent);
+    color: #0b0f19;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all var(--duration-fast) var(--ease-out);
+    min-height: 44px;
+    width: 100%;
+  }
+
+  .btn-mw-action:hover {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  .btn-mw-action:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--panel-accent);
+  }
+
+  /* Quick Selector Tabs */
+  .field-selector-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2);
+    margin-top: var(--space-6);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--colour-mw-border);
+  }
+
+  .field-tab-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: var(--space-2) var(--space-1);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    color: var(--colour-mw-fg-muted);
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-out);
+    min-height: 44px;
+  }
+
+  .field-tab-btn:hover {
+    color: var(--colour-mw-fg);
+    background: var(--colour-mw-bg-card);
+  }
+
+  .field-tab-btn.is-active {
+    color: var(--colour-mw-fg);
+    background: var(--colour-mw-bg-card);
+    border-color: var(--panel-accent);
+  }
+
+  .field-tab-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--panel-accent);
+  }
+
+  .tab-index {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--panel-accent);
+  }
+
+  .tab-name {
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+
+  /* Lower Quarter Cards Grid (Mobile/Touch and Broad Accessibility) */
+  .mw-destinations-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+  }
+
+  .mw-nav-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-5);
+    background: var(--colour-mw-bg-subtle);
+    border: 1px solid var(--colour-mw-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-align: left;
+    color: var(--colour-mw-fg);
+    transition: all var(--duration-fast) var(--ease-out);
+    min-height: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mw-nav-card:hover {
+    border-color: var(--dest-accent);
+    background: hsl(222, 22%, 16%);
+    transform: translateY(-2px);
+  }
+
+  .mw-nav-card.is-selected {
+    border-color: var(--dest-accent);
+    background: hsl(222, 22%, 17%);
+    box-shadow: 0 0 0 1px var(--dest-accent), 0 4px 18px rgba(0, 0, 0, 0.4);
+  }
+
+  .mw-nav-card:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--dest-accent);
+  }
+
+  .nav-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: var(--space-2);
+  }
+
+  .nav-card-num {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--dest-accent);
+  }
+
+  .nav-card-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--dest-accent);
+  }
+
+  .nav-card-title {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--colour-mw-fg);
+    margin-bottom: 2px;
+  }
+
+  .nav-card-sub {
+    font-size: 11px;
+    color: var(--colour-mw-fg-muted);
+    line-height: var(--leading-normal);
+  }
+
+  /* ── Responsive Adaptations ────────────────────────────────────────── */
+
+  @media (max-width: 1024px) {
+    .mw-stage {
+      grid-template-columns: 1fr;
+    }
+
+    .mw-scene-frame {
+      min-height: 420px;
+    }
+
+    .mw-destinations-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .mw-stage {
+      padding: var(--space-4);
+      gap: var(--space-4);
+    }
+
+    .mw-scene-frame {
+      min-height: 320px;
+    }
+
+    .mw-hotspot-btn {
+      padding: 4px 8px;
+      font-size: 10px;
+    }
+
+    .hotspot-label {
+      display: none;
+    }
+
+    .mw-field-panel {
+      padding: var(--space-5);
+    }
+
+    .field-title {
+      font-size: var(--text-xl);
+    }
+
+    .mw-destinations-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mw-pulse-dot,
+    .beacon-pulse,
+    .mw-beacon-blink {
+      animation: none !important;
+    }
+
+    .mw-district,
+    .mw-hotspot-btn,
+    .mw-nav-card,
+    .btn-mw-action {
+      transition: none !important;
+    }
+  }
+</style>

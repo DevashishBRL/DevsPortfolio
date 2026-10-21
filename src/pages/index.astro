@@ -16,6 +16,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import ArticleCard from '../components/ArticleCard.astro';
+import MiniatureWorld from '../components/MiniatureWorld.astro';
 
 import { engineeringProjects, klaProjects, authoredArticles, externalMentions } from '../data/content';
 
@@ -68,60 +69,9 @@ const featuredArticles = authoredArticles.slice(0, 3);
     </div>
   </section>
 
-  <!-- ── Miniature World Preview (Dark Immersive Mode) ─────────────────── -->
-  <section class="miniature-world-section" id="miniature-world" aria-labelledby="mw-heading">
-    <div class="container">
-      <div class="section-meta">
-        <p class="section-label" aria-hidden="true">The Studio World · Concept Preview</p>
-        <h2 class="section-title" id="mw-heading">An Isometric Miniature World</h2>
-        <p class="section-description">
-          A spatial representation of the systems, products, and experiments Devashish builds. Interactive 3D implementation coming soon.
-        </p>
-      </div>
-
-      <div class="mw-composition">
-        <div class="mw-grid-backdrop" aria-hidden="true"></div>
-
-        <!-- Isometric CSS geometric composition -->
-        <div class="mw-iso-scene" aria-hidden="true">
-          <div class="mw-isometric-diorama">
-            <div class="mw-iso-plane"></div>
-            <div class="mw-iso-block mw-iso-block--1"></div>
-            <div class="mw-iso-block mw-iso-block--2"></div>
-            <div class="mw-iso-block mw-iso-block--3"></div>
-            <div class="mw-iso-node"></div>
-          </div>
-        </div>
-
-        <p class="mw-notice" role="note">
-          [ Preview Concept: Pure CSS geometric construction · Full interactive 3D miniature world arriving in later phase ]
-        </p>
-
-        <!-- Destination labels for accessible discovery -->
-        <div class="mw-destinations" role="list" aria-label="Miniature world navigation destinations">
-          <a href="#work" class="mw-dest-card" role="listitem">
-            <span class="mw-dest-num">01 / DISCOVERY</span>
-            <span class="mw-dest-title">Robotics &amp; Research</span>
-            <span class="mw-dest-desc">Hardware enclosures, prosthetics mechanics, embedded telemetry</span>
-          </a>
-          <a href="#kla" class="mw-dest-card" role="listitem">
-            <span class="mw-dest-num">02 / STUDIO</span>
-            <span class="mw-dest-title">KLA Interactives</span>
-            <span class="mw-dest-desc">DraftGrid, AraLoom, TabZones and JobPal products in progress</span>
-          </a>
-          <a href="#writing" class="mw-dest-card" role="listitem">
-            <span class="mw-dest-num">03 / WRITING</span>
-            <span class="mw-dest-title">Design &amp; Ideas</span>
-            <span class="mw-dest-desc">AnyBody Can Design observations, ergonomics, human interface</span>
-          </a>
-          <a href="#about" class="mw-dest-card" role="listitem">
-            <span class="mw-dest-num">04 / LAB</span>
-            <span class="mw-dest-title">Experiments</span>
-            <span class="mw-dest-desc">Exploratory prototypes, biomechatronics and digital twin notes</span>
-          </a>
-        </div>
-      </div>
-    </div>
+  <!-- ── Interactive Isometric Miniature World (Dark Immersive Mode) ── -->
+  <section id="miniature-world" aria-labelledby="mw-heading">
+    <MiniatureWorld />
   </section>
 
   <!-- ── Selected Work ─────────────────────────────────────────────────── -->
