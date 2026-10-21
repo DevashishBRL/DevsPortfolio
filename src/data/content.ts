@@ -4,37 +4,48 @@ import type { Project, AuthoredArticle, ExternalMention } from '../types/content
 
 export const engineeringProjects: Project[] = [
   {
-    id: 'robotics-research',
-    title: 'Robotics Research',
-    subtitle: 'Autonomous Systems & Control',
+    id: 'torus-enclosure',
+    title: 'TORUS Wearable Medical Device Enclosure',
+    subtitle: 'Medical Device Hardware & Ergonomics',
     description:
-      'Research into robotic systems design, sensor fusion, and autonomous navigation — spanning simulation environments and physical prototypes.',
-    tags: ['Robotics', 'ROS', 'Python', 'Embedded Systems'],
+      'Wearable enclosure engineering for a medical monitoring device, addressing patient ergonomics, environmental sealing, durability and biocompatible material constraints.',
+    tags: ['Hardware Design', 'Ergonomics', 'Medical Devices', 'Rapid Prototyping'],
+    area: 'engineering',
+    status: 'completed',
+    featured: true,
+  },
+  {
+    id: 'draftgrid',
+    title: 'DraftGrid',
+    subtitle: 'Structured Drafting for Technical Thinkers',
+    description:
+      'A structured drafting and document architecture system designed to help engineers and thinkers organize complex ideas before writing.',
+    tags: ['Product Design', 'Information Architecture', 'Developer Tools'],
+    area: 'engineering',
+    status: 'active',
+    featured: true,
+  },
+  {
+    id: 'easprosthetics',
+    title: 'EasyProsthetics',
+    subtitle: 'Accessible Prosthetic Mechanism Research',
+    description:
+      'Exploration and functional prototyping of accessible, low-cost prosthetic solutions focusing on functional mechanics, modular components and ease of assembly.',
+    tags: ['Robotics', 'Prosthetics', 'Biomechatronics', 'Human-Centred Design'],
     area: 'engineering',
     status: 'ongoing',
     featured: true,
   },
   {
-    id: 'embedded-prototyping',
-    title: 'Embedded Prototyping',
-    subtitle: 'Hardware & Firmware',
+    id: 'digital-agri-board',
+    title: 'Digital Agriculture Information Board',
+    subtitle: 'IoT Telemetry & Embedded Display System',
     description:
-      'Hardware design and firmware development for embedded systems, from microcontroller programming to PCB-level integration.',
-    tags: ['Embedded C', 'ARM', 'FPGA', 'Sensors'],
+      'An embedded agricultural information and telemetry interface delivering field sensor insights and environmental data to agricultural operators.',
+    tags: ['Embedded Systems', 'IoT', 'Telemetry', 'Hardware'],
     area: 'engineering',
-    status: 'ongoing',
+    status: 'completed',
     featured: true,
-  },
-  {
-    id: 'simulation-environments',
-    title: 'Simulation Environments',
-    subtitle: 'Digital Twins & Testing',
-    description:
-      'Building digital simulation environments to model, validate and test robotic systems before physical deployment.',
-    tags: ['Gazebo', 'Unity', 'Python', 'Digital Twin'],
-    area: 'engineering',
-    status: 'ongoing',
-    featured: false,
   },
 ];
 
@@ -42,45 +53,45 @@ export const engineeringProjects: Project[] = [
 
 export const klaProjects: Project[] = [
   {
-    id: 'draftgrid',
+    id: 'kla-draftgrid',
     title: 'DraftGrid',
     subtitle: 'Structured writing for thinkers',
     description:
-      'A writing tool designed around structured thinking — grids, templates and drafting flows for people who think before they write.',
-    tags: ['Product Design', 'Web App', 'Writing Tools'],
+      'A structured writing tool and thought canvas currently in active development under KLA Interactives, built to structure ideas into clear deliverables.',
+    tags: ['Product in Development', 'Writing Tools', 'UX'],
     area: 'kla',
     status: 'active',
     featured: true,
   },
   {
-    id: 'araloom',
+    id: 'kla-araloom',
     title: 'AraLoom',
     subtitle: 'Visual knowledge weaving',
     description:
-      'A tool for connecting ideas spatially — weaving together notes, concepts and references into a visual tapestry of knowledge.',
-    tags: ['Knowledge Management', 'Canvas', 'Visual Tools'],
+      'A digital product under development connecting conceptual threads into structured spatial webs of ideas and references.',
+    tags: ['Product in Development', 'Knowledge Mapping', 'Spatial UI'],
     area: 'kla',
     status: 'active',
     featured: true,
   },
   {
-    id: 'tabzones',
+    id: 'kla-tabzones',
     title: 'TabZones',
     subtitle: 'Purposeful browser workspaces',
     description:
-      'Browser workspace organiser that groups tabs into focused zones, helping reduce cognitive load during deep work sessions.',
-    tags: ['Browser Extension', 'Productivity', 'UX'],
+      'A focused browser workspace management tool currently in development to isolate tasks and minimize context switching.',
+    tags: ['Product in Development', 'Browser Extension', 'Productivity'],
     area: 'kla',
     status: 'active',
     featured: true,
   },
   {
-    id: 'jobpal',
+    id: 'kla-jobpal',
     title: 'JobPal',
     subtitle: 'Job search, made human',
     description:
-      'A personal job search companion that brings structure and calm to the application process — tracking, notes and status in one place.',
-    tags: ['Web App', 'Productivity', 'Career Tools'],
+      'A streamlined companion application in development designed to organize, track and de-stress technical application workflows.',
+    tags: ['Product in Development', 'Web App', 'Workflow'],
     area: 'kla',
     status: 'active',
     featured: true,

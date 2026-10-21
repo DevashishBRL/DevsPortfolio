@@ -39,6 +39,8 @@ export interface ExternalMention {
   date: string;          // ISO 8601 date string
   url?: string;          // link if available
   type: 'article' | 'interview' | 'feature' | 'publication';
+  image?: string;        // optional image
+  featured?: boolean;    // optional featured status
 }
 
 export interface NavLink {

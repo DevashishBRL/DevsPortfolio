@@ -4,10 +4,12 @@
  * 
  * Sections:
  * 1. Hero
- * 2. Engineering & Research
- * 3. KLA Interactives
- * 4. AnyBody Can Design
- * 5. In the Wild
+ * 2. Miniature World Preview (Dark Immersive Mode)
+ * 3. Selected Work (Engineering & Research)
+ * 4. KLA Interactives
+ * 5. AnyBody Can Design
+ * 6. In the Wild
+ * 7. About
  */
 
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -17,8 +19,8 @@ import ArticleCard from '../components/ArticleCard.astro';
 
 import { engineeringProjects, klaProjects, authoredArticles, externalMentions } from '../data/content';
 
-const featuredEngineering = engineeringProjects.filter((p) => p.featured);
-const featuredKla = klaProjects.filter((p) => p.featured);
+const selectedWork = engineeringProjects.filter((p) => p.featured);
+const klaProducts = klaProjects;
 const featuredArticles = authoredArticles.slice(0, 3);
 ---
 
@@ -30,7 +32,7 @@ const featuredArticles = authoredArticles.slice(0, 3);
   <section class="hero" aria-labelledby="hero-heading">
     <div class="container">
       <div class="hero-inner">
-        <!-- Identity tags -->
+        <!-- Professional identity tags -->
         <div class="hero-identity" role="list" aria-label="Professional identity">
           <span class="identity-tag" role="listitem">Robotics Engineer</span>
           <span class="identity-sep" aria-hidden="true">·</span>
@@ -51,7 +53,7 @@ const featuredArticles = authoredArticles.slice(0, 3);
           exploring problems and building useful solutions.
         </p>
 
-        <!-- CTAs -->
+        <!-- Primary & Secondary Actions -->
         <div class="hero-actions">
           <a href="#work" class="btn btn-primary">
             Explore my work
@@ -60,25 +62,81 @@ const featuredArticles = authoredArticles.slice(0, 3);
               <polyline points="12 5 19 12 12 19"/>
             </svg>
           </a>
-          <a href="/about" class="btn btn-ghost">About me</a>
+          <a href="#about" class="btn btn-ghost">About me</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── Engineering & Research ────────────────────────────────────────── -->
+  <!-- ── Miniature World Preview (Dark Immersive Mode) ─────────────────── -->
+  <section class="miniature-world-section" id="miniature-world" aria-labelledby="mw-heading">
+    <div class="container">
+      <div class="section-meta">
+        <p class="section-label" aria-hidden="true">The Studio World · Concept Preview</p>
+        <h2 class="section-title" id="mw-heading">An Isometric Miniature World</h2>
+        <p class="section-description">
+          A spatial representation of the systems, products, and experiments Devashish builds. Interactive 3D implementation coming soon.
+        </p>
+      </div>
+
+      <div class="mw-composition">
+        <div class="mw-grid-backdrop" aria-hidden="true"></div>
+
+        <!-- Isometric CSS geometric composition -->
+        <div class="mw-iso-scene" aria-hidden="true">
+          <div class="mw-isometric-diorama">
+            <div class="mw-iso-plane"></div>
+            <div class="mw-iso-block mw-iso-block--1"></div>
+            <div class="mw-iso-block mw-iso-block--2"></div>
+            <div class="mw-iso-block mw-iso-block--3"></div>
+            <div class="mw-iso-node"></div>
+          </div>
+        </div>
+
+        <p class="mw-notice" role="note">
+          [ Preview Concept: Pure CSS geometric construction · Full interactive 3D miniature world arriving in later phase ]
+        </p>
+
+        <!-- Destination labels for accessible discovery -->
+        <div class="mw-destinations" role="list" aria-label="Miniature world navigation destinations">
+          <a href="#work" class="mw-dest-card" role="listitem">
+            <span class="mw-dest-num">01 / DISCOVERY</span>
+            <span class="mw-dest-title">Robotics &amp; Research</span>
+            <span class="mw-dest-desc">Hardware enclosures, prosthetics mechanics, embedded telemetry</span>
+          </a>
+          <a href="#kla" class="mw-dest-card" role="listitem">
+            <span class="mw-dest-num">02 / STUDIO</span>
+            <span class="mw-dest-title">KLA Interactives</span>
+            <span class="mw-dest-desc">DraftGrid, AraLoom, TabZones and JobPal products in progress</span>
+          </a>
+          <a href="#writing" class="mw-dest-card" role="listitem">
+            <span class="mw-dest-num">03 / WRITING</span>
+            <span class="mw-dest-title">Design &amp; Ideas</span>
+            <span class="mw-dest-desc">AnyBody Can Design observations, ergonomics, human interface</span>
+          </a>
+          <a href="#about" class="mw-dest-card" role="listitem">
+            <span class="mw-dest-num">04 / LAB</span>
+            <span class="mw-dest-title">Experiments</span>
+            <span class="mw-dest-desc">Exploratory prototypes, biomechatronics and digital twin notes</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Selected Work ─────────────────────────────────────────────────── -->
   <section class="section" id="work" aria-labelledby="engineering-heading">
     <div class="container">
       <SectionHeader
-        label="01 — Engineering & Research"
+        label="01 — Selected Work"
         title="Building at the edge of hardware and software"
-        description="Robotics, prototyping, embedded systems, simulation and technical research — work that lives between disciplines."
+        description="Engineering projects spanning wearable enclosures, assistive devices, telemetry and technical drafting systems."
         linkHref="/work"
         linkLabel="All projects"
       />
 
       <div class="card-grid" role="list">
-        {featuredEngineering.map((project, i) => (
+        {selectedWork.map((project, i) => (
           <div role="listitem">
             <ProjectCard project={project} index={i} />
           </div>
@@ -88,9 +146,8 @@ const featuredArticles = authoredArticles.slice(0, 3);
   </section>
 
   <!-- ── KLA Interactives ──────────────────────────────────────────────── -->
-  <section class="section" id="products" aria-labelledby="kla-heading">
+  <section class="section" id="kla" aria-labelledby="kla-heading">
     <div class="container">
-      <!-- Custom header with KLA badge -->
       <div class="section-header">
         <div class="section-meta">
           <div class="kla-header-bar">
@@ -99,7 +156,7 @@ const featuredArticles = authoredArticles.slice(0, 3);
           </div>
           <h2 class="section-title" id="kla-heading">A growing family of digital products</h2>
           <p class="section-description">
-            DraftGrid, AraLoom, TabZones and JobPal — tools built around how people actually think and work.
+            DraftGrid, AraLoom, TabZones and JobPal are products currently in active development under KLA Interactives — built around how people think and work.
           </p>
         </div>
         <a href="/products" class="section-link">
@@ -112,7 +169,7 @@ const featuredArticles = authoredArticles.slice(0, 3);
       </div>
 
       <div class="card-grid card-grid--2" role="list">
-        {featuredKla.map((project, i) => (
+        {klaProducts.map((project, i) => (
           <div role="listitem">
             <ProjectCard project={project} index={i} />
           </div>
@@ -125,9 +182,9 @@ const featuredArticles = authoredArticles.slice(0, 3);
   <section class="section" id="writing" aria-labelledby="writing-heading">
     <div class="container">
       <SectionHeader
-        label="03 — Writing"
+        label="03 — Writing & Observations"
         title="AnyBody Can Design"
-        description="Personal writing about design, usability, observation and human interaction. For anyone who thinks about how things work."
+        description="An independent space for design thinking, usability observations, practical experiments and writing about how things work."
         linkHref="/writing"
         linkLabel="All articles"
       />
@@ -146,17 +203,17 @@ const featuredArticles = authoredArticles.slice(0, 3);
   <section class="section" id="in-the-wild" aria-labelledby="wild-heading">
     <div class="container">
       <SectionHeader
-        label="04 — External"
+        label="04 — Publications & Press"
         title="In the Wild"
-        description="External publications, articles, interviews and other mentions featuring Devashish or his work."
+        description="External publications, research features and press mentions. Featured articles and publications will appear here."
         linkHref="/mentions"
         linkLabel="All mentions"
       />
 
       {externalMentions.length === 1 && externalMentions[0].id === 'placeholder-mention-1' ? (
-        <p class="mention-placeholder">
-          External mentions and publications will appear here as they are added.
-        </p>
+        <div class="mention-placeholder" role="status">
+          <p>Featured articles and publications will appear here as external mentions are confirmed and published.</p>
+        </div>
       ) : (
         <div class="card-grid" role="list">
           {externalMentions.map((mention) => (
@@ -173,6 +230,66 @@ const featuredArticles = authoredArticles.slice(0, 3);
           ))}
         </div>
       )}
+    </div>
+  </section>
+
+  <!-- ── About ─────────────────────────────────────────────────────────── -->
+  <section class="section" id="about" aria-labelledby="about-summary-heading">
+    <div class="container">
+      <SectionHeader
+        label="05 — Profile"
+        title="About Devashish"
+        description="A concise background across robotics engineering, prototyping, product development and research."
+        linkHref="/about"
+        linkLabel="Full about page"
+      />
+
+      <div class="about-intro-grid">
+        <div class="about-content">
+          <p class="about-text">
+            I am a robotics engineer and research technologist who designs and builds at the intersection of mechanical hardware, embedded intelligence and human-centred software.
+          </p>
+          <p class="about-text">
+            My engineering work spans wearable medical hardware enclosures, accessible prosthetic mechanisms, embedded agricultural IoT telemetry, and digital products created under KLA Interactives.
+          </p>
+          <p class="about-text">
+            Through <em>AnyBody Can Design</em>, I write and reflect on usability, design patterns and practical engineering observations.
+          </p>
+          <div class="hero-actions" style="margin-top: var(--space-6);">
+            <a href="#cv-placeholder" class="btn btn-ghost" id="cv-link">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+              Download CV (Placeholder)
+            </a>
+          </div>
+        </div>
+
+        <aside class="about-meta-box" aria-label="Core focus areas">
+          <h3 class="about-meta-title">Core Focus</h3>
+          <dl class="about-meta-list">
+            <div class="about-meta-item">
+              <dt>Discipline</dt>
+              <dd>Robotics &amp; Mechatronics</dd>
+            </div>
+            <div class="about-meta-item">
+              <dt>Specialization</dt>
+              <dd>Hardware Prototyping &amp; Embedded Systems</dd>
+            </div>
+            <div class="about-meta-item">
+              <dt>Ventures</dt>
+              <dd>KLA Interactives</dd>
+            </div>
+            <div class="about-meta-item">
+              <dt>Publication</dt>
+              <dd>AnyBody Can Design</dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
     </div>
   </section>
 </BaseLayout>
