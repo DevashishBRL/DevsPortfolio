@@ -1,0 +1,403 @@
+---
+/**
+ * RobotCompanion.astro
+ * 
+ * Lightweight floating robot companion for Devashish's portfolio world.
+ * Features a circular chassis, dark digital visor, expressive blinking LED eyes,
+ * floating idle motion, accessible status speech bubble, and dismiss/minimize controls.
+ */
+---
+
+<div class="companion-root" id="robot-companion" role="complementary" aria-label="Campus Companion Bot">
+  <!-- Speech / Status Bubble -->
+  <div class="companion-bubble" id="companion-bubble" role="status" aria-live="polite">
+    <div class="bubble-header">
+      <span class="bubble-name">BOT // 01</span>
+      <button
+        type="button"
+        class="bubble-close-btn"
+        id="companion-toggle-btn"
+        aria-label="Minimize companion assistant"
+        title="Minimize companion"
+      >
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <p class="bubble-message" id="companion-message-text">
+      Welcome to the terrarium. Select a quarter to explore Devashish's projects.
+    </p>
+  </div>
+
+  <!-- Physical Floating Robot Body -->
+  <button
+    type="button"
+    class="companion-body-btn"
+    id="companion-avatar-btn"
+    aria-label="Companion robot: click to toggle speech bubble"
+    title="Campus Companion"
+  >
+    <div class="companion-chassis">
+      <div class="chassis-glow" aria-hidden="true"></div>
+      <!-- Antenna fin -->
+      <div class="companion-antenna">
+        <span class="antenna-pip"></span>
+      </div>
+      <!-- Digital visor face -->
+      <div class="companion-visor">
+        <div class="visor-eyes" id="companion-eyes">
+          <div class="eye eye-left"></div>
+          <div class="eye eye-right"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Soft hover ground shadow -->
+    <div class="companion-shadow" aria-hidden="true"></div>
+  </button>
+</div>
+
+<script>
+  // Destination Contextual Knowledge (Concise & Restrained)
+  const destinationDialogues: Record<string, { mood: string; text: string }> = {
+    overview: {
+      mood: 'neutral',
+      text: 'Campus overview. Select a district pin or navigate below to inspect.',
+    },
+    lab: {
+      mood: 'observing',
+      text: 'The Lab — Mechatronics proving ground, TORUS medical enclosure, and EasyProsthetics.',
+    },
+    foundry: {
+      mood: 'happy',
+      text: 'The Foundry — Software product studio building DraftGrid, AraLoom, and JobPal.',
+    },
+    observatory: {
+      mood: 'observing',
+      text: 'The Observatory — Atelier for usability observations and design reflections.',
+    },
+    yard: {
+      mood: 'happy',
+      text: 'The Yard — Rapid hardware prototyping, CNC gantries, and IoT telemetry rigs.',
+    },
+    commons: {
+      mood: 'happy',
+      text: 'The Commons — Central quadrangle dedicated to mentorship and collaboration.',
+    },
+    outlook: {
+      mood: 'observing',
+      text: 'The Outlook — High vantage point over published articles and future directions.',
+    },
+  };
+
+  function initRobotCompanion() {
+    const root = document.getElementById('robot-companion');
+    const bubble = document.getElementById('companion-bubble');
+    const messageText = document.getElementById('companion-message-text');
+    const toggleBtn = document.getElementById('companion-toggle-btn');
+    const avatarBtn = document.getElementById('companion-avatar-btn');
+    const eyes = document.getElementById('companion-eyes');
+
+    if (!root || !bubble || !messageText) return;
+
+    let isMinimized = false;
+
+    // Toggle minimize
+    function setMinimized(min: boolean) {
+      isMinimized = min;
+      bubble?.classList.toggle('is-hidden', isMinimized);
+      if (toggleBtn) {
+        toggleBtn.setAttribute('aria-expanded', String(!isMinimized));
+      }
+    }
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setMinimized(true);
+      });
+    }
+
+    if (avatarBtn) {
+      avatarBtn.addEventListener('click', () => {
+        setMinimized(!isMinimized);
+      });
+    }
+
+    // Set mood expression
+    function setMood(mood: string) {
+      if (!eyes) return;
+      eyes.className = 'visor-eyes mood-' + mood;
+    }
+
+    // Update dialogue based on destination id
+    function onDestinationChanged(destId: string) {
+      const dialogue = destinationDialogues[destId] || destinationDialogues.overview;
+      
+      messageText.textContent = dialogue.text;
+      setMood(dialogue.mood);
+
+      // Re-show bubble if minimized on explicit destination navigation
+      if (isMinimized) {
+        setMinimized(false);
+      }
+
+      // Quick expressive double-blink
+      triggerExpressiveBlink();
+    }
+
+    function triggerExpressiveBlink() {
+      if (!eyes) return;
+      eyes.classList.add('is-blinking');
+      setTimeout(() => {
+        eyes.classList.remove('is-blinking');
+      }, 350);
+    }
+
+    // Periodic idle micro-interactions (blinking every 4-6s)
+    let blinkTimer = setInterval(() => {
+      triggerExpressiveBlink();
+    }, 4500);
+
+    // Listen for custom event dispatched by Three.js campus controller
+    window.addEventListener('campus-destination-change', (e: Event) => {
+      const customEvt = e as CustomEvent<{ id: string }>;
+      if (customEvt.detail && customEvt.detail.id) {
+        onDestinationChanged(customEvt.detail.id);
+      }
+    });
+
+    // Cleanup on document unload
+    window.addEventListener('pagehide', () => {
+      clearInterval(blinkTimer);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initRobotCompanion);
+  } else {
+    initRobotCompanion();
+  }
+</script>
+
+<style>
+  .companion-root {
+    position: absolute;
+    bottom: var(--space-4);
+    left: var(--space-4);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    pointer-events: none;
+    max-width: 280px;
+  }
+
+  /* Speech Bubble */
+  .companion-bubble {
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--colour-mw-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    pointer-events: auto;
+    transition: opacity var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+    transform-origin: bottom left;
+  }
+
+  .companion-bubble.is-hidden {
+    opacity: 0;
+    transform: scale(0.9) translateY(6px);
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  .bubble-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-1);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: var(--tracking-wider);
+    color: var(--colour-mw-accent);
+  }
+
+  .bubble-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--colour-mw-fg-muted);
+    cursor: pointer;
+    padding: 2px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-sm);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .bubble-close-btn:hover {
+    color: var(--colour-mw-fg);
+  }
+
+  .bubble-close-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 1px var(--colour-mw-accent);
+  }
+
+  .bubble-message {
+    font-size: 11px;
+    line-height: var(--leading-normal);
+    color: var(--colour-mw-fg);
+    margin: 0;
+  }
+
+  /* Companion Avatar Trigger Button */
+  .companion-body-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    outline: none;
+  }
+
+  .companion-body-btn:focus-visible .companion-chassis {
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--colour-mw-accent);
+  }
+
+  /* Chassis Floating Motion */
+  .companion-chassis {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #2a3447, #131b29);
+    border: 1.5px solid rgba(148, 163, 184, 0.35);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: companionFloat 3.6s ease-in-out infinite;
+  }
+
+  @keyframes companionFloat {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+
+  /* Antenna Fin */
+  .companion-antenna {
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 6px;
+    background: #64748b;
+  }
+
+  .antenna-pip {
+    position: absolute;
+    top: -3px;
+    left: -2px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--colour-mw-accent);
+    box-shadow: 0 0 6px var(--colour-mw-accent);
+  }
+
+  /* Dark Visor Face */
+  .companion-visor {
+    width: 32px;
+    height: 20px;
+    background: #070a10;
+    border-radius: 12px;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* Digital LED Eyes */
+  .visor-eyes {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+
+  .eye {
+    width: 7px;
+    height: 9px;
+    background: #38bdf8;
+    border-radius: 4px;
+    box-shadow: 0 0 6px #38bdf8, 0 0 12px rgba(56, 189, 248, 0.6);
+    transition: all 120ms ease;
+  }
+
+  /* Mood Expressions */
+  .visor-eyes.mood-happy .eye {
+    border-radius: 4px 4px 1px 1px;
+    height: 6px;
+    background: #f59e0b;
+    box-shadow: 0 0 6px #f59e0b;
+  }
+
+  .visor-eyes.mood-observing .eye {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #34d399;
+    box-shadow: 0 0 6px #34d399;
+  }
+
+  /* Blinking Effect */
+  .visor-eyes.is-blinking .eye {
+    height: 1.5px;
+    border-radius: 1px;
+  }
+
+  /* Ground Soft Shadow */
+  .companion-shadow {
+    width: 24px;
+    height: 5px;
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 50%;
+    filter: blur(2px);
+    margin-top: 3px;
+    animation: shadowPulse 3.6s ease-in-out infinite;
+  }
+
+  @keyframes shadowPulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.35;
+    }
+    50% {
+      transform: scale(0.75);
+      opacity: 0.15;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .companion-chassis,
+    .companion-shadow {
+      animation: none !important;
+    }
+  }
+</style>
+

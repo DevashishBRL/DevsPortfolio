@@ -8,6 +8,8 @@
  * and smooth isometric exploration.
  */
 
+import RobotCompanion from './RobotCompanion.astro';
+
 interface DestinationInfo {
   id: string;
   num: string;
@@ -178,6 +180,9 @@ const destinations: DestinationInfo[] = [
             </button>
           </div>
         </div>
+
+        <!-- Lightweight Robot Companion Assistant Overlay -->
+        <RobotCompanion />
       </div>
 
       <!-- ── Right / Floating Field-Note Information Panel ── -->
@@ -1027,11 +1032,15 @@ const destinations: DestinationInfo[] = [
         dest.targetPos[2] + dest.cameraOffset[2]
       );
       moveTo(cPos, tPos);
+
+      // Notify Companion Bot
+      window.dispatchEvent(new CustomEvent('campus-destination-change', { detail: { id } }));
     }
 
     function resetToOverview() {
       if (hudActiveDest) hudActiveDest.textContent = 'CAMPUS OVERVIEW';
       moveTo(overviewCamPos, overviewTarget);
+      window.dispatchEvent(new CustomEvent('campus-destination-change', { detail: { id: 'overview' } }));
     }
 
     if (hudResetBtn) {
