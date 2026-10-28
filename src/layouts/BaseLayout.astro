@@ -12,6 +12,8 @@ interface Props {
   description: string;
   ogImage?: string;
   canonicalURL?: string;
+  hideHeader?: boolean;
+  hideFooter?: boolean;
 }
 
 const {
@@ -19,6 +21,8 @@ const {
   description,
   ogImage = '/og-default.png',
   canonicalURL = Astro.url.href,
+  hideHeader = false,
+  hideFooter = false,
 } = Astro.props;
 
 const siteName = 'Devashish Tambade';
@@ -62,11 +66,11 @@ const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
   </head>
   <body>
     <a href="#main-content" class="visually-hidden" id="skip-nav">Skip to main content</a>
-    <Header />
+    {!hideHeader && <Header />}
     <main id="main-content">
       <slot />
     </main>
-    <Footer />
+    {!hideFooter && <Footer />}
   </body>
 </html>
 

@@ -2,20 +2,22 @@
 /**
  * RobotCompanion.astro
  * 
- * Lightweight floating robot companion for Devashish's portfolio world.
- * Features a circular chassis, dark digital visor, expressive blinking LED eyes,
- * floating idle motion, accessible status speech bubble, and dismiss/minimize controls.
+ * Lightweight robot companion for Devashish's portfolio world.
+ * Supports:
+ * - 'hero': Prominent centre-stage presence on the cinematic introduction screen.
+ * - 'floating': In-world ambient overlay inside the 3D terrarium.
+ * - 'inline': Compact embedded assistant.
  */
 
 interface Props {
-  mode?: 'floating' | 'inline';
+  mode?: 'floating' | 'inline' | 'hero';
   initialMessage?: string;
   className?: string;
 }
 
 const {
   mode = 'floating',
-  initialMessage = "Welcome to the terrarium. Select a quarter to explore Devashish's projects.",
+  initialMessage = "Hello! I'm Devashish's companion bot.",
   className = '',
 } = Astro.props;
 ---
@@ -23,23 +25,26 @@ const {
 <div
   class={`companion-root companion--${mode} ${className}`}
   role="complementary"
-  aria-label="Campus Companion Bot"
+  aria-label="Campus Companion Assistant"
+  data-mode={mode}
 >
   <!-- Speech / Status Bubble -->
   <div class="companion-bubble" role="status" aria-live="polite">
     <div class="bubble-header">
-      <span class="bubble-name">BOT // 01</span>
-      <button
-        type="button"
-        class="bubble-close-btn"
-        aria-label="Minimize companion assistant"
-        title="Minimize companion"
-      >
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
+      <span class="bubble-name">COMPANION // PROTO-01</span>
+      {mode !== 'hero' && (
+        <button
+          type="button"
+          class="bubble-close-btn"
+          aria-label="Minimize companion assistant"
+          title="Minimize companion"
+        >
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      )}
     </div>
     <p class="bubble-message">
       {initialMessage}
@@ -50,7 +55,7 @@ const {
   <button
     type="button"
     class="companion-body-btn"
-    aria-label="Companion robot: click to toggle speech bubble"
+    aria-label="Campus companion: click to interact"
     title="Campus Companion"
   >
     <div class="companion-chassis">
@@ -73,7 +78,15 @@ const {
 </div>
 
 <script>
-  // Destination Contextual Knowledge (Concise & Restrained)
+  // Introductory Greeting Lines (Natural, Curious, Warm)
+  const heroGreetings = [
+    "Hello! I'm Devashish's companion bot.",
+    "I maintain the robotics lab, software foundry, and design observatory.",
+    "Ready to explore the miniature world whenever you are.",
+    "Press 'Explore My World' and I'll guide you inside.",
+  ];
+
+  // Destination Contextual Knowledge for in-world exploration
   const destinationDialogues: Record<string, { mood: string; text: string }> = {
     overview: {
       mood: 'neutral',
@@ -113,6 +126,7 @@ const {
       if (root.dataset.initialized === 'true') return;
       root.dataset.initialized = 'true';
 
+      const mode = root.dataset.mode || 'floating';
       const bubble = root.querySelector<HTMLElement>('.companion-bubble');
       const messageText = root.querySelector<HTMLElement>('.bubble-message');
       const toggleBtn = root.querySelector<HTMLButtonElement>('.bubble-close-btn');
@@ -122,6 +136,7 @@ const {
       if (!bubble || !messageText) return;
 
       let isMinimized = false;
+      let greetingIndex = 0;
 
       function setMinimized(min: boolean) {
         isMinimized = min;
@@ -136,10 +151,6 @@ const {
         setMinimized(true);
       });
 
-      avatarBtn?.addEventListener('click', () => {
-        setMinimized(!isMinimized);
-      });
-
       function setMood(mood: string) {
         if (!eyes) return;
         eyes.className = 'visor-eyes mood-' + mood;
@@ -150,10 +161,37 @@ const {
         eyes.classList.add('is-blinking');
         setTimeout(() => {
           eyes.classList.remove('is-blinking');
-        }, 350);
+        }, 300);
       }
 
+      // Avatar click interaction
+      avatarBtn?.addEventListener('click', () => {
+        if (mode === 'hero') {
+          triggerExpressiveBlink();
+          setMood('happy');
+          messageText.textContent = "Systems nominal! Hit 'Explore My World' and let's head in.";
+          if (isMinimized) setMinimized(false);
+        } else {
+          setMinimized(!isMinimized);
+        }
+      });
+
+      // Periodic blink timer
+      const blinkInterval = setInterval(triggerExpressiveBlink, 4200);
+
+      // Hero mode dialogue cycle (gentle, warm, non-intrusive)
+      let cycleInterval: ReturnType<typeof setInterval> | null = null;
+      if (mode === 'hero') {
+        cycleInterval = setInterval(() => {
+          greetingIndex = (greetingIndex + 1) % heroGreetings.length;
+          triggerExpressiveBlink();
+          messageText.textContent = heroGreetings[greetingIndex];
+        }, 6500);
+      }
+
+      // In-world destination event listener
       function onDestinationChanged(destId: string) {
+        if (mode === 'hero') return;
         const dialogue = destinationDialogues[destId] || destinationDialogues.overview;
         messageText.textContent = dialogue.text;
         setMood(dialogue.mood);
@@ -164,8 +202,6 @@ const {
         triggerExpressiveBlink();
       }
 
-      const blinkInterval = setInterval(triggerExpressiveBlink, 4500);
-
       const handleCampusChange = (e: Event) => {
         const customEvt = e as CustomEvent<{ id: string }>;
         if (customEvt.detail && customEvt.detail.id) {
@@ -175,8 +211,16 @@ const {
 
       window.addEventListener('campus-destination-change', handleCampusChange);
 
+      // Prepare for takeoff event (ready for Step 2)
+      window.addEventListener('companion-trigger-takeoff', () => {
+        triggerExpressiveBlink();
+        setMood('happy');
+        root.classList.add('companion--taking-off');
+      });
+
       window.addEventListener('pagehide', () => {
         clearInterval(blinkInterval);
+        if (cycleInterval) clearInterval(cycleInterval);
         window.removeEventListener('campus-destination-change', handleCampusChange);
       });
     });
@@ -199,6 +243,7 @@ const {
     max-width: 280px;
   }
 
+  /* ── Mode 1: Floating inside 3D Canvas ── */
   .companion--floating {
     position: absolute;
     bottom: var(--space-4);
@@ -206,13 +251,132 @@ const {
     z-index: 10;
   }
 
+  /* ── Mode 2: Inline ── */
   .companion--inline {
     position: relative;
     max-width: 320px;
     z-index: 2;
   }
 
-  /* Speech Bubble */
+  /* ── Mode 3: Hero Centre-Stage Presence (Cinematic Introduction) ── */
+  .companion--hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 420px;
+    width: 100%;
+    margin-inline: auto;
+    gap: var(--space-6);
+  }
+
+  .companion--hero .companion-bubble {
+    width: 100%;
+    max-width: 380px;
+    background: rgba(15, 23, 42, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-5);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+    text-align: center;
+    position: relative;
+  }
+
+  .companion--hero .companion-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid rgba(15, 23, 42, 0.94);
+  }
+
+  .companion--hero .bubble-header {
+    justify-content: center;
+    font-size: 10px;
+    margin-bottom: var(--space-2);
+  }
+
+  .companion--hero .bubble-message {
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    color: #f1f5f9;
+  }
+
+  .companion--hero .companion-chassis {
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle at 35% 35%, #334155 0%, #1e293b 60%, #0f172a 100%);
+    border: 2px solid rgba(148, 163, 184, 0.4);
+    box-shadow:
+      0 12px 32px rgba(0, 0, 0, 0.5),
+      inset 0 2px 4px rgba(255, 255, 255, 0.25),
+      0 0 35px rgba(56, 189, 248, 0.15);
+    animation: heroFloat 4.2s ease-in-out infinite;
+  }
+
+  .companion--hero .companion-antenna {
+    top: -14px;
+    width: 3.5px;
+    height: 14px;
+    background: #64748b;
+  }
+
+  .companion--hero .antenna-pip {
+    top: -6px;
+    left: -4px;
+    width: 12px;
+    height: 12px;
+    box-shadow: 0 0 12px var(--colour-accent);
+  }
+
+  .companion--hero .companion-visor {
+    width: 105px;
+    height: 64px;
+    border-radius: 32px;
+    background: #050810;
+    border: 2px solid rgba(56, 189, 248, 0.45);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.95);
+  }
+
+  .companion--hero .visor-eyes {
+    gap: 16px;
+  }
+
+  .companion--hero .eye {
+    width: 18px;
+    height: 24px;
+    border-radius: 9px;
+    box-shadow: 0 0 12px #38bdf8, 0 0 24px rgba(56, 189, 248, 0.7);
+  }
+
+  .companion--hero .visor-eyes.mood-happy .eye {
+    height: 14px;
+    border-radius: 9px 9px 2px 2px;
+    box-shadow: 0 0 12px #f59e0b;
+  }
+
+  .companion--hero .visor-eyes.mood-observing .eye {
+    width: 22px;
+    height: 22px;
+    box-shadow: 0 0 12px #34d399;
+  }
+
+  .companion--hero .companion-shadow {
+    width: 90px;
+    height: 14px;
+    margin-top: var(--space-3);
+    filter: blur(4px);
+  }
+
+  /* ── Standard Bubble Styles ── */
   .companion-bubble {
     background: rgba(15, 23, 42, 0.92);
     backdrop-filter: blur(12px);
@@ -272,7 +436,7 @@ const {
     margin: 0;
   }
 
-  /* Companion Avatar Trigger Button */
+  /* ── Companion Body & Trigger Button ── */
   .companion-body-btn {
     background: transparent;
     border: none;
@@ -289,7 +453,6 @@ const {
     box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--colour-mw-accent);
   }
 
-  /* Chassis Floating Motion */
   .companion-chassis {
     width: 44px;
     height: 44px;
@@ -305,15 +468,15 @@ const {
   }
 
   @keyframes companionFloat {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-5px);
-    }
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
   }
 
-  /* Antenna Fin */
+  @keyframes heroFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(1.2deg); }
+  }
+
   .companion-antenna {
     position: absolute;
     top: -7px;
@@ -335,7 +498,6 @@ const {
     box-shadow: 0 0 6px var(--colour-mw-accent);
   }
 
-  /* Dark Visor Face */
   .companion-visor {
     width: 32px;
     height: 20px;
@@ -349,7 +511,6 @@ const {
     overflow: hidden;
   }
 
-  /* Digital LED Eyes */
   .visor-eyes {
     display: flex;
     gap: 5px;
@@ -366,7 +527,6 @@ const {
     transition: all 120ms ease;
   }
 
-  /* Mood Expressions */
   .visor-eyes.mood-happy .eye {
     border-radius: 4px 4px 1px 1px;
     height: 6px;
@@ -382,13 +542,11 @@ const {
     box-shadow: 0 0 6px #34d399;
   }
 
-  /* Blinking Effect */
   .visor-eyes.is-blinking .eye {
-    height: 1.5px;
+    height: 2px !important;
     border-radius: 1px;
   }
 
-  /* Ground Soft Shadow */
   .companion-shadow {
     width: 24px;
     height: 5px;
@@ -400,13 +558,33 @@ const {
   }
 
   @keyframes shadowPulse {
-    0%, 100% {
-      transform: scale(1);
-      opacity: 0.35;
+    0%, 100% { transform: scale(1); opacity: 0.35; }
+    50% { transform: scale(0.75); opacity: 0.15; }
+  }
+
+  /* Takeoff preparation style */
+  .companion--taking-off .companion-chassis {
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease;
+    transform: translateY(-80px) scale(0.7);
+    opacity: 0;
+  }
+
+  @media (max-width: 640px) {
+    .companion--hero .companion-chassis {
+      width: 110px;
+      height: 110px;
     }
-    50% {
-      transform: scale(0.75);
-      opacity: 0.15;
+    .companion--hero .companion-visor {
+      width: 80px;
+      height: 48px;
+    }
+    .companion--hero .eye {
+      width: 14px;
+      height: 18px;
+    }
+    .companion--hero .companion-bubble {
+      max-width: 290px;
+      padding: var(--space-3) var(--space-4);
     }
   }
 
@@ -417,4 +595,3 @@ const {
     }
   }
 </style>
-

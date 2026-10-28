@@ -2,428 +2,209 @@
 /**
  * Homepage — Devashish Tambade
  * 
- * Sections:
- * 1. Cinematic Landing Stage (Editorial Headline, Identity, Teaser & Companion)
- * 2. Explorable 3D Miniature Terrarium World
- * 3. Selected Work (Engineering & Research)
- * 4. KLA Interactives
- * 5. AnyBody Can Design
- * 6. In the Wild
- * 7. About
+ * Cinematic Introduction Experience:
+ * - Dedicated full-screen viewport (no navbar, no footer, no scrollbars).
+ * - Left side: restrained editorial introduction and exactly two primary CTAs:
+ *   1. "Explore My World"
+ *   2. "Get in Touch"
+ * - Right side: prominent robot companion taking centre stage with expressive face and dialogue.
+ * - Prepares the 3D terrarium world in a dormant container ready for Step 2's transition.
  */
 
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SectionHeader from '../components/SectionHeader.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import ArticleCard from '../components/ArticleCard.astro';
 import MiniatureWorld3D from '../components/MiniatureWorld3D.astro';
 import RobotCompanion from '../components/RobotCompanion.astro';
 
-import { engineeringProjects, klaProjects, authoredArticles, externalMentions } from '../data/content';
-
-const selectedWork = engineeringProjects.filter((p) => p.featured);
-const klaProducts = klaProjects;
-const featuredArticles = authoredArticles.slice(0, 3);
+const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout
   title="Devashish Tambade"
   description="Robotics engineer, research technologist and product builder working across robotics, software and human-centred design."
+  hideHeader={true}
+  hideFooter={true}
 >
-  <!-- ── 1. Cinematic Landing Experience ──────────────────────────────── -->
-  <section class="landing-stage" id="landing" aria-labelledby="landing-heading">
-    <div class="landing-grid-bg" aria-hidden="true"></div>
-    <div class="landing-glow" aria-hidden="true"></div>
+  <!-- ── Dedicated Full-Screen Introduction Stage ──────────────────────── -->
+  <section class="intro-screen" id="intro-screen" aria-label="Introduction">
+    <!-- Subtle architectural background ambiance -->
+    <div class="intro-bg-grid" aria-hidden="true"></div>
+    <div class="intro-bg-glow" aria-hidden="true"></div>
 
-    <div class="container landing-container">
-      <div class="landing-layout">
-        <!-- ── Left Column: Editorial Headline & Actions ── -->
-        <div class="landing-content">
-          <!-- Top metadata status -->
-          <div class="landing-meta-strip">
-            <span class="landing-badge">
-              <span class="landing-badge-dot" aria-hidden="true"></span>
-              PORTFOLIO // 2026 EDITION
-            </span>
-            <span class="landing-geo">BRISTOL, UK · LAT 51.45° N · LON 2.59° W</span>
-          </div>
-
-          <!-- Headline -->
-          <h1 class="landing-headline" id="landing-heading">
-            Engineering Autonomous Systems, Thought Software &amp;
-            <em class="serif">Human-Centred Design.</em>
-          </h1>
-
-          <!-- Identity statement -->
-          <p class="landing-lead">
-            I build things that make <strong>problems smaller</strong>. Robotics engineer and research technologist completing an MEng at the University of Bristol — working at the convergence of mechanical hardware, wearable medical enclosures, accessible prosthetics, and digital tools.
-          </p>
-
-          <!-- Core Discipline Anchors -->
-          <div class="landing-tags" role="list" aria-label="Core disciplines">
-            <span class="landing-tag" role="listitem">Robotics Engineering</span>
-            <span class="landing-tag-sep" aria-hidden="true">·</span>
-            <span class="landing-tag" role="listitem">Wearable Enclosures (TORUS)</span>
-            <span class="landing-tag-sep" aria-hidden="true">·</span>
-            <span class="landing-tag" role="listitem">KLA Interactives</span>
-            <span class="landing-tag-sep" aria-hidden="true">·</span>
-            <span class="landing-tag" role="listitem">AnyBody Can Design</span>
-          </div>
-
-          <!-- Primary & Secondary Actions -->
-          <div class="landing-actions">
-            <a href="#miniature-world" class="btn btn-landing-primary" id="landing-explore-btn">
-              <span>Explore the World</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
-              </svg>
-            </a>
-
-            <a href="#about" class="btn btn-landing-secondary" id="landing-contact-btn">
-              <span>Get in Touch</span>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </a>
-          </div>
-
-          <!-- Six District Preview Pill Bar -->
-          <div class="landing-districts-bar" aria-label="Campus sectors preview">
-            <span class="districts-label">CAMPUS SECTORS:</span>
-            <div class="districts-list">
-              <span class="district-pill">01 Lab</span>
-              <span class="district-pill">02 Foundry</span>
-              <span class="district-pill">03 Observatory</span>
-              <span class="district-pill">04 Yard</span>
-              <span class="district-pill">05 Commons</span>
-              <span class="district-pill">06 Outlook</span>
-            </div>
-          </div>
+    <div class="intro-shell">
+      <!-- ── Left Column: Editorial Introduction & Two Actions ── -->
+      <div class="intro-narrative">
+        <div class="intro-meta-badge">
+          <span class="meta-dot" aria-hidden="true"></span>
+          <span>DEVASHISH TAMBADE // PORTFOLIO</span>
         </div>
 
-        <!-- ── Right Column: Visual Teaser Stage with Integrated Companion ── -->
-        <div class="landing-visual-stage" aria-label="Miniature world teaser and assistant">
-          <div class="teaser-card">
-            <div class="teaser-card-header">
-              <div class="teaser-card-title-group">
-                <span class="teaser-card-pill">LIVE DIORAMA</span>
-                <span class="teaser-card-title">Terrarium Habitat</span>
-              </div>
-              <span class="teaser-coord">ISOMETRIC // 3D</span>
-            </div>
+        <h1 class="intro-headline">
+          I build things that make<br />
+          <em class="serif">problems smaller.</em>
+        </h1>
 
-            <!-- Stylized Habitat Isometric Blueprint Teaser -->
-            <div class="teaser-blueprint" aria-hidden="true">
-              <svg viewBox="0 0 340 220" fill="none" xmlns="http://www.w3.org/2000/svg" class="teaser-svg">
-                <!-- Outer terrarium rim -->
-                <ellipse cx="170" cy="110" rx="140" ry="70" stroke="var(--colour-accent)" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.45" />
-                <ellipse cx="170" cy="110" rx="115" ry="58" stroke="var(--colour-border)" stroke-width="1.2" opacity="0.6" />
-                <ellipse cx="170" cy="110" rx="50" ry="25" stroke="var(--colour-accent)" stroke-width="1" opacity="0.5" />
-                <!-- Connecting axis paths -->
-                <line x1="170" y1="40" x2="170" y2="180" stroke="var(--colour-border)" stroke-width="1" stroke-dasharray="2 3" opacity="0.5" />
-                <line x1="30" y1="110" x2="310" y2="110" stroke="var(--colour-border)" stroke-width="1" stroke-dasharray="2 3" opacity="0.5" />
-                <!-- Sector nodes -->
-                <circle cx="100" cy="75" r="7" fill="rgba(245, 158, 11, 0.25)" stroke="#f59e0b" stroke-width="1.5" />
-                <circle cx="240" cy="75" r="7" fill="rgba(56, 189, 248, 0.25)" stroke="#38bdf8" stroke-width="1.5" />
-                <circle cx="240" cy="145" r="7" fill="rgba(251, 146, 60, 0.25)" stroke="#fb923c" stroke-width="1.5" />
-                <circle cx="100" cy="145" r="7" fill="rgba(52, 211, 153, 0.25)" stroke="#34d399" stroke-width="1.5" />
-                <circle cx="170" cy="110" r="8" fill="rgba(167, 139, 250, 0.25)" stroke="#a78bfa" stroke-width="1.5" />
-                <circle cx="170" cy="50" r="7" fill="rgba(244, 63, 94, 0.25)" stroke="#f43f5e" stroke-width="1.5" />
-              </svg>
-            </div>
+        <p class="intro-statement">
+          Robotics engineer, research technologist, and builder. Working at the intersection of mechanical hardware, wearable medical enclosures, and digital thought software.
+        </p>
 
-            <!-- Integrated Companion Briefing -->
-            <div class="teaser-companion-wrap">
-              <RobotCompanion
-                mode="inline"
-                initialMessage="Welcome. I'm your campus guide. Explore the interactive miniature world or get in touch below."
-              />
-            </div>
+        <p class="intro-substatement">
+          Welcome to my digital campus. Take a moment to say hello to my companion bot, or step inside to explore the habitat.
+        </p>
 
-            <!-- Stage metadata footer -->
-            <div class="teaser-card-footer">
-              <span class="teaser-note">6 Interactive Quarters</span>
-              <span class="teaser-sep">·</span>
-              <span class="teaser-note">Procedural Three.js</span>
-              <span class="teaser-sep">·</span>
-              <span class="teaser-note">Day &amp; Dusk Lighting</span>
-            </div>
-          </div>
+        <!-- Exactly Two Primary Actions -->
+        <div class="intro-actions">
+          <button type="button" class="btn btn-intro-primary" id="btn-explore-world">
+            <span>Explore My World</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+            </svg>
+          </button>
+
+          <a href={`${base}about/`} class="btn btn-intro-secondary" id="btn-get-in-touch">
+            <span>Get in Touch</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
         </div>
+
+        <div class="intro-footer-note">
+          <span class="coord-label">HABITAT // BRISTOL, UK</span>
+          <span class="coord-sep" aria-hidden="true">·</span>
+          <span class="coord-val">LAT 51.45° N · LON 2.59° W</span>
+        </div>
+      </div>
+
+      <!-- ── Right Column: The Companion Takes Centre Stage ── -->
+      <div class="intro-companion-stage">
+        <div class="companion-pedestal" aria-hidden="true">
+          <div class="pedestal-ring pedestal-ring--outer"></div>
+          <div class="pedestal-ring pedestal-ring--inner"></div>
+        </div>
+
+        <RobotCompanion
+          mode="hero"
+          initialMessage="Hello! I'm Devashish's companion bot. Ready to explore the habitat whenever you are."
+        />
       </div>
     </div>
   </section>
 
-  <!-- ── 2. Explorable 3D Isometric Miniature World ─────────────────────── -->
-  <section id="miniature-world" aria-labelledby="mw-heading">
+  <!-- ── Dormant In-World Container (Preserved & Prepared for Step 2) ── -->
+  <div id="world-experience-container" class="world-dormant" aria-hidden="true">
     <MiniatureWorld3D />
-  </section>
-
-  <!-- ── 3. Selected Work ───────────────────────────────────────────────── -->
-  <section class="section" id="work" aria-labelledby="engineering-heading">
-    <div class="container">
-      <SectionHeader
-        label="01 — Selected Work"
-        title="Building at the edge of hardware and software"
-        description="Engineering projects spanning wearable enclosures, assistive devices, telemetry and technical drafting systems."
-        linkHref={`${import.meta.env.BASE_URL}work/`}
-        linkLabel="All projects"
-      />
-
-      <div class="card-grid" role="list">
-        {selectedWork.map((project, i) => (
-          <div role="listitem">
-            <ProjectCard project={project} index={i} />
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ── 4. KLA Interactives ────────────────────────────────────────────── -->
-  <section class="section" id="kla" aria-labelledby="kla-heading">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-meta">
-          <div class="kla-header-bar">
-            <p class="section-label" aria-hidden="true">02 — Products</p>
-            <span class="kla-badge" aria-label="KLA Interactives brand">KLA Interactives</span>
-          </div>
-          <h2 class="section-title" id="kla-heading">A growing family of digital products</h2>
-          <p class="section-description">
-            DraftGrid, AraLoom, TabZones and JobPal are products currently in active development under KLA Interactives — built around how people think and work.
-          </p>
-        </div>
-        <a href={`${import.meta.env.BASE_URL}studio/`} class="section-link">
-          All products
-          <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="5" y1="12" x2="19" y2="12"/>
-            <polyline points="12 5 19 12 12 19"/>
-          </svg>
-        </a>
-      </div>
-
-      <div class="card-grid card-grid--2" role="list">
-        {klaProducts.map((project, i) => (
-          <div role="listitem">
-            <ProjectCard project={project} index={i} />
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ── 5. AnyBody Can Design ──────────────────────────────────────────── -->
-  <section class="section" id="writing" aria-labelledby="writing-heading">
-    <div class="container">
-      <SectionHeader
-        label="03 — Writing & Observations"
-        title="AnyBody Can Design"
-        description="An independent space for design thinking, usability observations, practical experiments and writing about how things work."
-        linkHref={`${import.meta.env.BASE_URL}writing/`}
-        linkLabel="All articles"
-      />
-
-      <div class="article-list" role="list">
-        {featuredArticles.map((article) => (
-          <div role="listitem">
-            <ArticleCard article={article} />
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ── 6. In the Wild ─────────────────────────────────────────────────── -->
-  <section class="section" id="in-the-wild" aria-labelledby="wild-heading">
-    <div class="container">
-      <SectionHeader
-        label="04 — Publications & Press"
-        title="In the Wild"
-        description="External publications, research features and press mentions. Featured articles and publications will appear here."
-        linkHref={`${import.meta.env.BASE_URL}in-the-wild/`}
-        linkLabel="All mentions"
-      />
-
-      {externalMentions.length === 1 && externalMentions[0].id === 'placeholder-mention-1' ? (
-        <div class="mention-placeholder" role="status">
-          <p>Featured articles and publications will appear here as external mentions are confirmed and published.</p>
-        </div>
-      ) : (
-        <div class="card-grid" role="list">
-          {externalMentions.map((mention) => (
-            <div role="listitem">
-              <article class="mention-card">
-                <div class="mention-body">
-                  <p class="mention-type">{mention.type}</p>
-                  <p class="mention-pub">{mention.publication}</p>
-                  <p class="mention-title">{mention.title}</p>
-                  <p class="mention-desc">{mention.description}</p>
-                </div>
-              </article>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  </section>
-
-  <!-- ── 7. About ───────────────────────────────────────────────────────── -->
-  <section class="section" id="about" aria-labelledby="about-summary-heading">
-    <div class="container">
-      <SectionHeader
-        label="05 — Profile"
-        title="About Devashish"
-        description="A concise background across robotics engineering, prototyping, product development and research."
-        linkHref={`${import.meta.env.BASE_URL}about/`}
-        linkLabel="Full about page"
-      />
-
-      <div class="about-intro-grid">
-        <div class="about-content">
-          <p class="about-text">
-            I am a robotics engineer and research technologist who designs and builds at the intersection of mechanical hardware, embedded intelligence and human-centred software.
-          </p>
-          <p class="about-text">
-            My engineering work spans wearable medical hardware enclosures, accessible prosthetic mechanisms, embedded agricultural IoT telemetry, and digital products created under KLA Interactives.
-          </p>
-          <p class="about-text">
-            Through <em>AnyBody Can Design</em>, I write and reflect on usability, design patterns and practical engineering observations.
-          </p>
-          <div class="hero-actions" style="margin-top: var(--space-6);">
-            <a href={`${import.meta.env.BASE_URL}cv/`} class="btn btn-ghost" id="cv-link">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-                <line x1="16" y1="13" x2="8" y2="13"/>
-                <line x1="16" y1="17" x2="8" y2="17"/>
-              </svg>
-              View CV
-            </a>
-          </div>
-        </div>
-
-        <aside class="about-meta-box" aria-label="Core focus areas">
-          <h3 class="about-meta-title">Core Focus</h3>
-          <dl class="about-meta-list">
-            <div class="about-meta-item">
-              <dt>Discipline</dt>
-              <dd>Robotics &amp; Mechatronics</dd>
-            </div>
-            <div class="about-meta-item">
-              <dt>Specialization</dt>
-              <dd>Hardware Prototyping &amp; Embedded Systems</dd>
-            </div>
-            <div class="about-meta-item">
-              <dt>Ventures</dt>
-              <dd>KLA Interactives</dd>
-            </div>
-            <div class="about-meta-item">
-              <dt>Publication</dt>
-              <dd>AnyBody Can Design</dd>
-            </div>
-          </dl>
-        </aside>
-      </div>
-    </div>
-  </section>
+  </div>
 </BaseLayout>
 
-<style>
-  /* ── Cinematic Landing Stage Styles ──────────────────────────────────── */
+<script>
+  // Step 1: Hook the 'Explore My World' button interaction
+  const exploreBtn = document.getElementById('btn-explore-world');
+  exploreBtn?.addEventListener('click', () => {
+    // Notify the companion to react
+    window.dispatchEvent(new CustomEvent('companion-trigger-takeoff'));
+    // Step 2 will wire the complete seamless transition into full-screen world
+  });
+</script>
 
-  .landing-stage {
-    position: relative;
-    min-height: calc(100vh - 72px);
+<style is:global>
+  /* Lock page strictly to the visible viewport on homepage */
+  html, body {
+    overflow: hidden !important;
+    height: 100% !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+    margin: 0;
+    padding: 0;
+  }
+</style>
+
+<style>
+  /* ── Dedicated Full-Screen Introduction Stage ──────────────────────── */
+
+  .intro-screen {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
     display: flex;
     align-items: center;
-    padding-block-start: clamp(5.5rem, 10vw, 8rem);
-    padding-block-end: clamp(3.5rem, 6vw, 5.5rem);
+    justify-content: center;
+    background: var(--colour-bg);
     overflow: hidden;
-    border-bottom: 1px solid var(--colour-border-subtle);
+    z-index: 50;
+    padding: clamp(1.5rem, 4vw, 3.5rem);
+    box-sizing: border-box;
   }
 
-  .landing-grid-bg {
+  .intro-bg-grid {
     position: absolute;
     inset: 0;
     background-image:
       linear-gradient(var(--colour-border-subtle) 1px, transparent 1px),
       linear-gradient(90deg, var(--colour-border-subtle) 1px, transparent 1px);
-    background-size: 52px 52px;
+    background-size: 56px 56px;
     opacity: 0.35;
     pointer-events: none;
-    mask-image: radial-gradient(ellipse 75% 65% at 50% 25%, black 40%, transparent 100%);
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
   }
 
-  .landing-glow {
+  .intro-bg-glow {
     position: absolute;
-    top: 15%;
-    right: 10%;
-    width: 480px;
-    height: 480px;
+    top: 25%;
+    right: 15%;
+    width: 500px;
+    height: 500px;
     background: radial-gradient(circle, rgba(245, 158, 11, 0.08) 0%, transparent 70%);
     pointer-events: none;
-    filter: blur(40px);
+    filter: blur(50px);
   }
 
-  .landing-container {
-    position: relative;
-    z-index: 1;
-  }
-
-  .landing-layout {
+  .intro-shell {
+    width: 100%;
+    max-width: 1140px;
     display: grid;
-    grid-template-columns: 1.35fr 1fr;
-    gap: clamp(2rem, 5vw, 4.5rem);
+    grid-template-columns: 1.25fr 1fr;
+    gap: clamp(2.5rem, 6vw, 6rem);
     align-items: center;
+    position: relative;
+    z-index: 2;
   }
 
-  /* Left Column */
-  .landing-content {
+  /* ── Left Column: Narrative & Actions ── */
+  .intro-narrative {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .landing-meta-strip {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-3);
-    margin-bottom: var(--space-5);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    letter-spacing: var(--tracking-wide);
-  }
-
-  .landing-badge {
+  .intro-meta-badge {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    background: var(--colour-accent-bg);
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wider);
     color: var(--colour-accent);
-    padding: 3px 10px;
+    background: var(--colour-accent-bg);
+    padding: 4px 12px;
     border-radius: 9999px;
     border: 1px solid rgba(245, 158, 11, 0.25);
-    font-weight: 600;
+    margin-bottom: var(--space-6);
   }
 
-  .landing-badge-dot {
-    width: 6px;
-    height: 6px;
+  .meta-dot {
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: var(--colour-accent);
-    box-shadow: 0 0 6px var(--colour-accent);
+    box-shadow: 0 0 8px var(--colour-accent);
   }
 
-  .landing-geo {
-    color: var(--colour-fg-subtle);
-  }
-
-  .landing-headline {
-    font-size: clamp(2.2rem, 1.8rem + 2.4vw, 3.8rem);
+  .intro-headline {
+    font-size: clamp(2.4rem, 2rem + 2.5vw, 4.2rem);
     font-weight: 700;
     line-height: var(--leading-tight);
     letter-spacing: var(--tracking-tight);
@@ -431,257 +212,223 @@ const featuredArticles = authoredArticles.slice(0, 3);
     margin-bottom: var(--space-6);
   }
 
-  .landing-headline em {
+  .intro-headline em {
     font-family: var(--font-serif);
     font-style: italic;
     font-weight: 400;
     color: var(--colour-accent);
   }
 
-  .landing-lead {
+  .intro-statement {
     font-size: var(--text-md);
+    line-height: var(--leading-normal);
+    color: var(--colour-fg);
+    font-weight: 500;
+    max-width: 52ch;
+    margin-bottom: var(--space-3);
+  }
+
+  .intro-substatement {
+    font-size: var(--text-sm);
     line-height: var(--leading-loose);
     color: var(--colour-fg-muted);
-    max-width: 58ch;
-    margin-bottom: var(--space-6);
-  }
-
-  .landing-tags {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-2);
+    max-width: 48ch;
     margin-bottom: var(--space-8);
   }
 
-  .landing-tag {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    letter-spacing: var(--tracking-wide);
-    color: var(--colour-fg-subtle);
-    padding: var(--space-1) var(--space-3);
-    border: 1px solid var(--colour-border);
-    border-radius: var(--radius-sm);
-    background: var(--colour-bg-raised);
-  }
-
-  .landing-tag-sep {
-    color: var(--colour-fg-faint);
-    font-size: var(--text-xs);
-  }
-
-  .landing-actions {
+  /* Exactly Two Buttons */
+  .intro-actions {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: var(--space-4);
-    align-items: center;
     margin-bottom: var(--space-8);
   }
 
-  .btn-landing-primary {
+  .btn-intro-primary {
     background: var(--colour-accent);
     color: #ffffff;
-    border-color: var(--colour-accent);
-    font-weight: 600;
-    padding: var(--space-3) var(--space-7);
+    border: 1.5px solid var(--colour-accent);
+    font-family: var(--font-sans);
     font-size: var(--text-base);
-    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.28);
+    font-weight: 600;
+    padding: var(--space-3) var(--space-8);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+    transition: all var(--duration-fast) var(--ease-out);
+    min-height: 48px;
   }
 
-  .btn-landing-primary:hover {
+  .btn-intro-primary:hover {
     background: var(--colour-accent-dim);
     border-color: var(--colour-accent-dim);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
+    box-shadow: 0 8px 26px rgba(245, 158, 11, 0.42);
   }
 
-  .btn-landing-secondary {
+  .btn-intro-primary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--colour-bg), 0 0 0 4px var(--colour-accent);
+  }
+
+  .btn-intro-secondary {
     background: transparent;
     color: var(--colour-fg);
-    border: 1px solid var(--colour-border);
-    font-weight: 500;
-    padding: var(--space-3) var(--space-6);
+    border: 1.5px solid var(--colour-border);
+    font-family: var(--font-sans);
     font-size: var(--text-base);
+    font-weight: 500;
+    padding: var(--space-3) var(--space-7);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: all var(--duration-fast) var(--ease-out);
+    min-height: 48px;
   }
 
-  .btn-landing-secondary:hover {
+  .btn-intro-secondary:hover {
     background: var(--colour-bg-raised);
     border-color: var(--colour-fg-muted);
     transform: translateY(-1px);
   }
 
-  .landing-districts-bar {
+  .btn-intro-secondary:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  .intro-footer-note {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--space-2);
     font-family: var(--font-mono);
     font-size: 11px;
+    color: var(--colour-fg-subtle);
     padding-top: var(--space-4);
     border-top: 1px solid var(--colour-border-subtle);
     width: 100%;
-  }
-
-  .districts-label {
-    color: var(--colour-fg-subtle);
-    font-weight: 600;
-    letter-spacing: var(--tracking-wider);
-  }
-
-  .districts-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-
-  .district-pill {
-    color: var(--colour-fg-muted);
-    background: var(--colour-bg-subtle);
-    padding: 2px 8px;
-    border-radius: var(--radius-sm);
-  }
-
-  /* Right Column: Visual Teaser Stage */
-  .landing-visual-stage {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-  }
-
-  .teaser-card {
-    width: 100%;
     max-width: 440px;
-    background: var(--colour-bg-raised);
-    border: 1px solid var(--colour-border);
-    border-radius: var(--radius-xl);
-    padding: var(--space-6);
-    box-shadow: var(--shadow-lg);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-5);
-    position: relative;
-    overflow: hidden;
   }
 
-  .teaser-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #f59e0b, #38bdf8, #fb923c, #34d399, #a78bfa, #f43f5e);
-  }
-
-  .teaser-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: var(--font-mono);
-    font-size: 11px;
-  }
-
-  .teaser-card-title-group {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-  }
-
-  .teaser-card-pill {
-    background: var(--colour-accent-bg);
-    color: var(--colour-accent);
-    padding: 2px 6px;
-    border-radius: var(--radius-sm);
-    font-weight: 700;
-    font-size: 9px;
-  }
-
-  .teaser-card-title {
+  .coord-label {
     font-weight: 600;
-    color: var(--colour-fg);
   }
 
-  .teaser-coord {
-    color: var(--colour-fg-subtle);
-  }
-
-  .teaser-blueprint {
-    width: 100%;
-    background: var(--colour-bg-subtle);
-    border: 1px dashed var(--colour-border);
-    border-radius: var(--radius-lg);
-    padding: var(--space-4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .teaser-svg {
-    width: 100%;
-    height: auto;
-    max-height: 150px;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.05));
-  }
-
-  .teaser-companion-wrap {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-  }
-
-  .teaser-card-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--colour-fg-subtle);
-    padding-top: var(--space-3);
-    border-top: 1px solid var(--colour-border-subtle);
-  }
-
-  .teaser-sep {
+  .coord-sep {
     color: var(--colour-border);
   }
 
-  /* Responsive Rules */
-  @media (max-width: 960px) {
-    .landing-layout {
-      grid-template-columns: 1fr;
-      gap: var(--space-8);
-    }
-
-    .landing-stage {
-      padding-block: var(--space-12);
-      min-height: auto;
-    }
-
-    .teaser-card {
-      max-width: 100%;
-    }
+  /* ── Right Column: Companion Hero Stage ── */
+  .intro-companion-stage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 380px;
   }
 
-  @media (max-width: 640px) {
-    .landing-headline {
-      font-size: 2rem;
+  .companion-pedestal {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 240px;
+    height: 60px;
+    pointer-events: none;
+  }
+
+  .pedestal-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px dashed var(--colour-border);
+    opacity: 0.5;
+  }
+
+  .pedestal-ring--inner {
+    inset: 12px 30px;
+    border-style: solid;
+    border-color: rgba(245, 158, 11, 0.25);
+    opacity: 0.7;
+  }
+
+  /* ── Dormant in-DOM 3D World (Prepared for Step 2) ── */
+  .world-dormant {
+    display: none;
+  }
+
+  /* ── Responsive Adaptations ── */
+  @media (max-width: 960px) {
+    .intro-shell {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+      text-align: center;
     }
 
-    .landing-actions {
-      flex-direction: column;
-      width: 100%;
+    .intro-narrative {
+      align-items: center;
+      order: 2;
     }
 
-    .landing-actions .btn {
-      width: 100%;
+    .intro-companion-stage {
+      order: 1;
+      min-height: 240px;
+    }
+
+    .intro-actions {
+      justify-content: center;
+    }
+
+    .intro-footer-note {
       justify-content: center;
     }
   }
 
+  @media (max-width: 640px) {
+    .intro-screen {
+      padding: var(--space-4);
+      align-items: center;
+    }
+
+    .intro-headline {
+      font-size: 1.85rem;
+      margin-bottom: var(--space-4);
+    }
+
+    .intro-statement {
+      font-size: var(--text-sm);
+    }
+
+    .intro-substatement {
+      display: none; /* Keep clean on small mobile screens */
+    }
+
+    .intro-actions {
+      flex-direction: column;
+      width: 100%;
+      gap: var(--space-3);
+    }
+
+    .btn-intro-primary,
+    .btn-intro-secondary {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .intro-companion-stage {
+      min-height: 180px;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .btn-landing-primary,
-    .btn-landing-secondary {
+    .btn-intro-primary,
+    .btn-intro-secondary {
       transition: none !important;
       transform: none !important;
     }
