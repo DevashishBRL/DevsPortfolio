@@ -167,6 +167,13 @@ const destinations: DestinationInfo[] = [
             <span class="hud-sub">ISOMETRIC DIORAMA</span>
           </div>
           <div class="mw3d-hud-right">
+            <button type="button" class="hud-btn hud-btn--back" id="hud-back-to-intro" title="Return to introduction screen">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              <span>Back to Intro</span>
+            </button>
             <button type="button" class="hud-btn" id="hud-theme-toggle" title="Toggle Daylight / Dusk Ambience">
               <span id="hud-theme-icon" aria-hidden="true">☀️</span>
               <span id="hud-theme-label">Daylight</span>
@@ -1047,6 +1054,20 @@ const destinations: DestinationInfo[] = [
       hudResetBtn.addEventListener('click', resetToOverview);
     }
 
+    const hudBackBtn = document.getElementById('hud-back-to-intro');
+    if (hudBackBtn) {
+      hudBackBtn.addEventListener('click', () => {
+        resetToOverview();
+        window.dispatchEvent(new CustomEvent('return-to-intro'));
+      });
+    }
+
+    // Trigger canvas resize when world mode is entered
+    window.addEventListener('enter-world-mode', () => {
+      setTimeout(onResize, 50);
+      setTimeout(onResize, 200);
+    });
+
     // Tab Listeners
     tabBtns.forEach((tab) => {
       tab.addEventListener('click', () => {
@@ -1409,6 +1430,18 @@ const destinations: DestinationInfo[] = [
     cursor: pointer;
     transition: all var(--duration-fast) var(--ease-out);
     min-height: 40px;
+  }
+
+  .hud-btn--back {
+    background: rgba(245, 158, 11, 0.12);
+    border-color: rgba(245, 158, 11, 0.35);
+    color: var(--colour-mw-accent);
+  }
+
+  .hud-btn--back:hover {
+    background: rgba(245, 158, 11, 0.22);
+    border-color: var(--colour-mw-accent);
+    color: #ffffff;
   }
 
   .hud-btn:hover {

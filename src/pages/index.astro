@@ -2,13 +2,12 @@
 /**
  * Homepage — Devashish Tambade
  * 
- * Cinematic Introduction Experience:
- * - Dedicated full-screen viewport (no navbar, no footer, no scrollbars).
- * - Left side: restrained editorial introduction and exactly two primary CTAs:
- *   1. "Explore My World"
- *   2. "Get in Touch"
- * - Right side: prominent robot companion taking centre stage with expressive face and dialogue.
- * - Prepares the 3D terrarium world in a dormant container ready for Step 2's transition.
+ * Cinematic Introduction & Full-Screen World Experience:
+ * - Three explicit states: 'intro' | 'entering-world' | 'world'.
+ * - 'intro': Minimal full-screen greeting with companion hero and 2 primary CTAs.
+ * - 'entering-world': Cheerful companion acknowledgment + flying-away takeoff animation, smooth world reveal.
+ * - 'world': Full-viewport interactive Three.js terrarium with Back to Intro control.
+ * - Seamless return to intro without page reload or WebGL remounting.
  */
 
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -24,88 +23,168 @@ const base = import.meta.env.BASE_URL;
   hideHeader={true}
   hideFooter={true}
 >
-  <!-- ── Dedicated Full-Screen Introduction Stage ──────────────────────── -->
-  <section class="intro-screen" id="intro-screen" aria-label="Introduction">
-    <!-- Subtle architectural background ambiance -->
-    <div class="intro-bg-grid" aria-hidden="true"></div>
-    <div class="intro-bg-glow" aria-hidden="true"></div>
+  <div id="experience-viewport" class="experience-viewport" data-state="intro">
+    <!-- ── 1. Dedicated Full-Screen Introduction Stage ──────────────────── -->
+    <section class="intro-screen" id="intro-screen" aria-label="Introduction">
+      <!-- Subtle architectural background ambiance -->
+      <div class="intro-bg-grid" aria-hidden="true"></div>
+      <div class="intro-bg-glow" aria-hidden="true"></div>
 
-    <div class="intro-shell">
-      <!-- ── Left Column: Editorial Introduction & Two Actions ── -->
-      <div class="intro-narrative">
-        <div class="intro-meta-badge">
-          <span class="meta-dot" aria-hidden="true"></span>
-          <span>DEVASHISH TAMBADE // PORTFOLIO</span>
+      <div class="intro-shell">
+        <!-- ── Left Column: Editorial Introduction & Two Actions ── -->
+        <div class="intro-narrative">
+          <div class="intro-meta-badge">
+            <span class="meta-dot" aria-hidden="true"></span>
+            <span>DEVASHISH TAMBADE // PORTFOLIO</span>
+          </div>
+
+          <h1 class="intro-headline">
+            I build things that make<br />
+            <em class="serif">problems smaller.</em>
+          </h1>
+
+          <p class="intro-statement">
+            Robotics engineer, research technologist, and builder. Working at the intersection of mechanical hardware, wearable medical enclosures, and digital thought software.
+          </p>
+
+          <p class="intro-substatement">
+            Welcome to my digital campus. Take a moment to say hello to my companion bot, or step inside to explore the habitat.
+          </p>
+
+          <!-- Exactly Two Primary Actions -->
+          <div class="intro-actions">
+            <button
+              type="button"
+              class="btn btn-intro-primary"
+              id="btn-explore-world"
+              aria-label="Explore the interactive miniature world"
+            >
+              <span>Explore My World</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+              </svg>
+            </button>
+
+            <a
+              href={`${base}about/`}
+              class="btn btn-intro-secondary"
+              id="btn-get-in-touch"
+              aria-label="Get in touch with Devashish"
+            >
+              <span>Get in Touch</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+
+          <div class="intro-footer-note">
+            <span class="coord-label">HABITAT // BRISTOL, UK</span>
+            <span class="coord-sep" aria-hidden="true">·</span>
+            <span class="coord-val">LAT 51.45° N · LON 2.59° W</span>
+          </div>
         </div>
 
-        <h1 class="intro-headline">
-          I build things that make<br />
-          <em class="serif">problems smaller.</em>
-        </h1>
+        <!-- ── Right Column: The Companion Takes Centre Stage ── -->
+        <div class="intro-companion-stage">
+          <div class="companion-pedestal" aria-hidden="true">
+            <div class="pedestal-ring pedestal-ring--outer"></div>
+            <div class="pedestal-ring pedestal-ring--inner"></div>
+          </div>
 
-        <p class="intro-statement">
-          Robotics engineer, research technologist, and builder. Working at the intersection of mechanical hardware, wearable medical enclosures, and digital thought software.
-        </p>
-
-        <p class="intro-substatement">
-          Welcome to my digital campus. Take a moment to say hello to my companion bot, or step inside to explore the habitat.
-        </p>
-
-        <!-- Exactly Two Primary Actions -->
-        <div class="intro-actions">
-          <button type="button" class="btn btn-intro-primary" id="btn-explore-world">
-            <span>Explore My World</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
-            </svg>
-          </button>
-
-          <a href={`${base}about/`} class="btn btn-intro-secondary" id="btn-get-in-touch">
-            <span>Get in Touch</span>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </a>
-        </div>
-
-        <div class="intro-footer-note">
-          <span class="coord-label">HABITAT // BRISTOL, UK</span>
-          <span class="coord-sep" aria-hidden="true">·</span>
-          <span class="coord-val">LAT 51.45° N · LON 2.59° W</span>
+          <RobotCompanion
+            mode="hero"
+            initialMessage="Hello! I'm Devashish's companion bot. Ready to explore the habitat whenever you are."
+          />
         </div>
       </div>
+    </section>
 
-      <!-- ── Right Column: The Companion Takes Centre Stage ── -->
-      <div class="intro-companion-stage">
-        <div class="companion-pedestal" aria-hidden="true">
-          <div class="pedestal-ring pedestal-ring--outer"></div>
-          <div class="pedestal-ring pedestal-ring--inner"></div>
-        </div>
-
-        <RobotCompanion
-          mode="hero"
-          initialMessage="Hello! I'm Devashish's companion bot. Ready to explore the habitat whenever you are."
-        />
+    <!-- ── 2. Full-Screen 3D Terrarium World Experience ─────────────────── -->
+    <div
+      id="world-experience-container"
+      class="world-fullscreen-container"
+      aria-hidden="true"
+      role="region"
+      aria-label="Full-Screen Interactive 3D World"
+    >
+      <div class="world-fullscreen">
+        <MiniatureWorld3D />
       </div>
     </div>
-  </section>
-
-  <!-- ── Dormant In-World Container (Preserved & Prepared for Step 2) ── -->
-  <div id="world-experience-container" class="world-dormant" aria-hidden="true">
-    <MiniatureWorld3D />
   </div>
 </BaseLayout>
 
 <script>
-  // Step 1: Hook the 'Explore My World' button interaction
-  const exploreBtn = document.getElementById('btn-explore-world');
-  exploreBtn?.addEventListener('click', () => {
-    // Notify the companion to react
-    window.dispatchEvent(new CustomEvent('companion-trigger-takeoff'));
-    // Step 2 will wire the complete seamless transition into full-screen world
-  });
+  function initExperienceController() {
+    const root = document.getElementById('experience-viewport');
+    const exploreBtn = document.getElementById('btn-explore-world');
+    const introScreen = document.getElementById('intro-screen');
+    const worldContainer = document.getElementById('world-experience-container');
+
+    if (!root || !exploreBtn || !introScreen || !worldContainer) return;
+
+    let currentState = 'intro'; // 'intro' | 'entering-world' | 'world'
+
+    function setExperienceState(newState: 'intro' | 'entering-world' | 'world') {
+      if (currentState === newState) return;
+      currentState = newState;
+      root.dataset.state = newState;
+
+      if (newState === 'intro') {
+        introScreen.setAttribute('aria-hidden', 'false');
+        worldContainer.setAttribute('aria-hidden', 'true');
+        exploreBtn.removeAttribute('disabled');
+        exploreBtn.focus();
+      } else if (newState === 'entering-world') {
+        exploreBtn.setAttribute('disabled', 'true');
+        // 1. Companion acknowledges and takes off
+        window.dispatchEvent(new CustomEvent('companion-trigger-takeoff'));
+
+        // 2. Check reduced-motion preference for timing
+        const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const transitionDuration = prefersReducedMotion ? 40 : 850;
+
+        setTimeout(() => {
+          setExperienceState('world');
+        }, transitionDuration);
+      } else if (newState === 'world') {
+        introScreen.setAttribute('aria-hidden', 'true');
+        worldContainer.setAttribute('aria-hidden', 'false');
+        // 3. Notify Three.js scene to fit the full viewport and focus canvas
+        window.dispatchEvent(new CustomEvent('enter-world-mode'));
+        const canvas = worldContainer.querySelector<HTMLElement>('#mw3d-canvas-container');
+        canvas?.focus();
+      }
+    }
+
+    // Step 2: Handle "Explore My World" Activation
+    exploreBtn.addEventListener('click', () => {
+      if (currentState === 'intro') {
+        setExperienceState('entering-world');
+      }
+    });
+
+    // Step 2: Handle "Back to Intro" Activation from World HUD
+    window.addEventListener('return-to-intro', () => {
+      setExperienceState('intro');
+    });
+
+    // Keyboard accessibility: Escape key returns to intro if in world mode
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && currentState === 'world') {
+        window.dispatchEvent(new CustomEvent('return-to-intro'));
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initExperienceController);
+  } else {
+    initExperienceController();
+  }
 </script>
 
 <style is:global>
@@ -121,14 +200,23 @@ const base = import.meta.env.BASE_URL;
 </style>
 
 <style>
-  /* ── Dedicated Full-Screen Introduction Stage ──────────────────────── */
+  /* ── Master Experience Viewport Container ──────────────────────────── */
 
-  .intro-screen {
-    position: fixed;
-    inset: 0;
+  .experience-viewport {
+    position: relative;
     width: 100vw;
     height: 100vh;
     height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* ── 1. Dedicated Full-Screen Introduction Stage ───────────────────── */
+
+  .intro-screen {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -137,6 +225,21 @@ const base = import.meta.env.BASE_URL;
     z-index: 50;
     padding: clamp(1.5rem, 4vw, 3.5rem);
     box-sizing: border-box;
+    transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.6s ease;
+    transform-origin: center center;
+  }
+
+  /* Transition state styling */
+  [data-state="entering-world"] .intro-screen {
+    opacity: 0;
+    transform: scale(0.96) translateY(-10px);
+    pointer-events: none;
+  }
+
+  [data-state="world"] .intro-screen {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
   }
 
   .intro-bg-grid {
@@ -173,7 +276,7 @@ const base = import.meta.env.BASE_URL;
     z-index: 2;
   }
 
-  /* ── Left Column: Narrative & Actions ── */
+  /* Left Column: Narrative & Actions */
   .intro-narrative {
     display: flex;
     flex-direction: column;
@@ -236,7 +339,7 @@ const base = import.meta.env.BASE_URL;
     margin-bottom: var(--space-8);
   }
 
-  /* Exactly Two Buttons */
+  /* Two Primary Buttons */
   .intro-actions {
     display: flex;
     flex-wrap: wrap;
@@ -263,11 +366,17 @@ const base = import.meta.env.BASE_URL;
     min-height: 48px;
   }
 
-  .btn-intro-primary:hover {
+  .btn-intro-primary:hover:not(:disabled) {
     background: var(--colour-accent-dim);
     border-color: var(--colour-accent-dim);
     transform: translateY(-2px);
     box-shadow: 0 8px 26px rgba(245, 158, 11, 0.42);
+  }
+
+  .btn-intro-primary:disabled {
+    opacity: 0.65;
+    cursor: wait;
+    transform: none;
   }
 
   .btn-intro-primary:focus-visible {
@@ -324,7 +433,7 @@ const base = import.meta.env.BASE_URL;
     color: var(--colour-border);
   }
 
-  /* ── Right Column: Companion Hero Stage ── */
+  /* Right Column: Companion Hero Stage */
   .intro-companion-stage {
     position: relative;
     display: flex;
@@ -358,9 +467,86 @@ const base = import.meta.env.BASE_URL;
     opacity: 0.7;
   }
 
-  /* ── Dormant in-DOM 3D World (Prepared for Step 2) ── */
-  .world-dormant {
-    display: none;
+  /* ── 2. Full-Screen 3D Terrarium World Container ─────────────────────── */
+
+  .world-fullscreen-container {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 100;
+    overflow: hidden;
+    background: #0c1018;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: scale(1.02);
+    transition: opacity 0.75s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.75s ease;
+  }
+
+  [data-state="entering-world"] .world-fullscreen-container {
+    visibility: visible;
+    opacity: 0.85;
+    transform: scale(1.008);
+  }
+
+  [data-state="world"] .world-fullscreen-container {
+    visibility: visible;
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  /* Adapt MiniatureWorld3D for 100% full-viewport display */
+  :global(.world-fullscreen) :global(.mw3d-wrapper) {
+    height: 100vh;
+    height: 100dvh;
+    padding: 0;
+    margin: 0;
+    border: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  :global(.world-fullscreen) :global(.mw3d-container) {
+    max-width: 100%;
+    height: 100%;
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+
+  :global(.world-fullscreen) :global(.mw3d-header) {
+    display: none; /* Hide top section header in full-screen world mode */
+  }
+
+  :global(.world-fullscreen) :global(.mw3d-stage) {
+    flex: 1;
+    min-height: 0;
+    padding: var(--space-2);
+    gap: var(--space-3);
+  }
+
+  :global(.world-fullscreen) :global(.mw3d-canvas-wrap) {
+    min-height: 0;
+    height: 100%;
+    border-radius: var(--radius-md);
+  }
+
+  :global(.world-fullscreen) :global(.mw3d-destinations-grid) {
+    margin-top: var(--space-2);
+    gap: var(--space-2);
+  }
+
+  :global(.world-fullscreen) :global(.mw3d-nav-card) {
+    padding: var(--space-2) var(--space-3);
+    min-height: auto;
+  }
+
+  :global(.world-fullscreen) :global(.nav-card-desc) {
+    display: none; /* Keep bottom cards strip sleek in full-screen mode */
   }
 
   /* ── Responsive Adaptations ── */
@@ -388,6 +574,14 @@ const base = import.meta.env.BASE_URL;
     .intro-footer-note {
       justify-content: center;
     }
+
+    :global(.world-fullscreen) :global(.mw3d-stage) {
+      grid-template-columns: 1fr;
+    }
+
+    :global(.world-fullscreen) :global(.mw3d-field-panel) {
+      display: none; /* Step 4 will introduce responsive bottom sheet */
+    }
   }
 
   @media (max-width: 640px) {
@@ -406,7 +600,7 @@ const base = import.meta.env.BASE_URL;
     }
 
     .intro-substatement {
-      display: none; /* Keep clean on small mobile screens */
+      display: none;
     }
 
     .intro-actions {
@@ -427,6 +621,8 @@ const base = import.meta.env.BASE_URL;
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .intro-screen,
+    .world-fullscreen-container,
     .btn-intro-primary,
     .btn-intro-secondary {
       transition: none !important;
