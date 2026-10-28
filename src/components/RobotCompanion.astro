@@ -6,17 +6,32 @@
  * Features a circular chassis, dark digital visor, expressive blinking LED eyes,
  * floating idle motion, accessible status speech bubble, and dismiss/minimize controls.
  */
+
+interface Props {
+  mode?: 'floating' | 'inline';
+  initialMessage?: string;
+  className?: string;
+}
+
+const {
+  mode = 'floating',
+  initialMessage = "Welcome to the terrarium. Select a quarter to explore Devashish's projects.",
+  className = '',
+} = Astro.props;
 ---
 
-<div class="companion-root" id="robot-companion" role="complementary" aria-label="Campus Companion Bot">
+<div
+  class={`companion-root companion--${mode} ${className}`}
+  role="complementary"
+  aria-label="Campus Companion Bot"
+>
   <!-- Speech / Status Bubble -->
-  <div class="companion-bubble" id="companion-bubble" role="status" aria-live="polite">
+  <div class="companion-bubble" role="status" aria-live="polite">
     <div class="bubble-header">
       <span class="bubble-name">BOT // 01</span>
       <button
         type="button"
         class="bubble-close-btn"
-        id="companion-toggle-btn"
         aria-label="Minimize companion assistant"
         title="Minimize companion"
       >
@@ -26,8 +41,8 @@
         </svg>
       </button>
     </div>
-    <p class="bubble-message" id="companion-message-text">
-      Welcome to the terrarium. Select a quarter to explore Devashish's projects.
+    <p class="bubble-message">
+      {initialMessage}
     </p>
   </div>
 
@@ -35,7 +50,6 @@
   <button
     type="button"
     class="companion-body-btn"
-    id="companion-avatar-btn"
     aria-label="Companion robot: click to toggle speech bubble"
     title="Campus Companion"
   >
@@ -47,7 +61,7 @@
       </div>
       <!-- Digital visor face -->
       <div class="companion-visor">
-        <div class="visor-eyes" id="companion-eyes">
+        <div class="visor-eyes">
           <div class="eye eye-left"></div>
           <div class="eye eye-right"></div>
         </div>
@@ -91,108 +105,111 @@
     },
   };
 
-  function initRobotCompanion() {
-    const root = document.getElementById('robot-companion');
-    const bubble = document.getElementById('companion-bubble');
-    const messageText = document.getElementById('companion-message-text');
-    const toggleBtn = document.getElementById('companion-toggle-btn');
-    const avatarBtn = document.getElementById('companion-avatar-btn');
-    const eyes = document.getElementById('companion-eyes');
+  function initRobotCompanions() {
+    const roots = document.querySelectorAll<HTMLElement>('.companion-root');
+    if (!roots.length) return;
 
-    if (!root || !bubble || !messageText) return;
+    roots.forEach((root) => {
+      if (root.dataset.initialized === 'true') return;
+      root.dataset.initialized = 'true';
 
-    let isMinimized = false;
+      const bubble = root.querySelector<HTMLElement>('.companion-bubble');
+      const messageText = root.querySelector<HTMLElement>('.bubble-message');
+      const toggleBtn = root.querySelector<HTMLButtonElement>('.bubble-close-btn');
+      const avatarBtn = root.querySelector<HTMLButtonElement>('.companion-body-btn');
+      const eyes = root.querySelector<HTMLElement>('.visor-eyes');
 
-    // Toggle minimize
-    function setMinimized(min: boolean) {
-      isMinimized = min;
-      bubble?.classList.toggle('is-hidden', isMinimized);
-      if (toggleBtn) {
-        toggleBtn.setAttribute('aria-expanded', String(!isMinimized));
+      if (!bubble || !messageText) return;
+
+      let isMinimized = false;
+
+      function setMinimized(min: boolean) {
+        isMinimized = min;
+        bubble?.classList.toggle('is-hidden', isMinimized);
+        if (toggleBtn) {
+          toggleBtn.setAttribute('aria-expanded', String(!isMinimized));
+        }
       }
-    }
 
-    if (toggleBtn) {
-      toggleBtn.addEventListener('click', (e) => {
+      toggleBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
         setMinimized(true);
       });
-    }
 
-    if (avatarBtn) {
-      avatarBtn.addEventListener('click', () => {
+      avatarBtn?.addEventListener('click', () => {
         setMinimized(!isMinimized);
       });
-    }
 
-    // Set mood expression
-    function setMood(mood: string) {
-      if (!eyes) return;
-      eyes.className = 'visor-eyes mood-' + mood;
-    }
-
-    // Update dialogue based on destination id
-    function onDestinationChanged(destId: string) {
-      const dialogue = destinationDialogues[destId] || destinationDialogues.overview;
-      
-      messageText.textContent = dialogue.text;
-      setMood(dialogue.mood);
-
-      // Re-show bubble if minimized on explicit destination navigation
-      if (isMinimized) {
-        setMinimized(false);
+      function setMood(mood: string) {
+        if (!eyes) return;
+        eyes.className = 'visor-eyes mood-' + mood;
       }
 
-      // Quick expressive double-blink
-      triggerExpressiveBlink();
-    }
-
-    function triggerExpressiveBlink() {
-      if (!eyes) return;
-      eyes.classList.add('is-blinking');
-      setTimeout(() => {
-        eyes.classList.remove('is-blinking');
-      }, 350);
-    }
-
-    // Periodic idle micro-interactions (blinking every 4-6s)
-    let blinkTimer = setInterval(() => {
-      triggerExpressiveBlink();
-    }, 4500);
-
-    // Listen for custom event dispatched by Three.js campus controller
-    window.addEventListener('campus-destination-change', (e: Event) => {
-      const customEvt = e as CustomEvent<{ id: string }>;
-      if (customEvt.detail && customEvt.detail.id) {
-        onDestinationChanged(customEvt.detail.id);
+      function triggerExpressiveBlink() {
+        if (!eyes) return;
+        eyes.classList.add('is-blinking');
+        setTimeout(() => {
+          eyes.classList.remove('is-blinking');
+        }, 350);
       }
-    });
 
-    // Cleanup on document unload
-    window.addEventListener('pagehide', () => {
-      clearInterval(blinkTimer);
+      function onDestinationChanged(destId: string) {
+        const dialogue = destinationDialogues[destId] || destinationDialogues.overview;
+        messageText.textContent = dialogue.text;
+        setMood(dialogue.mood);
+
+        if (isMinimized) {
+          setMinimized(false);
+        }
+        triggerExpressiveBlink();
+      }
+
+      const blinkInterval = setInterval(triggerExpressiveBlink, 4500);
+
+      const handleCampusChange = (e: Event) => {
+        const customEvt = e as CustomEvent<{ id: string }>;
+        if (customEvt.detail && customEvt.detail.id) {
+          onDestinationChanged(customEvt.detail.id);
+        }
+      };
+
+      window.addEventListener('campus-destination-change', handleCampusChange);
+
+      window.addEventListener('pagehide', () => {
+        clearInterval(blinkInterval);
+        window.removeEventListener('campus-destination-change', handleCampusChange);
+      });
     });
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initRobotCompanion);
+    document.addEventListener('DOMContentLoaded', initRobotCompanions);
   } else {
-    initRobotCompanion();
+    initRobotCompanions();
   }
 </script>
 
 <style>
   .companion-root {
-    position: absolute;
-    bottom: var(--space-4);
-    left: var(--space-4);
-    z-index: 10;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-2);
     pointer-events: none;
     max-width: 280px;
+  }
+
+  .companion--floating {
+    position: absolute;
+    bottom: var(--space-4);
+    left: var(--space-4);
+    z-index: 10;
+  }
+
+  .companion--inline {
+    position: relative;
+    max-width: 320px;
+    z-index: 2;
   }
 
   /* Speech Bubble */
