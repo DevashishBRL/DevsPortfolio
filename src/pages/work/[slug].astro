@@ -1,0 +1,25 @@
+---
+/**
+ * Dynamic Content Route for Engineering Projects
+ * Resolves /work/[slug]/ e.g. /work/torus-enclosure/, /work/easyprosthetics/, /work/digital-agri-board/
+ */
+import { getCollection, type CollectionEntry } from 'astro:content';
+import ProjectTemplate from '../../templates/ProjectTemplate.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+---
+
+<ProjectTemplate project={project} />
+

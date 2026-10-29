@@ -1,0 +1,23 @@
+---
+/**
+ * src/pages/writing/[slug].astro
+ *
+ * Dynamic route for writing articles from the 'writing' content collection.
+ * Generates one page per .md file in src/content/writing/.
+ */
+import { getCollection } from 'astro:content';
+import WritingTemplate from '../../templates/WritingTemplate.astro';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('writing', ({ data }) => !data.draft);
+  return articles.map(article => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+---
+
+<WritingTemplate article={article} />
+

@@ -1,0 +1,16 @@
+{
+  "id": "lab",
+  "num": "01 / LAB",
+  "title": "The Lab",
+  "category": "Engineering & Robotics",
+  "locationLabel": "Northwest Plateau · Mechatronics & Robotics High-Bay",
+  "specialty": "Autonomous Systems, Hardware & Biomechatronics",
+  "description": "Where mechanical hardware and firmware converge: modular articulated robotic arms, wearable medical device enclosures (TORUS), and accessible prosthetic research (EasyProsthetics).",
+  "companionGreeting": "Welcome to the Lab! Here is where we prototype physical mechatronics, robotic linkages, and wearable enclosures.",
+  "companionMood": "observing",
+  "actionLabel": "Explore Engineering & Research",
+  "actionPath": "work/",
+  "themeColor": "#f59e0b",
+  "order": 1
+}
+

@@ -1,0 +1,16 @@
+{
+  "id": "foundry",
+  "num": "02 / FOUNDRY",
+  "title": "The Foundry",
+  "category": "Product Studio",
+  "locationLabel": "East Tower · Interactive Systems Studio",
+  "specialty": "KLA Interactives & Digital Thought Tools",
+  "description": "The software workshop building DraftGrid, AraLoom, TabZones, and JobPal — focused digital tools in development to organize thoughts and de-stress workflows.",
+  "companionGreeting": "Step inside the Foundry! This is the software workshop crafting KLA digital tools to clarify complex workflows.",
+  "companionMood": "happy",
+  "actionLabel": "View KLA Products",
+  "actionPath": "studio/",
+  "themeColor": "#38bdf8",
+  "order": 2
+}
+

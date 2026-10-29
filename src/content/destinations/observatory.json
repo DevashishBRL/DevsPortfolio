@@ -1,0 +1,16 @@
+{
+  "id": "observatory",
+  "num": "03 / OBSERVATORY",
+  "title": "The Observatory",
+  "category": "Design & Ideas",
+  "locationLabel": "Southeast Terrace · Observation Rotunda",
+  "specialty": "AnyBody Can Design & Visual Thinking",
+  "description": "An open atelier and writing observatory dedicated to usability observation, human factors, design principles, and essays on practical design thinking.",
+  "companionGreeting": "Welcome up to the Observatory! A quiet rotunda for usability reflections and essays on practical design thinking.",
+  "companionMood": "observing",
+  "actionLabel": "Read Design Writing",
+  "actionPath": "writing/",
+  "themeColor": "#fb923c",
+  "order": 3
+}
+

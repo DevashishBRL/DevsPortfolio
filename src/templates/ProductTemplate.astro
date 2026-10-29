@@ -1,0 +1,77 @@
+---
+/**
+ * ProductTemplate.astro
+ *
+ * Reusable product/studio page template powered by Astro Content Collections.
+ * Renders KLA product descriptions with metadata sidebar and markdown body.
+ */
+import PageLayout from '../layouts/PageLayout.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  product: CollectionEntry<'products'>;
+}
+
+const { product } = Astro.props;
+const { data } = product;
+const { Content } = await product.render();
+
+const base = import.meta.env.BASE_URL;
+
+const statusLabel = data.status === 'launched'
+  ? 'Launched'
+  : data.status === 'beta'
+    ? 'Beta'
+    : data.status === 'active'
+      ? 'In Development'
+      : 'Concept';
+---
+
+<PageLayout
+  title={`${data.title} - KLA Interactives`}
+  description={data.description}
+  label={`KLA Interactives - ${statusLabel}`}
+  heading={data.title}
+  subheading={data.subtitle}
+>
+  <article class="case-study" aria-label="Product overview">
+    <div class="container case-study-grid">
+      <div class="case-main">
+        <div class="article-body">
+          <Content />
+        </div>
+        {data.note && (
+          <section class="case-section">
+            <h2 class="cs-heading">Current Status</h2>
+            <div class="case-note">
+              <p>{data.note}</p>
+            </div>
+          </section>
+        )}
+      </div>
+      <aside class="case-meta" aria-label="Product details">
+        <div class="case-meta-card">
+          <dl class="case-meta-list">
+            <div class="case-meta-item"><dt>Studio</dt><dd>{data.studio}</dd></div>
+            {data.platform && (
+              <div class="case-meta-item"><dt>Platform</dt><dd>{data.platform}</dd></div>
+            )}
+            <div class="case-meta-item"><dt>Status</dt><dd>{statusLabel}</dd></div>
+          </dl>
+          {data.tags && data.tags.length > 0 && (
+            <div class="case-meta-tags">
+              {data.tags.map(t => <span class="tag">{t}</span>)}
+            </div>
+          )}
+        </div>
+        <a href={`${base}studio/`} class="back-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+          </svg>
+          All products
+        </a>
+      </aside>
+    </div>
+  </article>
+</PageLayout>
+

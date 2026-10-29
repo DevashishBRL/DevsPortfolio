@@ -1,0 +1,16 @@
+{
+  "id": "yard",
+  "num": "04 / YARD",
+  "title": "The Yard",
+  "category": "Experiments & Prototyping",
+  "locationLabel": "Southwest Basin · Rapid Fabrication Depot",
+  "specialty": "Rapid Fabrication, Rigs & 3D Exploration",
+  "description": "The experimental maker yard: CNC gantry mockups, 3D printing beds, digital agriculture IoT telemetry boards, and physical test fixtures.",
+  "companionGreeting": "Welcome to the Yard! This is where ideas become physical things you can test, rig, and quickly build upon.",
+  "companionMood": "happy",
+  "actionLabel": "Discover Yard Prototypes",
+  "actionPath": "experiments/",
+  "themeColor": "#34d399",
+  "order": 4
+}
+

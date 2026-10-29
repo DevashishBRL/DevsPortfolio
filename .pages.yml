@@ -1,0 +1,184 @@
+# .pages.yml
+# Pages CMS configuration for DevsPortfolio
+# Docs: https://pagescms.org/docs/configuration
+#
+# Authentication: GitHub OAuth via app.pagescms.org
+# Access control: only GitHub collaborators with write access to this repository
+#                 can log in and make edits. Public visibility of the repo does
+#                 NOT grant editing rights.
+#
+# Publishing behaviour: Pages CMS commits directly to `main`. The GitHub Actions
+#                       workflow triggers immediately on every merge to main.
+#                       There is no staging layer — every save is a live publish.
+#                       To require review before publishing, enable branch
+#                       protection on main in GitHub repository Settings.
+
+media:
+  - name: images
+    input: public/images
+    output: /images
+    extensions: [png, jpg, jpeg, webp, gif, svg]
+
+content:
+
+  # ─── Engineering Projects ──────────────────────────────────────────────────
+  - name: projects
+    label: Engineering Projects
+    type: collection
+    path: src/content/projects
+    format: yaml-frontmatter
+    filename: "{fields.slug}.md"
+    view:
+      fields: [title, status, area, featured]
+    fields:
+      - { name: title,       label: Title,        type: string,  required: true }
+      - { name: subtitle,    label: Subtitle,      type: string,  required: true }
+      - { name: description, label: Description,   type: text,    required: true }
+      - { name: discipline,  label: Discipline,    type: string }
+      - name: status
+        label: Status
+        type: select
+        required: true
+        options:
+          values: [active, completed, ongoing]
+      - { name: year,        label: Year,          type: number }
+      - name: area
+        label: Area
+        type: select
+        options:
+          values: [engineering, kla, design]
+      - { name: featured,    label: Featured,      type: boolean }
+      - { name: tags,        label: Tags,          type: string,  list: true }
+      - { name: keySkills,   label: Key Skills,    type: string,  list: true }
+      - { name: tools,       label: Tools Used,    type: string,  list: true }
+      - { name: problem,     label: "The Problem", type: text }
+      - { name: role,        label: "My Role",     type: text }
+      - { name: approach,    label: Approach,      type: text }
+      - { name: outcome,     label: Outcome,       type: text }
+      - { name: note,        label: Note,          type: text }
+      - { name: coverImage,  label: Cover Image,   type: image }
+      - { name: externalUrl, label: External URL,  type: string }
+      - { name: body,        label: Content,       type: rich-text }
+
+  # ─── Writing & Articles ────────────────────────────────────────────────────
+  - name: writing
+    label: Writing & Articles
+    type: collection
+    path: src/content/writing
+    format: yaml-frontmatter
+    filename: "{fields.slug}.md"
+    view:
+      fields: [title, date, series, featured]
+    sort: date
+    order: desc
+    fields:
+      - { name: title,       label: Title,        type: string,  required: true }
+      - { name: description, label: Description,  type: text,    required: true }
+      - { name: series,      label: Series,       type: string }
+      - { name: date,        label: Date,         type: date,    required: true }
+      - name: area
+        label: Area
+        type: select
+        options:
+          values: [anybody-can-design, engineering, general]
+      - { name: tags,        label: Tags,         type: string,  list: true }
+      - { name: featured,    label: Featured,     type: boolean }
+      - { name: draft,       label: Draft,        type: boolean }
+      - { name: body,        label: Content,      type: rich-text }
+
+  # ─── KLA Products ──────────────────────────────────────────────────────────
+  - name: products
+    label: KLA Products
+    type: collection
+    path: src/content/products
+    format: yaml-frontmatter
+    filename: "{fields.slug}.md"
+    view:
+      fields: [title, status, featured]
+    fields:
+      - { name: title,       label: Title,        type: string,  required: true }
+      - { name: subtitle,    label: Subtitle,     type: string,  required: true }
+      - { name: description, label: Description,  type: text,    required: true }
+      - { name: studio,      label: Studio,       type: string }
+      - name: status
+        label: Status
+        type: select
+        options:
+          values: [concept, active, beta, launched]
+      - { name: platform,    label: Platform,     type: string }
+      - { name: tags,        label: Tags,         type: string,  list: true }
+      - { name: featured,    label: Featured,     type: boolean }
+      - { name: note,        label: Status Note,  type: text }
+      - { name: externalUrl, label: External URL, type: string }
+      - { name: body,        label: Content,      type: rich-text }
+
+  # ─── Experiments ───────────────────────────────────────────────────────────
+  - name: experiments
+    label: Experiments
+    type: collection
+    path: src/content/experiments
+    format: yaml-frontmatter
+    filename: "{fields.slug}.md"
+    view:
+      fields: [title, status, featured]
+    fields:
+      - { name: title,       label: Title,             type: string,  required: true }
+      - { name: subtitle,    label: Subtitle,          type: string }
+      - { name: description, label: Description,       type: text,    required: true }
+      - { name: date,        label: Year,              type: string }
+      - name: status
+        label: Status
+        type: select
+        options:
+          values: [active, archived, ongoing, prototype]
+      - { name: tags,        label: Tags,              type: string,  list: true }
+      - { name: tools,       label: Tools,             type: string,  list: true }
+      - { name: honest,      label: Honest Assessment, type: text }
+      - { name: featured,    label: Featured,          type: boolean }
+      - { name: body,        label: Content,           type: rich-text }
+
+  # ─── World Destinations ────────────────────────────────────────────────────
+  # WARNING: These JSON files drive the live 3D world companion and camera.
+  # Edit text fields freely. Do NOT edit or add new destination IDs without
+  # also updating src/data/destinations.ts (which holds camera coordinates).
+  - name: destinations
+    label: World Destinations
+    type: collection
+    path: src/content/destinations
+    format: json
+    filename: "{fields.id}.json"
+    view:
+      fields: [title, order, category]
+    fields:
+      - { name: id,               label: ID,                type: string,  required: true }
+      - { name: num,              label: Number Label,      type: string,  required: true }
+      - { name: title,            label: Title,             type: string,  required: true }
+      - { name: order,            label: Sort Order,        type: number,  required: true }
+      - { name: category,         label: Category,          type: string,  required: true }
+      - { name: locationLabel,    label: Location Label,    type: string,  required: true }
+      - { name: specialty,        label: Specialty Tagline, type: string,  required: true }
+      - { name: description,      label: Description,       type: text,    required: true }
+      - { name: companionGreeting,label: Companion Greeting,type: text,    required: true }
+      - name: companionMood
+        label: Companion Mood
+        type: select
+        options:
+          values: [happy, observing, neutral]
+      - { name: actionLabel,      label: Action Button Label, type: string, required: true }
+      - { name: actionPath,       label: Action Path,         type: string, required: true }
+      - { name: themeColor,       label: Theme Colour,        type: string, required: true }
+
+  # ─── Site Profile ──────────────────────────────────────────────────────────
+  - name: site
+    label: Site Profile
+    type: file
+    path: src/content/site/profile.json
+    format: json
+    fields:
+      - { name: name,          label: Full Name,       type: string, required: true }
+      - { name: tagline,       label: Tagline,         type: string, required: true }
+      - { name: bio,           label: Short Bio,       type: text,   required: true }
+      - { name: location,      label: Location,        type: string }
+      - { name: coordinates,   label: Coordinates,     type: string }
+      - { name: statusNotice,  label: Status Notice,   type: string }
+

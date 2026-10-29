@@ -1,0 +1,16 @@
+{
+  "id": "commons",
+  "num": "05 / COMMONS",
+  "title": "The Commons",
+  "category": "Leadership & Community",
+  "locationLabel": "Central Quad · Collaboration Agora",
+  "specialty": "Mentoring, Teaching & Collaborative Spaces",
+  "description": "The shared open quadrangle representing community contributions, hackathons, engineering mentorship, teaching, and cross-disciplinary collaborations.",
+  "companionGreeting": "Here at the Commons! The gathering quad for engineering mentorship, student hackathons, and collaborative projects.",
+  "companionMood": "happy",
+  "actionLabel": "Community & Mentorship",
+  "actionPath": "people/",
+  "themeColor": "#a78bfa",
+  "order": 5
+}
+

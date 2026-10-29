@@ -1,0 +1,16 @@
+{
+  "id": "outlook",
+  "num": "06 / OUTLOOK",
+  "title": "The Outlook",
+  "category": "Direction & Press",
+  "locationLabel": "North Pinnacle · Horizon Lookout Beacon",
+  "specialty": "Background, Publications & Future Horizons",
+  "description": "The elevated vantage point overlooking external publications, verified press mentions, career history, and future technical research vectors.",
+  "companionGreeting": "High atop the Outlook! Devashish's forward lookout covering verified press mentions, career background, and publications.",
+  "companionMood": "observing",
+  "actionLabel": "View Mentions & Press",
+  "actionPath": "in-the-wild/",
+  "themeColor": "#f43f5e",
+  "order": 6
+}
+
