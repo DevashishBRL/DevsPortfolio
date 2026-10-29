@@ -268,6 +268,7 @@ const destinations: DestinationInfo[] = [
 <!-- Three.js Interactive 3D World Script -->
 <script>
   import * as THREE from 'three';
+  import { RTSCameraController } from '../utils/rtsCameraController';
 
   const base = import.meta.env.BASE_URL;
 
@@ -980,22 +981,8 @@ const destinations: DestinationInfo[] = [
     createTree(-7.5, 1.8, -17.5, 0.9);
     createTree(7.5, 1.8, -17.5, 0.9);
 
-    // ── Camera Animation State ──
-    let startCamPos = new THREE.Vector3().copy(overviewCamPos);
-    let startLookAt = new THREE.Vector3().copy(overviewTarget);
-    let targetCamPos = new THREE.Vector3().copy(overviewCamPos);
-    let targetLookAt = new THREE.Vector3().copy(overviewTarget);
-    let transitionProgress = 1;
-    let isTransitioning = false;
-
-    function moveTo(newCamPos: THREE.Vector3, newLookAt: THREE.Vector3) {
-      startCamPos.copy(camera.position);
-      startLookAt.copy(overviewTarget); // current target reference
-      targetCamPos.copy(newCamPos);
-      targetLookAt.copy(newLookAt);
-      transitionProgress = 0;
-      isTransitioning = true;
-    }
+    // ── RTS Guided Exploration Camera Controller ──
+    const cameraController = new RTSCameraController(camera);
 
     // ── UI Selection Synchronizer ──
     function selectDestination(id: string) {
@@ -1031,14 +1018,8 @@ const destinations: DestinationInfo[] = [
         card.setAttribute('aria-pressed', String(isMatch));
       });
 
-      // Camera Fly to Destination
-      const tPos = new THREE.Vector3(...dest.targetPos);
-      const cPos = new THREE.Vector3(
-        dest.targetPos[0] + dest.cameraOffset[0],
-        dest.targetPos[1] + dest.cameraOffset[1],
-        dest.targetPos[2] + dest.cameraOffset[2]
-      );
-      moveTo(cPos, tPos);
+      // Guided RTS Camera Travel to Destination
+      cameraController.travelToDestination(id);
 
       // Notify Companion Bot
       window.dispatchEvent(new CustomEvent('campus-destination-change', { detail: { id } }));
@@ -1046,7 +1027,18 @@ const destinations: DestinationInfo[] = [
 
     function resetToOverview() {
       if (hudActiveDest) hudActiveDest.textContent = 'CAMPUS OVERVIEW';
-      moveTo(overviewCamPos, overviewTarget);
+      cameraController.returnToOverview();
+
+      // Clear selection states from tabs and cards
+      tabBtns.forEach((btn) => {
+        btn.classList.remove('is-active');
+        btn.setAttribute('aria-selected', 'false');
+      });
+      navCards.forEach((card) => {
+        card.classList.remove('is-selected');
+        card.setAttribute('aria-pressed', 'false');
+      });
+
       window.dispatchEvent(new CustomEvent('campus-destination-change', { detail: { id: 'overview' } }));
     }
 
@@ -1144,12 +1136,7 @@ const destinations: DestinationInfo[] = [
       if (!container || !renderer || !camera) return;
       const w = container.clientWidth;
       const h = container.clientHeight;
-      const newAspect = w / h;
-      camera.left = (-frustumSize * newAspect) / 2;
-      camera.right = (frustumSize * newAspect) / 2;
-      camera.top = frustumSize / 2;
-      camera.bottom = -frustumSize / 2;
-      camera.updateProjectionMatrix();
+      cameraController.handleResize(w, h, frustumSize);
       renderer.setSize(w, h);
     }
     window.addEventListener('resize', onResize);
@@ -1169,19 +1156,8 @@ const destinations: DestinationInfo[] = [
       armForearm.rotation.z = 0.55 + Math.sin(time * 1.6) * 0.1;
       horizonBeacon.scale.setScalar(1.0 + Math.sin(time * 3.0) * 0.08);
 
-      // Smooth Camera Lerp with Cubic Ease-Out
-      if (isTransitioning) {
-        transitionProgress += delta * 1.5;
-        if (transitionProgress >= 1) {
-          transitionProgress = 1;
-          isTransitioning = false;
-        }
-        // Smoothstep interpolation
-        const t = transitionProgress * transitionProgress * (3 - 2 * transitionProgress);
-        camera.position.lerpVectors(startCamPos, targetCamPos, t);
-        overviewTarget.lerpVectors(startLookAt, targetLookAt, t);
-        camera.lookAt(overviewTarget);
-      }
+      // RTS Guided Exploration Camera Controller Update
+      cameraController.update(delta);
 
       renderer.render(scene, camera);
     }
@@ -1201,8 +1177,8 @@ const destinations: DestinationInfo[] = [
       }, 300);
     }
 
-    // Initialize with The Lab
-    selectDestination('lab');
+    // Start with composed campus overview
+    cameraController.resetToOverviewInstant();
   }
 
   if (document.readyState === 'loading') {
