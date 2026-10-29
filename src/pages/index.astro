@@ -523,6 +523,7 @@ const base = import.meta.env.BASE_URL;
   }
 
   :global(.world-fullscreen) :global(.mw3d-stage) {
+    position: relative;
     flex: 1;
     min-height: 0;
     padding: var(--space-2);
@@ -533,6 +534,31 @@ const base = import.meta.env.BASE_URL;
     min-height: 0;
     height: 100%;
     border-radius: var(--radius-md);
+  }
+
+  :global(.world-fullscreen) :global(.mw3d-field-panel) {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    bottom: var(--space-3);
+    width: clamp(340px, 28vw, 420px);
+    z-index: 20;
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(16px);
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s ease;
+    backdrop-filter: blur(16px);
+    background: rgba(14, 19, 28, 0.92);
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+
+  :global(.world-fullscreen) :global(.mw3d-field-panel.is-visible) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    pointer-events: auto;
   }
 
   :global(.world-fullscreen) :global(.mw3d-destinations-grid) {
@@ -580,7 +606,23 @@ const base = import.meta.env.BASE_URL;
     }
 
     :global(.world-fullscreen) :global(.mw3d-field-panel) {
-      display: none; /* Step 4 will introduce responsive bottom sheet */
+      top: auto;
+      left: var(--space-2);
+      right: var(--space-2);
+      bottom: var(--space-2);
+      width: auto;
+      max-height: 52vh;
+      overflow-y: auto;
+      transform: translateY(16px);
+      box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      border-left: 1px solid var(--colour-mw-border);
+      border-top: 3px solid var(--panel-accent);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+    }
+
+    :global(.world-fullscreen) :global(.mw3d-field-panel.is-visible) {
+      transform: translateY(0);
     }
   }
 

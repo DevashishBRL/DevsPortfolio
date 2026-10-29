@@ -9,116 +9,10 @@
  */
 
 import RobotCompanion from './RobotCompanion.astro';
-
-interface DestinationInfo {
-  id: string;
-  num: string;
-  category: string;
-  title: string;
-  tagline: string;
-  description: string;
-  actionLabel: string;
-  actionHref: string;
-  targetPos: [number, number, number]; // [x, y, z] target in 3D world
-  cameraOffset: [number, number, number]; // [x, y, z] camera offset relative to target
-  themeColor: string;
-  locationLabel: string;
-}
+import { getDestinations } from '../data/destinations';
 
 const base = import.meta.env.BASE_URL;
-
-const destinations: DestinationInfo[] = [
-  {
-    id: 'lab',
-    num: '01 / LAB',
-    category: 'Engineering & Robotics',
-    title: 'The Lab',
-    tagline: 'Autonomous Systems, Hardware & Biomechatronics',
-    description:
-      'Where mechanical hardware and firmware converge: modular articulated robotic arms, wearable medical device enclosures (TORUS), and accessible prosthetic research (EasyProsthetics).',
-    actionLabel: 'Explore Engineering & Research',
-    actionHref: `${base}work/`,
-    targetPos: [-12, 1.8, -12],
-    cameraOffset: [22, 26, 22],
-    themeColor: '#f59e0b', // Warm Amber
-    locationLabel: 'Northwest Plateau · Mechatronics & Robotics High-Bay',
-  },
-  {
-    id: 'foundry',
-    num: '02 / FOUNDRY',
-    category: 'Product Studio',
-    title: 'The Foundry',
-    tagline: 'KLA Interactives & Digital Thought Tools',
-    description:
-      'The software workshop building DraftGrid, AraLoom, TabZones, and JobPal — focused digital tools in development to organize thoughts and de-stress workflows.',
-    actionLabel: 'View KLA Products',
-    actionHref: `${base}studio/`,
-    targetPos: [13, 1.4, -12],
-    cameraOffset: [22, 26, 22],
-    themeColor: '#38bdf8', // Cyan / Sky
-    locationLabel: 'East Tower · Interactive Systems Studio',
-  },
-  {
-    id: 'observatory',
-    num: '03 / OBSERVATORY',
-    category: 'Design & Ideas',
-    title: 'The Observatory',
-    tagline: 'AnyBody Can Design & Visual Thinking',
-    description:
-      'An open atelier and writing observatory dedicated to usability observation, human factors, design principles, and essays on practical design thinking.',
-    actionLabel: 'Read Design Writing',
-    actionHref: `${base}writing/`,
-    targetPos: [12, 1.0, 12],
-    cameraOffset: [22, 26, 22],
-    themeColor: '#fb923c', // Terracotta / Warm Orange
-    locationLabel: 'Southeast Terrace · Observation Rotunda',
-  },
-  {
-    id: 'yard',
-    num: '04 / YARD',
-    category: 'Experiments & Prototyping',
-    title: 'The Yard',
-    tagline: 'Rapid Fabrication, Rigs & 3D Exploration',
-    description:
-      'The experimental maker yard: CNC gantry mockups, 3D printing beds, digital agriculture IoT telemetry boards, and physical test fixtures.',
-    actionLabel: 'Discover Yard Prototypes',
-    actionHref: `${base}experiments/`,
-    targetPos: [-12, 0.8, 12],
-    cameraOffset: [22, 26, 22],
-    themeColor: '#34d399', // Emerald / Sage
-    locationLabel: 'Southwest Basin · Rapid Fabrication Depot',
-  },
-  {
-    id: 'commons',
-    num: '05 / COMMONS',
-    category: 'Leadership & Community',
-    title: 'The Commons',
-    tagline: 'Mentoring, Teaching & Collaborative Spaces',
-    description:
-      'The shared open quadrangle representing community contributions, hackathons, engineering mentorship, teaching, and cross-disciplinary collaborations.',
-    actionLabel: 'Community & Mentorship',
-    actionHref: `${base}people/`,
-    targetPos: [0, 1.2, 0],
-    cameraOffset: [28, 32, 28],
-    themeColor: '#a78bfa', // Iris / Purple
-    locationLabel: 'Central Quad · Collaboration Agora',
-  },
-  {
-    id: 'outlook',
-    num: '06 / OUTLOOK',
-    category: 'Direction & Press',
-    title: 'The Outlook',
-    tagline: 'Background, Publications & Future Horizons',
-    description:
-      'The elevated vantage point overlooking external publications, verified press mentions, career history, and future technical research vectors.',
-    actionLabel: 'View Mentions & Press',
-    actionHref: `${base}in-the-wild/`,
-    targetPos: [0, 4.2, -16],
-    cameraOffset: [22, 26, 22],
-    themeColor: '#f43f5e', // Rose
-    locationLabel: 'North Pinnacle · Horizon Lookout Beacon',
-  },
-];
+const destinations = getDestinations(base);
 ---
 
 <div class="mw3d-wrapper" id="miniature-world-3d">
@@ -194,12 +88,20 @@ const destinations: DestinationInfo[] = [
 
       <!-- ── Right / Floating Field-Note Information Panel ── -->
       <aside class="mw3d-field-panel" id="mw3d-info-panel" aria-live="polite" aria-atomic="true">
-        <div class="field-panel-badge">
-          <span class="field-indicator" id="mw3d-panel-indicator" aria-hidden="true"></span>
-          <span class="field-district-num" id="mw3d-panel-num">01 / LAB</span>
-          <span class="field-sep" aria-hidden="true">·</span>
-          <span class="field-coords" id="mw3d-panel-coords">Northwest Plateau · Mechatronics Bay</span>
+        <div class="field-panel-header-row">
+          <div class="field-panel-badge">
+            <span class="field-indicator" id="mw3d-panel-indicator" aria-hidden="true"></span>
+            <span class="field-district-num" id="mw3d-panel-num">01 / LAB</span>
+          </div>
+          <button type="button" class="field-panel-close-btn" id="mw3d-card-close" aria-label="Close information card and return to overview">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </div>
+
+        <p class="field-coords" id="mw3d-panel-coords">Northwest Plateau · Mechatronics &amp; Robotics High-Bay</p>
 
         <div class="field-panel-content">
           <p class="field-category" id="mw3d-panel-category">Engineering &amp; Robotics</p>
@@ -269,102 +171,10 @@ const destinations: DestinationInfo[] = [
 <script>
   import * as THREE from 'three';
   import { RTSCameraController } from '../utils/rtsCameraController';
+  import { getDestinations } from '../data/destinations';
 
   const base = import.meta.env.BASE_URL;
-
-  // Destination Data
-  const destinationsData = [
-    {
-      id: 'lab',
-      num: '01 / LAB',
-      category: 'Engineering & Robotics',
-      title: 'The Lab',
-      tagline: 'Autonomous Systems, Hardware & Biomechatronics',
-      description:
-        'Where mechanical hardware and firmware converge: modular articulated robotic arms, wearable medical device enclosures (TORUS), and accessible prosthetic research (EasyProsthetics).',
-      actionLabel: 'Explore Engineering & Research',
-      actionHref: `${base}work/`,
-      targetPos: [-12, 1.8, -12],
-      cameraOffset: [22, 26, 22],
-      themeColor: '#f59e0b',
-      locationLabel: 'Northwest Plateau · Mechatronics & Robotics High-Bay',
-    },
-    {
-      id: 'foundry',
-      num: '02 / FOUNDRY',
-      category: 'Product Studio',
-      title: 'The Foundry',
-      tagline: 'KLA Interactives & Digital Thought Tools',
-      description:
-        'The software workshop building DraftGrid, AraLoom, TabZones, and JobPal — focused digital tools in development to organize thoughts and de-stress workflows.',
-      actionLabel: 'View KLA Products',
-      actionHref: `${base}studio/`,
-      targetPos: [13, 1.4, -12],
-      cameraOffset: [22, 26, 22],
-      themeColor: '#38bdf8',
-      locationLabel: 'East Tower · Interactive Systems Studio',
-    },
-    {
-      id: 'observatory',
-      num: '03 / OBSERVATORY',
-      category: 'Design & Ideas',
-      title: 'The Observatory',
-      tagline: 'AnyBody Can Design & Visual Thinking',
-      description:
-        'An open atelier and writing observatory dedicated to usability observation, human factors, design principles, and essays on practical design thinking.',
-      actionLabel: 'Read Design Writing',
-      actionHref: `${base}writing/`,
-      targetPos: [12, 1.0, 12],
-      cameraOffset: [22, 26, 22],
-      themeColor: '#fb923c',
-      locationLabel: 'Southeast Terrace · Observation Rotunda',
-    },
-    {
-      id: 'yard',
-      num: '04 / YARD',
-      category: 'Experiments & Prototyping',
-      title: 'The Yard',
-      tagline: 'Rapid Fabrication, Rigs & 3D Exploration',
-      description:
-        'The experimental maker yard: CNC gantry mockups, 3D printing beds, digital agriculture IoT telemetry boards, and physical test fixtures.',
-      actionLabel: 'Discover Yard Prototypes',
-      actionHref: `${base}experiments/`,
-      targetPos: [-12, 0.8, 12],
-      cameraOffset: [22, 26, 22],
-      themeColor: '#34d399',
-      locationLabel: 'Southwest Basin · Rapid Fabrication Depot',
-    },
-    {
-      id: 'commons',
-      num: '05 / COMMONS',
-      category: 'Leadership & Community',
-      title: 'The Commons',
-      tagline: 'Mentoring, Teaching & Collaborative Spaces',
-      description:
-        'The shared open quadrangle representing community contributions, hackathons, engineering mentorship, teaching, and cross-disciplinary collaborations.',
-      actionLabel: 'Community & Mentorship',
-      actionHref: `${base}people/`,
-      targetPos: [0, 1.2, 0],
-      cameraOffset: [28, 32, 28],
-      themeColor: '#a78bfa',
-      locationLabel: 'Central Quad · Collaboration Agora',
-    },
-    {
-      id: 'outlook',
-      num: '06 / OUTLOOK',
-      category: 'Direction & Press',
-      title: 'The Outlook',
-      tagline: 'Background, Publications & Future Horizons',
-      description:
-        'The elevated vantage point overlooking external publications, verified press mentions, career history, and future technical research vectors.',
-      actionLabel: 'View Mentions & Press',
-      actionHref: `${base}in-the-wild/`,
-      targetPos: [0, 4.2, -16],
-      cameraOffset: [22, 26, 22],
-      themeColor: '#f43f5e',
-      locationLabel: 'North Pinnacle · Horizon Lookout Beacon',
-    },
-  ];
+  const destinationsData = getDestinations(base);
 
   function initWorld() {
     const container = document.getElementById('mw3d-canvas-container');
@@ -388,6 +198,7 @@ const destinations: DestinationInfo[] = [
     const panelActionBtn = document.getElementById('mw3d-panel-action-btn');
     const panelActionText = document.getElementById('mw3d-panel-action-text');
     const panelIndicator = document.getElementById('mw3d-panel-indicator');
+    const cardCloseBtn = document.getElementById('mw3d-card-close');
     const hudActiveDest = document.getElementById('hud-active-dest');
     const hudResetBtn = document.getElementById('hud-reset-view');
     const hudThemeToggle = document.getElementById('hud-theme-toggle');
@@ -994,12 +805,15 @@ const destinations: DestinationInfo[] = [
       if (panelCoords) panelCoords.textContent = dest.locationLabel;
       if (panelCategory) panelCategory.textContent = dest.category;
       if (panelTitle) panelTitle.textContent = dest.title;
-      if (panelTagline) panelTagline.textContent = dest.tagline;
+      if (panelTagline) panelTagline.textContent = dest.specialty;
       if (panelDesc) panelDesc.textContent = dest.description;
       if (panelActionText) panelActionText.textContent = dest.actionLabel;
       if (panelActionBtn) panelActionBtn.setAttribute('href', dest.actionHref);
       if (panelIndicator) panelIndicator.style.backgroundColor = dest.themeColor;
-      if (infoPanel) infoPanel.style.setProperty('--panel-accent', dest.themeColor);
+      if (infoPanel) {
+        infoPanel.style.setProperty('--panel-accent', dest.themeColor);
+        infoPanel.classList.add('is-visible');
+      }
 
       // Update HUD
       if (hudActiveDest) hudActiveDest.textContent = dest.title.toUpperCase();
@@ -1018,8 +832,8 @@ const destinations: DestinationInfo[] = [
         card.setAttribute('aria-pressed', String(isMatch));
       });
 
-      // Guided RTS Camera Travel to Destination
-      cameraController.travelToDestination(id);
+      // Guided RTS Camera Travel to Destination (with panel framing offset)
+      cameraController.travelToDestination(id, true);
 
       // Notify Companion Bot
       window.dispatchEvent(new CustomEvent('campus-destination-change', { detail: { id } }));
@@ -1027,6 +841,9 @@ const destinations: DestinationInfo[] = [
 
     function resetToOverview() {
       if (hudActiveDest) hudActiveDest.textContent = 'CAMPUS OVERVIEW';
+      if (infoPanel) {
+        infoPanel.classList.remove('is-visible');
+      }
       cameraController.returnToOverview();
 
       // Clear selection states from tabs and cards
@@ -1044,6 +861,10 @@ const destinations: DestinationInfo[] = [
 
     if (hudResetBtn) {
       hudResetBtn.addEventListener('click', resetToOverview);
+    }
+
+    if (cardCloseBtn) {
+      cardCloseBtn.addEventListener('click', resetToOverview);
     }
 
     const hudBackBtn = document.getElementById('hud-back-to-intro');
@@ -1096,38 +917,6 @@ const destinations: DestinationInfo[] = [
         if (hitObj && hitObj.userData.districtId) {
           selectDestination(hitObj.userData.districtId);
         }
-      }
-    });
-
-    // Interactive Drag to Pivot World Diorama
-    let isDragging = false;
-    let prevMouseX = 0;
-    canvas.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      prevMouseX = e.clientX;
-    });
-    window.addEventListener('mouseup', () => {
-      isDragging = false;
-    });
-    window.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      const deltaX = e.clientX - prevMouseX;
-      prevMouseX = e.clientX;
-      worldGroup.rotation.y += deltaX * 0.005;
-    });
-
-    // Touch Support for Pivot
-    let prevTouchX = 0;
-    canvas.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) {
-        prevTouchX = e.touches[0].clientX;
-      }
-    });
-    canvas.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 1) {
-        const deltaX = e.touches[0].clientX - prevTouchX;
-        prevTouchX = e.touches[0].clientX;
-        worldGroup.rotation.y += deltaX * 0.006;
       }
     });
 
@@ -1271,11 +1060,7 @@ const destinations: DestinationInfo[] = [
     min-height: 520px;
     display: flex;
     outline: none;
-    cursor: grab;
-  }
-
-  .mw3d-canvas-wrap:active {
-    cursor: grabbing;
+    cursor: default;
   }
 
   .mw3d-canvas-wrap:focus-visible {
@@ -1443,7 +1228,14 @@ const destinations: DestinationInfo[] = [
     justify-content: space-between;
     position: relative;
     border-left: 3px solid var(--panel-accent);
-    transition: border-color var(--duration-normal) var(--ease-out);
+    transition: all var(--duration-normal) var(--ease-out);
+  }
+
+  .field-panel-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-2);
   }
 
   .field-panel-badge {
@@ -1455,7 +1247,31 @@ const destinations: DestinationInfo[] = [
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--colour-mw-fg-muted);
-    margin-bottom: var(--space-4);
+  }
+
+  .field-panel-close-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--colour-mw-border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--colour-mw-fg-muted);
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .field-panel-close-btn:hover {
+    color: var(--colour-mw-fg);
+    border-color: var(--panel-accent);
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .field-panel-close-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--panel-accent);
   }
 
   .field-indicator {
@@ -1473,6 +1289,10 @@ const destinations: DestinationInfo[] = [
 
   .field-coords {
     color: var(--colour-mw-fg-muted);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    margin-bottom: var(--space-4);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

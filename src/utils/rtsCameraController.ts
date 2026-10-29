@@ -155,13 +155,30 @@ export class RTSCameraController {
 
   /**
    * Initiates travel to a specified destination configuration
+   * @param destId Target destination id
+   * @param hasPanel Whether the editorial side panel is open (adjusts horizontal framing)
+   * @param onArrival Callback triggered upon arrival
    */
   public travelToDestination(
     destId: string,
+    hasPanel = false,
     onArrival?: (destId: string | null) => void
   ): boolean {
     const config = DESTINATION_CAMERA_CONFIGS[destId];
     if (!config) return false;
+
+    // Base target and camera positions
+    const resolvedTarget = config.target.clone();
+    const resolvedCamPos = config.camPos.clone();
+
+    // Adjust horizontal framing when the editorial side panel is open on desktop
+    if (hasPanel) {
+      const forward = new THREE.Vector3().subVectors(resolvedTarget, resolvedCamPos).setY(0).normalize();
+      const right = new THREE.Vector3().crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
+      const offsetDist = 5.2 / (config.zoom || 1.5);
+      resolvedTarget.addScaledVector(right, -offsetDist);
+      resolvedCamPos.addScaledVector(right, -offsetDist);
+    }
 
     // Check reduced-motion preference
     const prefersReducedMotion =
@@ -172,8 +189,8 @@ export class RTSCameraController {
     if (prefersReducedMotion) {
       this.currentDestId = destId;
       this.state = 'focused';
-      this.camera.position.copy(config.camPos);
-      this.currentLookAt.copy(config.target);
+      this.camera.position.copy(resolvedCamPos);
+      this.currentLookAt.copy(resolvedTarget);
       this.camera.zoom = config.zoom;
       this.camera.updateProjectionMatrix();
       this.camera.lookAt(this.currentLookAt);
@@ -186,8 +203,8 @@ export class RTSCameraController {
 
     this.currentDestId = destId;
     this.state = 'travelling';
-    this.targetPos.copy(config.camPos);
-    this.targetLookAt.copy(config.target);
+    this.targetPos.copy(resolvedCamPos);
+    this.targetLookAt.copy(resolvedTarget);
     this.targetZoom = config.zoom;
     this.duration = config.duration || 1.2;
     this.progress = 0;
