@@ -526,32 +526,46 @@ const base = import.meta.env.BASE_URL;
     position: relative;
     flex: 1;
     min-height: 0;
-    padding: var(--space-2);
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    padding: 0;
     gap: var(--space-3);
+    background: transparent;
+    border: none;
+    box-shadow: none;
   }
 
   :global(.world-fullscreen) :global(.mw3d-canvas-wrap) {
+    flex: 1;
+    min-width: 0;
     min-height: 0;
     height: 100%;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
   }
 
   :global(.world-fullscreen) :global(.mw3d-field-panel) {
-    position: absolute;
-    top: var(--space-3);
-    right: var(--space-3);
-    bottom: var(--space-3);
-    width: clamp(340px, 28vw, 420px);
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    width: 380px;
+    max-width: 35vw;
     z-index: 20;
     margin: 0;
     opacity: 0;
     visibility: hidden;
-    transform: translateX(16px);
+    transform: translateX(20px);
     pointer-events: none;
-    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s ease;
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s ease, width 0.35s ease;
     backdrop-filter: blur(16px);
-    background: rgba(14, 19, 28, 0.92);
-    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    -webkit-backdrop-filter: blur(16px);
+    background: rgba(14, 19, 28, 0.94);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: auto;
   }
 
   :global(.world-fullscreen) :global(.mw3d-field-panel.is-visible) {
@@ -602,15 +616,17 @@ const base = import.meta.env.BASE_URL;
     }
 
     :global(.world-fullscreen) :global(.mw3d-stage) {
-      grid-template-columns: 1fr;
+      flex-direction: column;
     }
 
     :global(.world-fullscreen) :global(.mw3d-field-panel) {
+      position: absolute;
       top: auto;
       left: var(--space-2);
       right: var(--space-2);
       bottom: var(--space-2);
       width: auto;
+      max-width: 100%;
       max-height: 52vh;
       overflow-y: auto;
       transform: translateY(16px);
@@ -618,7 +634,7 @@ const base = import.meta.env.BASE_URL;
       border-left: 1px solid var(--colour-mw-border);
       border-top: 3px solid var(--panel-accent);
       border-radius: var(--radius-lg);
-      padding: var(--space-5);
+      padding: var(--space-4);
     }
 
     :global(.world-fullscreen) :global(.mw3d-field-panel.is-visible) {

@@ -10,14 +10,14 @@
  */
 
 interface Props {
-  mode?: 'floating' | 'inline' | 'hero';
+  mode?: 'floating' | 'inline' | 'hero' | 'guide';
   initialMessage?: string;
   className?: string;
 }
 
 const {
-  mode = 'floating',
-  initialMessage = "Hello! I'm Devashish's companion bot.",
+  mode = 'guide',
+  initialMessage = "Hello! I'm Devashish's companion bot. Select any district to explore.",
   className = '',
 } = Astro.props;
 ---
@@ -90,31 +90,31 @@ const {
   const destinationDialogues: Record<string, { mood: string; text: string }> = {
     overview: {
       mood: 'neutral',
-      text: 'Campus overview. Select a district pin or navigate below to inspect.',
+      text: 'Habitat overview. Choose a landmark pin above or a district below to travel there.',
     },
     lab: {
       mood: 'observing',
-      text: 'The Lab — Mechatronics proving ground, TORUS medical enclosure, and EasyProsthetics.',
+      text: 'Welcome to the Lab! Here is where we prototype physical mechatronics, robotic linkages, and wearable enclosures.',
     },
     foundry: {
       mood: 'happy',
-      text: 'The Foundry — Software product studio building DraftGrid, AraLoom, and JobPal.',
+      text: 'Step inside the Foundry! This is the software workshop crafting KLA digital tools to clarify complex workflows.',
     },
     observatory: {
       mood: 'observing',
-      text: 'The Observatory — Atelier for usability observations and design reflections.',
+      text: 'Welcome up to the Observatory! A quiet rotunda for usability reflections and essays on practical design thinking.',
     },
     yard: {
       mood: 'happy',
-      text: 'The Yard — Rapid hardware prototyping, CNC gantries, and IoT telemetry rigs.',
+      text: 'Welcome to the Yard! This is where ideas become physical things you can test, rig, and quickly build upon.',
     },
     commons: {
       mood: 'happy',
-      text: 'The Commons — Central quadrangle dedicated to mentorship and collaboration.',
+      text: 'Here at the Commons! The gathering quad for engineering mentorship, student hackathons, and collaborative projects.',
     },
     outlook: {
       mood: 'observing',
-      text: 'The Outlook — High vantage point over published articles and future directions.',
+      text: "High atop the Outlook! Devashish's forward lookout covering verified press mentions, career background, and publications.",
     },
   };
 
@@ -264,14 +264,60 @@ const {
     z-index: 10;
   }
 
-  /* ── Mode 2: Inline ── */
+  /* ── Mode 2: Guide Inside Integrated World Stage ── */
+  .companion--guide {
+    position: relative;
+    max-width: 100%;
+    width: 100%;
+    z-index: 5;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+    pointer-events: auto;
+  }
+
+  .companion--guide .companion-bubble {
+    flex: 1;
+    min-width: 0;
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  .companion--guide .bubble-message {
+    font-size: 12px;
+    line-height: var(--leading-normal);
+    color: #e2e8f0;
+  }
+
+  .companion--guide .companion-chassis {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+  }
+
+  .companion--guide .companion-visor {
+    width: 38px;
+    height: 24px;
+  }
+
+  .companion--guide .eye {
+    width: 8px;
+    height: 11px;
+  }
+
+  /* ── Mode 3: Inline ── */
   .companion--inline {
     position: relative;
     max-width: 320px;
     z-index: 2;
   }
 
-  /* ── Mode 3: Hero Centre-Stage Presence (Cinematic Introduction) ── */
+  /* ── Mode 4: Hero Centre-Stage Presence (Cinematic Introduction) ── */
   .companion--hero {
     position: relative;
     display: flex;

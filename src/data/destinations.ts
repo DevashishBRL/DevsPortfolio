@@ -15,6 +15,8 @@ export interface DestinationData {
   title: string;
   specialty: string;
   description: string;
+  companionGreeting: string; // Natural, warm, curious guide introduction
+  companionMood?: 'happy' | 'observing' | 'neutral';
   actionLabel: string;
   actionHref: string; // resolved with base
   themeColor: string;
@@ -36,6 +38,9 @@ export function getDestinations(base: string): DestinationData[] {
       specialty: 'Autonomous Systems, Hardware & Biomechatronics',
       description:
         'Where mechanical hardware and firmware converge: modular articulated robotic arms, wearable medical device enclosures (TORUS), and accessible prosthetic research (EasyProsthetics).',
+      companionGreeting:
+        "Welcome to the Lab! Here is where we prototype physical mechatronics, robotic linkages, and wearable enclosures.",
+      companionMood: 'observing',
       actionLabel: 'Explore Engineering & Research',
       actionHref: `${base}work/`,
       themeColor: '#f59e0b',
@@ -53,6 +58,9 @@ export function getDestinations(base: string): DestinationData[] {
       specialty: 'KLA Interactives & Digital Thought Tools',
       description:
         'The software workshop building DraftGrid, AraLoom, TabZones, and JobPal — focused digital tools in development to organize thoughts and de-stress workflows.',
+      companionGreeting:
+        "Step inside the Foundry! This is the software workshop crafting KLA digital tools to clarify complex workflows.",
+      companionMood: 'happy',
       actionLabel: 'View KLA Products',
       actionHref: `${base}studio/`,
       themeColor: '#38bdf8',
@@ -70,6 +78,9 @@ export function getDestinations(base: string): DestinationData[] {
       specialty: 'AnyBody Can Design & Visual Thinking',
       description:
         'An open atelier and writing observatory dedicated to usability observation, human factors, design principles, and essays on practical design thinking.',
+      companionGreeting:
+        "Welcome up to the Observatory! A quiet rotunda for usability reflections and essays on practical design thinking.",
+      companionMood: 'observing',
       actionLabel: 'Read Design Writing',
       actionHref: `${base}writing/`,
       themeColor: '#fb923c',
@@ -87,6 +98,9 @@ export function getDestinations(base: string): DestinationData[] {
       specialty: 'Rapid Fabrication, Rigs & 3D Exploration',
       description:
         'The experimental maker yard: CNC gantry mockups, 3D printing beds, digital agriculture IoT telemetry boards, and physical test fixtures.',
+      companionGreeting:
+        "Welcome to the Yard! This is where ideas become physical things you can test, rig, and quickly build upon.",
+      companionMood: 'happy',
       actionLabel: 'Discover Yard Prototypes',
       actionHref: `${base}experiments/`,
       themeColor: '#34d399',
@@ -104,6 +118,9 @@ export function getDestinations(base: string): DestinationData[] {
       specialty: 'Mentoring, Teaching & Collaborative Spaces',
       description:
         'The shared open quadrangle representing community contributions, hackathons, engineering mentorship, teaching, and cross-disciplinary collaborations.',
+      companionGreeting:
+        "Here at the Commons! The gathering quad for engineering mentorship, student hackathons, and collaborative projects.",
+      companionMood: 'happy',
       actionLabel: 'Community & Mentorship',
       actionHref: `${base}people/`,
       themeColor: '#a78bfa',
@@ -121,6 +138,9 @@ export function getDestinations(base: string): DestinationData[] {
       specialty: 'Background, Publications & Future Horizons',
       description:
         'The elevated vantage point overlooking external publications, verified press mentions, career history, and future technical research vectors.',
+      companionGreeting:
+        "High atop the Outlook! Devashish's forward lookout covering verified press mentions, career background, and publications.",
+      companionMood: 'observing',
       actionLabel: 'View Mentions & Press',
       actionHref: `${base}in-the-wild/`,
       themeColor: '#f43f5e',
