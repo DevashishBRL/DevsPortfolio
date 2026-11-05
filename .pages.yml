@@ -1,4 +1,4 @@
-# .pages.yml
+﻿# .pages.yml
 # Pages CMS configuration for DevsPortfolio
 # Docs: https://pagescms.org/docs/configuration
 #
@@ -58,6 +58,21 @@ content:
       - { name: note,        label: Note,          type: text }
       - { name: coverImage,  label: Cover Image,   type: image }
       - { name: externalUrl, label: External URL,  type: string }
+      - name: embeds
+        label: Embed Blocks
+        type: object
+        list: true
+        fields:
+          - name: type
+            label: Embed Type
+            type: select
+            required: true
+            options:
+              values: [youtube, vimeo, image, newsletter]
+          - { name: title, label: Title / Accessible Label, type: string }
+          - { name: url, label: Video / Target URL, type: string }
+          - { name: coverImage, label: Image / Cover Image, type: image }
+          - { name: caption, label: Caption / Description, type: text }
       - { name: body,        label: Content,       type: rich-text }
 
   # ─── Writing & Articles ────────────────────────────────────────────────────
@@ -84,6 +99,21 @@ content:
       - { name: tags,        label: Tags,         type: string,  list: true }
       - { name: featured,    label: Featured,     type: boolean }
       - { name: draft,       label: Draft,        type: boolean }
+      - name: embeds
+        label: Embed Blocks
+        type: object
+        list: true
+        fields:
+          - name: type
+            label: Embed Type
+            type: select
+            required: true
+            options:
+              values: [youtube, vimeo, image, newsletter]
+          - { name: title, label: Title / Accessible Label, type: string }
+          - { name: url, label: Video / Target URL, type: string }
+          - { name: coverImage, label: Image / Cover Image, type: image }
+          - { name: caption, label: Caption / Description, type: text }
       - { name: body,        label: Content,      type: rich-text }
 
   # ─── KLA Products ──────────────────────────────────────────────────────────
@@ -110,6 +140,21 @@ content:
       - { name: featured,    label: Featured,     type: boolean }
       - { name: note,        label: Status Note,  type: text }
       - { name: externalUrl, label: External URL, type: string }
+      - name: embeds
+        label: Embed Blocks
+        type: object
+        list: true
+        fields:
+          - name: type
+            label: Embed Type
+            type: select
+            required: true
+            options:
+              values: [youtube, vimeo, image, newsletter]
+          - { name: title, label: Title / Accessible Label, type: string }
+          - { name: url, label: Video / Target URL, type: string }
+          - { name: coverImage, label: Image / Cover Image, type: image }
+          - { name: caption, label: Caption / Description, type: text }
       - { name: body,        label: Content,      type: rich-text }
 
   # ─── Experiments ───────────────────────────────────────────────────────────
@@ -135,12 +180,24 @@ content:
       - { name: tools,       label: Tools,             type: string,  list: true }
       - { name: honest,      label: Honest Assessment, type: text }
       - { name: featured,    label: Featured,          type: boolean }
+      - name: embeds
+        label: Embed Blocks
+        type: object
+        list: true
+        fields:
+          - name: type
+            label: Embed Type
+            type: select
+            required: true
+            options:
+              values: [youtube, vimeo, image, newsletter]
+          - { name: title, label: Title / Accessible Label, type: string }
+          - { name: url, label: Video / Target URL, type: string }
+          - { name: coverImage, label: Image / Cover Image, type: image }
+          - { name: caption, label: Caption / Description, type: text }
       - { name: body,        label: Content,           type: rich-text }
 
   # ─── World Destinations ────────────────────────────────────────────────────
-  # WARNING: These JSON files drive the live 3D world companion and camera.
-  # Edit text fields freely. Do NOT edit or add new destination IDs without
-  # also updating src/data/destinations.ts (which holds camera coordinates).
   - name: destinations
     label: World Destinations
     type: collection
@@ -168,6 +225,19 @@ content:
       - { name: actionPath,       label: Action Path,         type: string, required: true }
       - { name: themeColor,       label: Theme Colour,        type: string, required: true }
 
+  # ─── Newsletter Configuration ──────────────────────────────────────────────
+  - name: newsletter
+    label: AnyBody Can Design Newsletter
+    type: file
+    path: src/content/site/newsletter.json
+    format: json
+    fields:
+      - { name: title,         label: Newsletter Title,      type: string, required: true }
+      - { name: description,   label: Description,           type: text,   required: true }
+      - { name: coverImage,    label: Cover Image,           type: image }
+      - { name: newsletterUrl, label: LinkedIn Follow URL,   type: string, required: true }
+      - { name: ctaLabel,      label: Button Label,          type: string, required: true }
+
   # ─── Site Profile ──────────────────────────────────────────────────────────
   - name: site
     label: Site Profile
@@ -181,4 +251,3 @@ content:
       - { name: location,      label: Location,        type: string }
       - { name: coordinates,   label: Coordinates,     type: string }
       - { name: statusNotice,  label: Status Notice,   type: string }
-

@@ -1,17 +1,23 @@
----
+ï»¿---
 /**
- * /writing/ — AnyBody Can Design articles index.
+ * /writing/ â€” AnyBody Can Design articles index.
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import { authoredArticles } from '../../data/content';
+import NewsletterCTA from '../../components/NewsletterCTA.astro';
+import { getEntry } from 'astro:content';
 
 const base = import.meta.env.BASE_URL;
+
+// Optional CMS-managed newsletter configuration from src/content/site/newsletter.json
+const newsletterEntry = await getEntry('site', 'newsletter');
+const newsletterData = newsletterEntry?.data;
 ---
 
 <PageLayout
-  title="Writing — AnyBody Can Design"
+  title="Writing â€” AnyBody Can Design"
   description="AnyBody Can Design: design thinking, usability observations and practical engineering writing by Devashish Tambade."
-  label="Writing — AnyBody Can Design"
+  label="Writing â€” AnyBody Can Design"
   heading="AnyBody Can Design"
   subheading="An independent space for design thinking, usability observations and writing about how things work."
 >
@@ -20,9 +26,18 @@ const base = import.meta.env.BASE_URL;
     <div class="container">
       <div class="writing-intro">
         <p class="writing-intro-text">
-          <strong>AnyBody Can Design</strong> is a writing series about design — not as a profession, but as a way of seeing. Each piece explores an idea through observation, engineering, or lived experience.
+          <strong>AnyBody Can Design</strong> is a writing series about design â€” not as a profession, but as a way of seeing. Each piece explores an idea through observation, engineering, or lived experience.
         </p>
       </div>
+
+      <!-- LinkedIn Newsletter Subscription Section -->
+      <div class="newsletter-section">
+        <NewsletterCTA
+          coverImage={newsletterData?.coverImage}
+          description={newsletterData?.description}
+        />
+      </div>
+
       <h2 class="section-title" id="writing-series-heading" style="margin-top: var(--space-10); margin-bottom: var(--space-6);">Articles</h2>
       <div class="article-list" role="list">
         {authoredArticles.map(article => {
@@ -68,5 +83,8 @@ const base = import.meta.env.BASE_URL;
     color: var(--colour-fg-muted);
     line-height: var(--leading-loose);
     max-width: none;
+  }
+  .newsletter-section {
+    margin-top: var(--space-8);
   }
 </style>

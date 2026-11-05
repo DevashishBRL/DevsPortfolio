@@ -1,11 +1,12 @@
----
+﻿---
 /**
  * ProjectTemplate.astro
  * 
  * Reusable editorial case study template powered by Astro Content Collections.
- * Renders verified problem, role, approach, outcome, sidebar metadata, and body.
+ * Renders verified problem, role, approach, outcome, sidebar metadata, body, and embed blocks.
  */
 import PageLayout from '../layouts/PageLayout.astro';
+import EmbedBlock from '../components/EmbedBlock.astro';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -79,6 +80,14 @@ const statusLabel = data.status === 'active'
           <Content />
         </div>
 
+        {data.embeds && data.embeds.length > 0 && (
+          <div class="project-embeds">
+            {data.embeds.map((embed: any) => (
+              <EmbedBlock embed={embed} />
+            ))}
+          </div>
+        )}
+
       </div>
 
       <!-- Sidebar metadata -->
@@ -133,4 +142,3 @@ const statusLabel = data.status === 'active'
     </div>
   </article>
 </PageLayout>
-

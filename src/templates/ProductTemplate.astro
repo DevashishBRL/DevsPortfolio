@@ -1,11 +1,12 @@
----
+﻿---
 /**
  * ProductTemplate.astro
  *
  * Reusable product/studio page template powered by Astro Content Collections.
- * Renders KLA product descriptions with metadata sidebar and markdown body.
+ * Renders KLA product descriptions with metadata sidebar, markdown body, and embed blocks.
  */
 import PageLayout from '../layouts/PageLayout.astro';
+import EmbedBlock from '../components/EmbedBlock.astro';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -48,6 +49,13 @@ const statusLabel = data.status === 'launched'
             </div>
           </section>
         )}
+        {data.embeds && data.embeds.length > 0 && (
+          <div class="product-embeds">
+            {data.embeds.map((embed: any) => (
+              <EmbedBlock embed={embed} />
+            ))}
+          </div>
+        )}
       </div>
       <aside class="case-meta" aria-label="Product details">
         <div class="case-meta-card">
@@ -74,4 +82,3 @@ const statusLabel = data.status === 'launched'
     </div>
   </article>
 </PageLayout>
-

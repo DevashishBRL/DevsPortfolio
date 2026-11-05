@@ -5,6 +5,15 @@ import { defineCollection, z } from 'astro:content';
  * Provides type-safety, frontmatter validation, and headless CMS readiness.
  */
 
+// Embed Schema for structured rich media blocks
+const embedSchema = z.object({
+  type: z.enum(['youtube', 'vimeo', 'image', 'newsletter']),
+  title: z.string().optional(),
+  url: z.string().optional(),
+  coverImage: z.string().optional(),
+  caption: z.string().optional(),
+});
+
 // 1. Projects and Case Studies (Engineering & Research)
 const projectsCollection = defineCollection({
   type: 'content',
@@ -23,6 +32,7 @@ const projectsCollection = defineCollection({
     externalUrl: z.string().url().optional(),
     coverImage: z.string().optional(),
     relatedIds: z.array(z.string()).default([]),
+    embeds: z.array(embedSchema).default([]),
     // Optional editorial sections if authored in frontmatter or full markdown body
     problem: z.string().optional(),
     role: z.string().optional(),
@@ -46,6 +56,7 @@ const writingCollection = defineCollection({
     draft: z.boolean().default(false),
     readingTime: z.number().optional(),
     externalUrl: z.string().url().optional(),
+    embeds: z.array(embedSchema).default([]),
   }),
 });
 
@@ -63,6 +74,7 @@ const productsCollection = defineCollection({
     featured: z.boolean().default(false),
     note: z.string().optional(),
     externalUrl: z.string().url().optional(),
+    embeds: z.array(embedSchema).default([]),
   }),
 });
 
@@ -80,6 +92,7 @@ const experimentsCollection = defineCollection({
     honest: z.string().optional(),
     featured: z.boolean().default(false),
     externalUrl: z.string().url().optional(),
+    embeds: z.array(embedSchema).default([]),
   }),
 });
 
@@ -107,12 +120,18 @@ const destinationsCollection = defineCollection({
 const siteCollection = defineCollection({
   type: 'data',
   schema: z.object({
-    name: z.string(),
-    tagline: z.string(),
-    bio: z.string(),
-    location: z.string(),
-    coordinates: z.string(),
+    name: z.string().optional(),
+    tagline: z.string().optional(),
+    bio: z.string().optional(),
+    location: z.string().optional(),
+    coordinates: z.string().optional(),
     statusNotice: z.string().optional(),
+    // Newsletter support in site collection
+    title: z.string().optional(),
+    description: z.string().optional(),
+    coverImage: z.string().optional(),
+    newsletterUrl: z.string().optional(),
+    ctaLabel: z.string().optional(),
   }),
 });
 
@@ -124,4 +143,3 @@ export const collections = {
   destinations: destinationsCollection,
   site: siteCollection,
 };
-

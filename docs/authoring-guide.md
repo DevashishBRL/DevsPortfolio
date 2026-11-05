@@ -1,4 +1,4 @@
-# Authoring Guide
+﻿# Authoring Guide
 
 > A practical reference for creating, editing, and removing content on the portfolio
 > using Pages CMS — without touching code.
@@ -50,6 +50,7 @@ Every save is a git commit. To revert:
 | KLA Products | `src/content/products/*.md` | `/studio/{slug}/` |
 | Experiments | `src/content/experiments/*.md` | No detail page yet (index only) |
 | World Destinations | `src/content/destinations/*.json` | (affects 3D world, no own URL) |
+| AnyBody Can Design Newsletter | `src/content/site/newsletter.json` | `/writing/` |
 | Site Profile | `src/content/site/profile.json` | (used across multiple pages) |
 
 ---
@@ -65,8 +66,9 @@ Every save is a git commit. To revert:
 3. Fill optional editorial sections:
    - **The Problem**, **My Role**, **Approach**, **Outcome**
 4. Add tags, key skills, tools.
-5. Write long-form content in the **Content** (rich-text) field — this becomes the body below the structured sections.
-6. Click **Save**.
+5. Optionally add **Embed Blocks** (see section 8).
+6. Write long-form content in the **Content** (rich-text) field — this becomes the body below the structured sections.
+7. Click **Save**.
 
 **The slug (URL path) is derived from the filename.** When you create an entry, name the file `my-new-project` — the URL will be `/work/my-new-project/`.
 
@@ -85,11 +87,69 @@ Every save is a git commit. To revert:
 1. Open **Writing & Articles** → **New entry**.
 2. Set **Date** (used for sorting — format: `YYYY-MM-DD`).
 3. Set **Draft: true** if you want to write without it appearing in the listing. Change to false when ready.
-4. Write in the **Content** rich-text field using Markdown syntax.
+4. Optionally add **Embed Blocks** (see section 8).
+5. Write in the **Content** rich-text field using Markdown syntax.
 
 ---
 
-## 7. World Destinations (edit with care)
+## 7. AnyBody Can Design Newsletter CTA
+
+The newsletter section displayed on `/writing/` is managed under **AnyBody Can Design Newsletter** (`src/content/site/newsletter.json`).
+
+Editable fields in Pages CMS:
+- **Title**: Name of the publication (defaults to `AnyBody Can Design`).
+- **Description**: Summary text explaining the publication's focus.
+- **Cover Image**: Optional uploaded image (`/images/...`). If omitted, an intentional monogram placeholder (`ACD`) is displayed automatically.
+- **LinkedIn Follow URL**: The exact LinkedIn newsletter follow link.
+- **Button Label**: Text on the CTA button (defaults to `Subscribe on LinkedIn`).
+
+---
+
+## 8. Adding Embed Blocks (YouTube, Vimeo, Images, Newsletter)
+
+Projects, writing articles, products, and experiments support structured **Embed Blocks**. This lets you safely embed rich media without writing raw HTML, iframes, or JavaScript.
+
+### Supported Embed Types:
+
+1. **YouTube Video**
+   - **Type**: `youtube`
+   - **Video / Target URL**: Any standard YouTube URL (e.g. `https://www.youtube.com/watch?v=VIDEO_ID` or `https://youtu.be/VIDEO_ID`).
+   - **Title / Accessible Label**: Video title for screen readers.
+   - **Caption**: Optional description or attribution rendered beneath the video.
+   - *Security Note*: Automatically transforms into a privacy-enhanced `youtube-nocookie.com` embed with lazy loading. Malformed URLs fail gracefully with a safe fallback link.
+
+2. **Vimeo Video**
+   - **Type**: `vimeo`
+   - **Video / Target URL**: Any standard Vimeo link (e.g. `https://vimeo.com/123456789`).
+   - **Title / Accessible Label**: Video title.
+   - **Caption**: Optional caption.
+   - *Security Note*: Automatically appends `dnt=1` (Do Not Track) and lazy loads the player.
+
+3. **Image / Media Block**
+   - **Type**: `image`
+   - **Image / Cover Image**: Select or upload an image file.
+   - **Video / Target URL**: Optional external link if clicking the image should navigate elsewhere.
+   - **Title / Accessible Label**: Image alt text.
+   - **Caption**: Explanatory caption displayed under the image.
+
+4. **Newsletter CTA**
+   - **Type**: `newsletter`
+   - **Image / Cover Image**: Optional custom cover image.
+   - **Caption / Description**: Custom description text for this specific occurrence.
+
+### Example Frontmatter (Markdown):
+```yaml
+embeds:
+  - type: youtube
+    title: "Mechanism prototype testing"
+    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    caption: "Bench testing the modular joint linkage under cyclical loading."
+  - type: newsletter
+```
+
+---
+
+## 9. World Destinations (edit with care)
 
 The six entries in **World Destinations** control the text shown in destination cards and the companion's dialogue in the 3D world:
 
@@ -103,13 +163,13 @@ The six entries in **World Destinations** control the text shown in destination 
 
 ---
 
-## 8. Site Profile
+## 10. Site Profile
 
 The **Site Profile** entry (`src/content/site/profile.json`) controls your name, tagline, bio, location, and status notice as used across pages. Edit freely.
 
 ---
 
-## 9. Files you must NOT edit through the CMS
+## 11. Files you must NOT edit through the CMS
 
 The CMS only exposes content files. The following are NOT editable through the CMS and should only be changed through code review:
 
@@ -124,7 +184,7 @@ The CMS only exposes content files. The following are NOT editable through the C
 
 ---
 
-## 10. Build failure diagnosis
+## 12. Build failure diagnosis
 
 If a deploy fails after a CMS save:
 
@@ -135,7 +195,7 @@ If a deploy fails after a CMS save:
 
 ---
 
-## 11. Complete new project example
+## 13. Complete new project example
 
 Filename: `haptic-feedback-rig`
 
@@ -155,6 +215,11 @@ problem: "Existing evaluation methods for prosthetic tactile feedback were expen
 role: "Sole designer and builder of the rig hardware and firmware."
 approach: "Designed a vibrotactile array driven by an Arduino Mega with PWM-controlled actuators and serial logging."
 outcome: "Reduced evaluation cost by 80% compared to commercial systems. Used in 12 test sessions."
+embeds:
+  - type: youtube
+    title: "Tactile Response Capture"
+    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    caption: "PWM signal testing across motor array."
 ```
 
 Body (Content field):
@@ -165,4 +230,3 @@ The rig uses eight eccentric rotating mass motors arranged in a 2×4 grid...
 ```
 
 Resulting URL: `/work/haptic-feedback-rig/`
-

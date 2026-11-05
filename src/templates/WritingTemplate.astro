@@ -1,11 +1,12 @@
----
+﻿---
 /**
  * WritingTemplate.astro
  *
  * Reusable article template powered by Astro Content Collections.
- * Renders authored writing with metadata sidebar and markdown body.
+ * Renders authored writing with metadata sidebar, markdown body, and embed blocks.
  */
 import PageLayout from '../layouts/PageLayout.astro';
+import EmbedBlock from '../components/EmbedBlock.astro';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -36,6 +37,14 @@ const dateLabel = dateObj.toLocaleDateString('en-GB', { month: 'long', year: 'nu
         <div class="article-body">
           <Content />
         </div>
+
+        {data.embeds && data.embeds.length > 0 && (
+          <div class="article-embeds">
+            {data.embeds.map((embed: any) => (
+              <EmbedBlock embed={embed} />
+            ))}
+          </div>
+        )}
       </div>
       <aside class="case-meta" aria-label="Article details">
         <div class="case-meta-card">
@@ -65,4 +74,3 @@ const dateLabel = dateObj.toLocaleDateString('en-GB', { month: 'long', year: 'nu
     </div>
   </article>
 </PageLayout>
-
