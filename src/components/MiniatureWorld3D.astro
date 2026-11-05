@@ -172,6 +172,7 @@ const destinations = getDestinations(base);
   import * as THREE from 'three';
   import { RTSCameraController } from '../utils/rtsCameraController';
   import { getDestinations } from '../data/destinations';
+  import { createGlowSprite, createGroundSpill } from '../utils/glowEffects';
 
   const base = import.meta.env.BASE_URL;
   const destinationsData = getDestinations(base);
@@ -213,10 +214,10 @@ const destinations = getDestinations(base);
     
     // Day vs Night palette configurations
     let isNightMode = false;
-    const dayBg = new THREE.Color(0x0e1520);
-    const nightBg = new THREE.Color(0x070b12);
+    const dayBg = new THREE.Color(0x0c131d);
+    const nightBg = new THREE.Color(0x05080e);
     scene.background = dayBg;
-    scene.fog = new THREE.FogExp2(0x0e1520, 0.009);
+    scene.fog = new THREE.FogExp2(0x0c131d, 0.0075);
 
     // ── Orthographic Camera ──
     const aspect = container.clientWidth / container.clientHeight;
@@ -235,7 +236,7 @@ const destinations = getDestinations(base);
     camera.position.copy(overviewCamPos);
     camera.lookAt(overviewTarget);
 
-    // Renderer
+    // Renderer with ACESFilmic Tone Mapping and sRGB output
     let renderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({
@@ -253,81 +254,87 @@ const destinations = getDestinations(base);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-    // ── Palette & Materials (Warm Editorial Miniature Landscape) ──
+    // ── Palette & Materials (Dimensional Miniature Response) ──
     // Landscape & Plinth
     const matTerrariumRim = new THREE.MeshPhysicalMaterial({
-      color: 0x93c5fd,
-      roughness: 0.08,
-      transmission: 0.88,
-      thickness: 1.4,
+      color: 0xc8e4ff,
+      roughness: 0.04,
+      transmission: 0.92,
+      thickness: 1.8,
       transparent: true,
-      opacity: 0.75,
-      metalness: 0.05,
+      opacity: 0.82,
+      metalness: 0.02,
+      ior: 1.52,
     });
-    const matPedestal = new THREE.MeshStandardMaterial({ color: 0x141a24, roughness: 0.88, metalness: 0.15 });
-    const matSoil = new THREE.MeshStandardMaterial({ color: 0x241c16, roughness: 0.95 });
-    const matTerrainBase = new THREE.MeshStandardMaterial({ color: 0x36532d, roughness: 0.84 }); // Rich mossy green
-    const matTerrainHigh = new THREE.MeshStandardMaterial({ color: 0x476a3b, roughness: 0.82 }); // Lighter hillside grass
-    const matTerraceRock = new THREE.MeshStandardMaterial({ color: 0x4f584e, roughness: 0.78 }); // Layered rock shelves
-    const matTerraceRockDark = new THREE.MeshStandardMaterial({ color: 0x3a4239, roughness: 0.85 }); // Deep rock strata
-    const matSandstone = new THREE.MeshStandardMaterial({ color: 0xc4b294, roughness: 0.68 }); // Sandstone courtyards
-    const matCobblePath = new THREE.MeshStandardMaterial({ color: 0x7a7165, roughness: 0.75 }); // Winding pathways
-    const matKerbStone = new THREE.MeshStandardMaterial({ color: 0x5e564d, roughness: 0.8 }); // Path borders
+    const matPedestal = new THREE.MeshStandardMaterial({ color: 0x121720, roughness: 0.85, metalness: 0.2 });
+    const matSoil = new THREE.MeshStandardMaterial({ color: 0x221812, roughness: 0.95 });
+    const matTerrainBase = new THREE.MeshStandardMaterial({ color: 0x2d4724, roughness: 0.88 }); // Deep moss green
+    const matTerrainHigh = new THREE.MeshStandardMaterial({ color: 0x3d5f30, roughness: 0.84 }); // Sunlit terrace green
+    const matTerraceRock = new THREE.MeshStandardMaterial({ color: 0x485147, roughness: 0.82 }); // Shaded rock strata
+    const matTerraceRockDark = new THREE.MeshStandardMaterial({ color: 0x303730, roughness: 0.88 }); // Deep stone
+    const matSandstone = new THREE.MeshStandardMaterial({ color: 0xcbb99d, roughness: 0.65 }); // Warm sandstone
+    const matCobblePath = new THREE.MeshStandardMaterial({ color: 0x766d62, roughness: 0.72 }); // Winding pathways
+    const matKerbStone = new THREE.MeshStandardMaterial({ color: 0x544c43, roughness: 0.82 }); // Path borders
     
     // Architecture & Construction
-    const matPlasterWarm = new THREE.MeshStandardMaterial({ color: 0xded5c2, roughness: 0.62 }); // Warm limestone stucco
-    const matPlasterLight = new THREE.MeshStandardMaterial({ color: 0xede6d8, roughness: 0.55 }); // Crisp pavilion walls
-    const matTimberDark = new THREE.MeshStandardMaterial({ color: 0x4e3629, roughness: 0.78 }); // Cedar wood framing
-    const matRoofTileTerracotta = new THREE.MeshStandardMaterial({ color: 0xbf5433, roughness: 0.55 }); // Warm terracotta
-    const matRoofSlate = new THREE.MeshStandardMaterial({ color: 0x2e3b44, roughness: 0.48 }); // Deep slate shingles
-    const matMetalBrass = new THREE.MeshStandardMaterial({ color: 0xd99f3b, roughness: 0.32, metalness: 0.82 });
-    const matMetalSteel = new THREE.MeshStandardMaterial({ color: 0x8291a0, roughness: 0.38, metalness: 0.78 });
-    const matDarkIron = new THREE.MeshStandardMaterial({ color: 0x22262c, roughness: 0.6, metalness: 0.65 });
+    const matPlasterWarm = new THREE.MeshStandardMaterial({ color: 0xded5c0, roughness: 0.58 }); // Limestone stucco
+    const matPlasterLight = new THREE.MeshStandardMaterial({ color: 0xeee7d9, roughness: 0.50 }); // Crisp pavilion walls
+    const matTimberDark = new THREE.MeshStandardMaterial({ color: 0x463124, roughness: 0.78 }); // Cedar wood framing
+    const matRoofTileTerracotta = new THREE.MeshStandardMaterial({ color: 0xc25330, roughness: 0.52 }); // Terracotta
+    const matRoofSlate = new THREE.MeshStandardMaterial({ color: 0x28343e, roughness: 0.42 }); // Slate shingles
+    const matMetalBrass = new THREE.MeshStandardMaterial({ color: 0xd99f3b, roughness: 0.28, metalness: 0.85 });
+    const matMetalSteel = new THREE.MeshStandardMaterial({ color: 0x8291a0, roughness: 0.32, metalness: 0.80 });
+    const matDarkIron = new THREE.MeshStandardMaterial({ color: 0x1e2227, roughness: 0.55, metalness: 0.70 });
 
-    // Emissive & Feature Accents
+    // Emissive & Feature Accents with High Physical Values for Natural Flare
     const matWindowAmber = new THREE.MeshStandardMaterial({
       color: 0xf59e0b,
-      roughness: 0.2,
+      roughness: 0.15,
       emissive: 0xd97706,
-      emissiveIntensity: 0.45,
+      emissiveIntensity: 0.65,
     });
     const matWindowCyan = new THREE.MeshStandardMaterial({
       color: 0x38bdf8,
-      roughness: 0.2,
+      roughness: 0.15,
       emissive: 0x0284c7,
-      emissiveIntensity: 0.5,
+      emissiveIntensity: 0.70,
     });
     const matWindowRose = new THREE.MeshStandardMaterial({
       color: 0xf43f5e,
-      roughness: 0.2,
+      roughness: 0.15,
       emissive: 0xe11d48,
-      emissiveIntensity: 0.55,
+      emissiveIntensity: 0.75,
     });
-    const matFoliage = new THREE.MeshStandardMaterial({ color: 0x265e45, roughness: 0.85 });
-    const matFoliageLight = new THREE.MeshStandardMaterial({ color: 0x3b7a5a, roughness: 0.82 });
-    const matFoliageWarm = new THREE.MeshStandardMaterial({ color: 0x4f7035, roughness: 0.85 });
-    const matTreeTrunk = new THREE.MeshStandardMaterial({ color: 0x3f2e22, roughness: 0.92 });
+    const matFoliage = new THREE.MeshStandardMaterial({ color: 0x22543d, roughness: 0.85 });
+    const matFoliageLight = new THREE.MeshStandardMaterial({ color: 0x326c4f, roughness: 0.82 });
+    const matFoliageWarm = new THREE.MeshStandardMaterial({ color: 0x47642f, roughness: 0.85 });
+    const matTreeTrunk = new THREE.MeshStandardMaterial({ color: 0x38281d, roughness: 0.92 });
     
-    // Living Water Material with subtle transparency
+    // Living Water with subtle surface specularity
     const matWaterPond = new THREE.MeshStandardMaterial({
-      color: 0x1b5478,
-      roughness: 0.1,
-      metalness: 0.45,
+      color: 0x164664,
+      roughness: 0.08,
+      metalness: 0.6,
       transparent: true,
       opacity: 0.92,
     });
 
-    // ── Coordinated Atmospheric Lighting ──
-    const ambientLight = new THREE.AmbientLight(0xfef3c7, 0.75); // Warm cream ambient
+    // ── Coordinated Atmospheric Lighting Hierarchy ──
+    // 1. Warm cream ambient baseline
+    const ambientLight = new THREE.AmbientLight(0xfef3c7, 0.45);
     scene.add(ambientLight);
 
-    // Hemisphere sky/ground fill for grounded depth
-    const hemiLight = new THREE.HemisphereLight(0xe0f2fe, 0x1c1917, 0.4);
+    // 2. Hemisphere sky/ground fill for grounded contact contrast
+    const hemiLight = new THREE.HemisphereLight(0xdbeafe, 0x1c1917, 0.35);
     scene.add(hemiLight);
 
-    const sunLight = new THREE.DirectionalLight(0xfff7ed, 1.85);
-    sunLight.position.set(40, 55, 30);
+    // 3. Primary Sun directional key light with crisp, dimensional shadow projection
+    const sunLight = new THREE.DirectionalLight(0xfffaed, 2.3);
+    sunLight.position.set(42, 60, 32);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 2048;
     sunLight.shadow.mapSize.height = 2048;
@@ -337,63 +344,102 @@ const destinations = getDestinations(base);
     sunLight.shadow.camera.right = 32;
     sunLight.shadow.camera.top = 32;
     sunLight.shadow.camera.bottom = -32;
-    sunLight.shadow.bias = -0.0004;
+    sunLight.shadow.bias = -0.0003;
     scene.add(sunLight);
 
-    // Cool architectural rim light
-    const rimFillLight = new THREE.DirectionalLight(0x7dd3fc, 0.45);
-    rimFillLight.position.set(-30, 25, -25);
+    // 4. Cool blue architectural rim kicker from opposite corner
+    const rimFillLight = new THREE.DirectionalLight(0x7dd3fc, 0.55);
+    rimFillLight.position.set(-32, 28, -28);
     scene.add(rimFillLight);
 
-    // Subtle warm ground bounce light
-    const groundBounceLight = new THREE.DirectionalLight(0xfde68a, 0.22);
-    groundBounceLight.position.set(10, -10, 10);
+    // 5. Subtle warm bounce fill light
+    const groundBounceLight = new THREE.DirectionalLight(0xfde68a, 0.18);
+    groundBounceLight.position.set(10, -12, 10);
     scene.add(groundBounceLight);
 
-    // Dynamic district highlight spotlight (gives selected district focused presence)
-    const districtSpot = new THREE.SpotLight(0xffedd5, 0, 50, Math.PI / 4, 0.6, 1.2);
-    districtSpot.position.set(0, 30, 0);
+    // 6. Dynamic district highlight spotlight (gives selected district focused presence)
+    const districtSpot = new THREE.SpotLight(0xffedd5, 0, 55, Math.PI / 4, 0.6, 1.2);
+    districtSpot.position.set(0, 32, 0);
     scene.add(districtSpot);
     scene.add(districtSpot.target);
+
+    // 7. Localized Point Lights for true physical emissive illumination
+    // Commons Agora Center Light
+    const commonsPointLight = new THREE.PointLight(0xf59e0b, 1.6, 14, 1.8);
+    commonsPointLight.position.set(0, 2.5, 0);
+    scene.add(commonsPointLight);
+
+    // Yard Toolhead Cyan Work Light
+    const yardPointLight = new THREE.PointLight(0x38bdf8, 1.3, 11, 2.0);
+    yardPointLight.position.set(-15.8, 3.8, 14.4);
+    scene.add(yardPointLight);
+
+    // Outlook Horizon Rose Beacon Light
+    const outlookPointLight = new THREE.PointLight(0xf43f5e, 1.5, 16, 1.8);
+    outlookPointLight.position.set(0, 14.8, -16);
+    scene.add(outlookPointLight);
+
+    // Observatory Warm Dome Internal Light
+    const obsPointLight = new THREE.PointLight(0xfbbf24, 1.2, 12, 2.0);
+    obsPointLight.position.set(12, 4.8, 12);
+    scene.add(obsPointLight);
 
     function updateLightingTheme(night: boolean) {
       isNightMode = night;
       if (night) {
         scene.background = nightBg;
-        scene.fog = new THREE.FogExp2(0x070b12, 0.013);
-        ambientLight.color.setHex(0x1e293b);
-        ambientLight.intensity = 0.4;
+        scene.fog = new THREE.FogExp2(0x05080e, 0.012);
+        ambientLight.color.setHex(0x111827);
+        ambientLight.intensity = 0.25;
         hemiLight.color.setHex(0x38bdf8);
-        hemiLight.groundColor.setHex(0x0f172a);
-        hemiLight.intensity = 0.35;
+        hemiLight.groundColor.setHex(0x030712);
+        hemiLight.intensity = 0.28;
         sunLight.color.setHex(0x93c5fd); // Moonlit cool tone
-        sunLight.intensity = 0.9;
+        sunLight.intensity = 0.95;
         rimFillLight.color.setHex(0x38bdf8);
-        rimFillLight.intensity = 0.4;
-        groundBounceLight.intensity = 0.08;
-        matWindowAmber.emissiveIntensity = 0.95;
-        matWindowCyan.emissiveIntensity = 1.0;
-        matWindowRose.emissiveIntensity = 1.05;
-        matWaterPond.color.setHex(0x0f2d42);
+        rimFillLight.intensity = 0.55;
+        groundBounceLight.intensity = 0.05;
+        
+        // Emissives blaze into life at dusk
+        matWindowAmber.emissiveIntensity = 1.35;
+        matWindowCyan.emissiveIntensity = 1.45;
+        matWindowRose.emissiveIntensity = 1.50;
+        matWaterPond.color.setHex(0x0a1d2c);
+        
+        // Local point lights become dominant focal points
+        commonsPointLight.intensity = 2.8;
+        yardPointLight.intensity = 2.4;
+        outlookPointLight.intensity = 2.8;
+        obsPointLight.intensity = 2.2;
+        renderer.toneMappingExposure = 1.15;
+
         if (hudThemeIcon) hudThemeIcon.textContent = '🌙';
         if (hudThemeLabel) hudThemeLabel.textContent = 'Dusk';
       } else {
         scene.background = dayBg;
-        scene.fog = new THREE.FogExp2(0x0e1520, 0.009);
+        scene.fog = new THREE.FogExp2(0x0c131d, 0.0075);
         ambientLight.color.setHex(0xfef3c7);
-        ambientLight.intensity = 0.75;
-        hemiLight.color.setHex(0xe0f2fe);
+        ambientLight.intensity = 0.45;
+        hemiLight.color.setHex(0xdbeafe);
         hemiLight.groundColor.setHex(0x1c1917);
-        hemiLight.intensity = 0.4;
-        sunLight.color.setHex(0xfff7ed);
-        sunLight.intensity = 1.85;
+        hemiLight.intensity = 0.35;
+        sunLight.color.setHex(0xfffaed);
+        sunLight.intensity = 2.3;
         rimFillLight.color.setHex(0x7dd3fc);
-        rimFillLight.intensity = 0.45;
-        groundBounceLight.intensity = 0.22;
-        matWindowAmber.emissiveIntensity = 0.45;
-        matWindowCyan.emissiveIntensity = 0.5;
-        matWindowRose.emissiveIntensity = 0.55;
-        matWaterPond.color.setHex(0x1b5478);
+        rimFillLight.intensity = 0.55;
+        groundBounceLight.intensity = 0.18;
+
+        matWindowAmber.emissiveIntensity = 0.65;
+        matWindowCyan.emissiveIntensity = 0.70;
+        matWindowRose.emissiveIntensity = 0.75;
+        matWaterPond.color.setHex(0x164664);
+
+        commonsPointLight.intensity = 1.6;
+        yardPointLight.intensity = 1.3;
+        outlookPointLight.intensity = 1.5;
+        obsPointLight.intensity = 1.2;
+        renderer.toneMappingExposure = 1.05;
+
         if (hudThemeIcon) hudThemeIcon.textContent = '☀️';
         if (hudThemeLabel) hudThemeLabel.textContent = 'Daylight';
       }
@@ -447,6 +493,21 @@ const destinations = getDestinations(base);
     const glassRimMesh = new THREE.Mesh(glassRimGeo, matTerrariumRim);
     glassRimMesh.position.y = 1.2;
     worldGroup.add(glassRimMesh);
+
+    // Glass cylinder bell-jar lower lip for believable physical thickness
+    const glassSkirtGeo = new THREE.CylinderGeometry(26.7, 26.7, 1.4, 64, 1, true);
+    const glassSkirtMat = new THREE.MeshPhysicalMaterial({
+      color: 0x93c5fd,
+      roughness: 0.08,
+      transmission: 0.90,
+      thickness: 1.2,
+      transparent: true,
+      opacity: 0.45,
+      metalness: 0.05,
+    });
+    const glassSkirtMesh = new THREE.Mesh(glassSkirtGeo, glassSkirtMat);
+    glassSkirtMesh.position.y = 1.7;
+    worldGroup.add(glassSkirtMesh);
 
     // Secondary brass trim ring beneath glass rim
     const rimBrassGeo = new THREE.TorusGeometry(26.7, 0.12, 12, 64);
@@ -625,6 +686,11 @@ const destinations = getDestinations(base);
     labGlazedBay.castShadow = true;
     labGroup.add(labGlazedBay);
 
+    // Glazed bay soft light spill
+    const labBayGlow = createGlowSprite(0xf59e0b, 7.0, 0.45);
+    labBayGlow.position.set(0.5, 5.8, 0.5);
+    labGroup.add(labBayGlow);
+
     // Telemetry antenna dish array (rotating ambient element)
     const labDishPole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 2.8, 8), matMetalSteel);
     labDishPole.position.set(-2.6, 7.8, -1.8);
@@ -688,6 +754,10 @@ const destinations = getDestinations(base);
     labBeaconLight.position.set(2.2, 1.3, 4.2);
     labGroup.add(labBeaconLight);
 
+    const labBeaconGlow = createGlowSprite(0xf59e0b, 1.8, 0.5);
+    labBeaconGlow.position.set(2.2, 1.3, 4.2);
+    labGroup.add(labBeaconGlow);
+
     worldGroup.add(labGroup);
 
     // ── DISTRICT 02: THE FOUNDRY (East Interactive Product Studio) ──
@@ -712,6 +782,10 @@ const destinations = getDestinations(base);
     foundryTier2.position.set(0.5, 5.8, 0.5);
     foundryTier2.castShadow = true;
     foundryGroup.add(foundryTier2);
+
+    const foundryStudioGlow = createGlowSprite(0x38bdf8, 7.5, 0.45);
+    foundryStudioGlow.position.set(0.5, 5.8, 0.5);
+    foundryGroup.add(foundryStudioGlow);
 
     // Studio Overhang Flat Roof with solar cells
     const foundryRoof = new THREE.Mesh(new THREE.BoxGeometry(7.2, 0.35, 7.2), matRoofSlate);
@@ -740,6 +814,10 @@ const destinations = getDestinations(base);
     const mastBeacon = new THREE.Mesh(new THREE.SphereGeometry(0.65, 16, 16), matWindowCyan);
     mastBeacon.position.set(2.8, 14.2, 2.8);
     foundryGroup.add(mastBeacon);
+
+    const mastBeaconGlow = createGlowSprite(0x38bdf8, 3.2, 0.65);
+    mastBeaconGlow.position.set(2.8, 14.2, 2.8);
+    foundryGroup.add(mastBeaconGlow);
 
     // Floating prototype interactive screen on balcony
     const screenGeo = new THREE.BoxGeometry(2.4, 1.5, 0.2);
@@ -781,6 +859,11 @@ const destinations = getDestinations(base);
     const obsDome = new THREE.Mesh(new THREE.SphereGeometry(3.2, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.5), matWindowAmber);
     obsDome.castShadow = true;
     obsDomePivot.add(obsDome);
+
+    // Dome internal glow core
+    const obsDomeGlow = createGlowSprite(0xf59e0b, 6.5, 0.55);
+    obsDomeGlow.position.set(0, 4.2, 0);
+    obsGroup.add(obsDomeGlow);
 
     // Brass observatory telescope slit
     const telescope = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.45, 3.4, 8), matMetalBrass);
@@ -866,6 +949,15 @@ const destinations = getDestinations(base);
     gantryToolTip.rotation.x = Math.PI;
     yardGroup.add(gantryToolTip);
 
+    // Industrial Cyan Toolhead Glow Sprite & Ground Spill
+    const gantryGlow = createGlowSprite(0x38bdf8, 2.8, 0.75);
+    gantryGlow.position.set(-3.8, 3.0, 2.4);
+    yardGroup.add(gantryGlow);
+
+    const yardGroundSpill = createGroundSpill(0x38bdf8, 3.2, 0.30);
+    yardGroundSpill.position.set(-3.8, 0.05, 2.4);
+    yardGroup.add(yardGroundSpill);
+
     // Prototyping materials stack & crates
     const crateA = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.0, 1.2), matTimberDark);
     crateA.position.set(4.4, 0.5, -2.4);
@@ -886,23 +978,47 @@ const destinations = getDestinations(base);
     const commonsGroup = new THREE.Group();
     commonsGroup.position.set(0, 1.2, 0);
 
-    // Central Landmark Monolith / Agora Totem
-    const totemPillar = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.8, 3.2, 8), matPlasterWarm);
-    totemPillar.position.y = 1.6;
-    totemPillar.castShadow = true;
-    commonsGroup.add(totemPillar);
-    registerInteractive(totemPillar, 'commons');
+    // Central Landmark Agora Pavilion - Warm Architectural Core
+    // 4 Corner Pillars
+    function addPavilionPillar(px: number, pz: number) {
+      const p = new THREE.Mesh(new THREE.BoxGeometry(0.4, 2.6, 0.4), matPlasterLight);
+      p.position.set(px, 1.3, pz);
+      p.castShadow = true;
+      p.receiveShadow = true;
+      commonsGroup.add(p);
+    }
+    addPavilionPillar(-1.2, -1.2);
+    addPavilionPillar(1.2, -1.2);
+    addPavilionPillar(-1.2, 1.2);
+    addPavilionPillar(1.2, 1.2);
 
-    const totemGem = new THREE.Mesh(new THREE.OctahedronGeometry(0.9), new THREE.MeshStandardMaterial({
-      color: 0xa78bfa,
-      emissive: 0x7c3aed,
-      emissiveIntensity: 0.6,
-      roughness: 0.2,
-      metalness: 0.3,
-    }));
-    totemGem.position.y = 3.6;
-    totemGem.castShadow = true;
-    commonsGroup.add(totemGem);
+    // Cornice Ring
+    const pavilionCornice = new THREE.Mesh(new THREE.BoxGeometry(2.9, 0.25, 2.9), matRoofTileTerracotta);
+    pavilionCornice.position.set(0, 2.7, 0);
+    pavilionCornice.castShadow = true;
+    commonsGroup.add(pavilionCornice);
+
+    // Warm Illuminated Central Dome
+    const commonsDome = new THREE.Mesh(new THREE.SphereGeometry(1.05, 20, 12, 0, Math.PI * 2, 0, Math.PI * 0.5), matWindowAmber);
+    commonsDome.position.set(0, 2.8, 0);
+    commonsDome.castShadow = true;
+    commonsGroup.add(commonsDome);
+    registerInteractive(commonsDome, 'commons');
+
+    // Central Lantern Core inside Pavilion
+    const lanternCore = new THREE.Mesh(new THREE.OctahedronGeometry(0.6), matWindowAmber);
+    lanternCore.position.set(0, 1.4, 0);
+    commonsGroup.add(lanternCore);
+
+    // Volumetric Warm Glow Sprite around the Agora Pavilion
+    const commonsGlowSprite = createGlowSprite(0xf59e0b, 5.5, 0.65);
+    commonsGlowSprite.position.set(0, 2.0, 0);
+    commonsGroup.add(commonsGlowSprite);
+
+    // Soft Light Spill decal projected onto the Commons Piazza
+    const commonsGroundSpill = createGroundSpill(0xf59e0b, 4.6, 0.38);
+    commonsGroundSpill.position.set(0, 0.05, 0);
+    commonsGroup.add(commonsGroundSpill);
 
     // Quadrant Courtyard Benches
     function addBench(x: number, z: number, rotY: number) {
@@ -912,25 +1028,29 @@ const destinations = getDestinations(base);
       bench.receiveShadow = true;
       commonsGroup.add(bench);
     }
-    addBench(0, 3.2, 0);
-    addBench(0, -3.2, 0);
-    addBench(3.2, 0, Math.PI / 2);
-    addBench(-3.2, 0, Math.PI / 2);
+    addBench(0, 3.4, 0);
+    addBench(0, -3.4, 0);
+    addBench(3.4, 0, Math.PI / 2);
+    addBench(-3.4, 0, Math.PI / 2);
 
-    // Agora Stone Lanterns
+    // Agora Stone Lanterns with individual micro-glow
     function addLantern(x: number, z: number) {
       const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 1.4, 8), matMetalBrass);
       pole.position.set(x, 0.7, z);
       commonsGroup.add(pole);
 
-      const lamp = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), matWindowAmber);
+      const lamp = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.32, 0.32), matWindowAmber);
       lamp.position.set(x, 1.4, z);
       commonsGroup.add(lamp);
+
+      const lampGlow = createGlowSprite(0xf59e0b, 1.6, 0.45);
+      lampGlow.position.set(x, 1.4, z);
+      commonsGroup.add(lampGlow);
     }
-    addLantern(2.4, 2.4);
-    addLantern(-2.4, 2.4);
-    addLantern(2.4, -2.4);
-    addLantern(-2.4, -2.4);
+    addLantern(2.5, 2.5);
+    addLantern(-2.5, 2.5);
+    addLantern(2.5, -2.5);
+    addLantern(-2.5, -2.5);
 
     worldGroup.add(commonsGroup);
 
@@ -966,6 +1086,16 @@ const destinations = getDestinations(base);
     const horizonBeacon = new THREE.Mesh(new THREE.SphereGeometry(0.85, 16, 16), matWindowRose);
     horizonBeacon.position.y = 11.0;
     outlookGroup.add(horizonBeacon);
+
+    // Rose Horizon Beacon Atmospheric Halo Glow
+    const beaconHaloGlow = createGlowSprite(0xf43f5e, 5.2, 0.70);
+    beaconHaloGlow.position.set(0, 11.0, 0);
+    outlookGroup.add(beaconHaloGlow);
+
+    // Tower Deck Light Spill
+    const deckLightSpill = createGroundSpill(0xf43f5e, 3.4, 0.35);
+    deckLightSpill.position.set(0, 7.15, 0);
+    outlookGroup.add(deckLightSpill);
 
     // Outlook Weather Vane / Wind Gauge
     const vaneArm = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.08, 0.08), matMetalBrass);
@@ -1026,7 +1156,6 @@ const destinations = getDestinations(base);
     createTree(15.5, 1.4, -6.5, 0.9, 0);
 
     // ── 6. Gentle Ambient Water Ripple & Dust Motes ──
-    // Ambient terrarium dust motes (subtle floating golden particles)
     const particleCount = 28;
     const particleGeo = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particleCount * 3);
@@ -1098,7 +1227,7 @@ const destinations = getDestinations(base);
       const targetPos = dest.targetPos;
       districtSpot.target.position.set(targetPos[0], targetPos[1], targetPos[2]);
       districtSpot.position.set(targetPos[0] + 5, targetPos[1] + 24, targetPos[2] + 5);
-      districtSpot.intensity = 1.6;
+      districtSpot.intensity = 1.8;
 
       // Guided RTS Camera Travel to Destination (with panel framing offset)
       cameraController.travelToDestination(id, true);
@@ -1210,25 +1339,33 @@ const destinations = getDestinations(base);
       // 1. Ambient District Silhouettes Motion
       // Foundry mast beacon & screen
       mastBeacon.position.y = 14.2 + Math.sin(time * 2.2) * 0.22;
+      mastBeaconGlow.position.copy(mastBeacon.position);
       screenMesh.rotation.y = 0.25 + Math.sin(time * 1.4) * 0.05;
 
-      // Commons agora totem float & spin
-      totemGem.rotation.y += delta * 0.45;
-      totemGem.position.y = 3.6 + Math.sin(time * 1.8) * 0.12;
+      // Commons agora lantern core float & spin
+      lanternCore.rotation.y += delta * 0.55;
+      lanternCore.rotation.x = Math.sin(time * 1.5) * 0.15;
+      lanternCore.position.y = 1.4 + Math.sin(time * 1.8) * 0.12;
+      commonsGlowSprite.position.y = lanternCore.position.y;
+      commonsPointLight.position.y = lanternCore.position.y + 0.6;
 
       // Lab articulated robotic arm & dish scan
       armForearm.rotation.z = 0.55 + Math.sin(time * 1.4) * 0.1;
       labDishRotator.rotation.y = Math.sin(time * 0.6) * 0.45;
 
-      // Yard gantry carriage subtle travel
+      // Yard gantry carriage subtle travel & toolhead glow
       gantryCarriage.position.z = 2.4 + Math.sin(time * 1.1) * 1.2;
       gantryToolTip.position.z = gantryCarriage.position.z;
+      gantryGlow.position.z = gantryCarriage.position.z;
+      yardPointLight.position.z = 12 + gantryCarriage.position.z;
 
       // Observatory celestial dome slow atmospheric rotation
       obsDomePivot.rotation.y = time * 0.08;
 
       // Outlook horizon rose beacon pulse & wind vane
-      horizonBeacon.scale.setScalar(1.0 + Math.sin(time * 2.6) * 0.07);
+      const beaconPulse = 1.0 + Math.sin(time * 2.6) * 0.08;
+      horizonBeacon.scale.setScalar(beaconPulse);
+      beaconHaloGlow.scale.setScalar(5.2 * beaconPulse);
       vaneArm.rotation.y = Math.sin(time * 0.5) * 0.4 + time * 0.1;
 
       // 2. Reflective Pond Surface Ripple

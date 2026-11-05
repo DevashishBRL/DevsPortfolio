@@ -26,64 +26,65 @@ export interface CameraPoseSnapshot {
 }
 
 // ── Destination Camera Configurations (Derived from actual scene geometry) ──
+// Tuned for cinematic 3/4 perspective with grounded elevation and clear architectural silhouette
 export const DESTINATION_CAMERA_CONFIGS: Record<string, DestinationCameraPose> = {
   // District 01: The Lab (NW Plateau: [-12, 2.2, -12])
-  // Frames the high-bay workshop, cantilevered glass bay, and robot arm test pedestal
+  // Immersive framing looking across the robotic high-bay, cantilevered glass bay, and robot arm pedestal
   lab: {
     id: 'lab',
-    target: new THREE.Vector3(-11, 3.5, -11),
-    camPos: new THREE.Vector3(10, 26, 10), // position relative to world: (-12 + 22, 2.2 + 23.8, -12 + 22)
-    zoom: 1.55,
+    target: new THREE.Vector3(-11.5, 3.2, -11.5),
+    camPos: new THREE.Vector3(7.5, 20.0, 7.5),
+    zoom: 1.68,
     duration: 1.3,
   },
 
   // District 02: The Foundry (East Tower: [13, 1.4, -12])
-  // Highlights the multi-tiered studio tower, cantilevered cyan glass studio, and communications mast
+  // Highlights the multi-tiered studio tower, cyan glass drafting studio, and antenna mast against dark rim
   foundry: {
     id: 'foundry',
-    target: new THREE.Vector3(13, 4.0, -11.5),
-    camPos: new THREE.Vector3(33, 27, 8),
-    zoom: 1.48,
+    target: new THREE.Vector3(12.8, 3.8, -11.5),
+    camPos: new THREE.Vector3(31.0, 21.5, 6.5),
+    zoom: 1.60,
     duration: 1.3,
   },
 
   // District 03: The Observatory (Southeast Garden Terrace: [12, 1.0, 12])
-  // Displays the octagonal rotunda, terracotta eaves, celestial dome, and visual thinking easel
+  // Displays the octagonal rotunda, terracotta eaves, celestial dome, brass telescope, and garden easel
   observatory: {
     id: 'observatory',
-    target: new THREE.Vector3(12, 3.2, 12),
-    camPos: new THREE.Vector3(32, 24, 32),
-    zoom: 1.62,
+    target: new THREE.Vector3(11.8, 3.0, 11.8),
+    camPos: new THREE.Vector3(30.0, 19.5, 30.0),
+    zoom: 1.72,
     duration: 1.3,
   },
 
   // District 04: The Yard (Southwest Basin: [-12, 0.8, 12])
-  // Captures the barrel-vaulted industrial hangar, CNC/3D printer gantry, and material crates
+  // Grounded view through the fabrication yard, CNC gantry carriage, and industrial workshop
   yard: {
     id: 'yard',
-    target: new THREE.Vector3(-12, 2.8, 12),
-    camPos: new THREE.Vector3(8, 22, 32),
-    zoom: 1.52,
+    target: new THREE.Vector3(-11.8, 2.5, 11.8),
+    camPos: new THREE.Vector3(6.5, 17.5, 30.5),
+    zoom: 1.65,
     duration: 1.3,
   },
 
   // District 05: The Commons (Central Quad: [0, 1.2, 0])
-  // Frames the concentric agora, reflective pond, geometric totem pillar, and courtyard benches
+  // Composed view of the central agora pavilion, warm illuminated lantern core, reflective pond, and stone benches
   commons: {
     id: 'commons',
-    target: new THREE.Vector3(0, 2.2, 0),
-    camPos: new THREE.Vector3(26, 32, 26),
-    zoom: 1.35,
+    target: new THREE.Vector3(0, 1.8, 0),
+    camPos: new THREE.Vector3(22.0, 24.0, 22.0),
+    zoom: 1.52,
     duration: 1.1,
   },
 
   // District 06: The Outlook (North Rocky Spire: [0, 3.8, -16])
-  // Captures the rocky pinnacle, masonry tower, timber viewing deck, and rose horizon beacon
+  // Dramatic low-to-high framing up the rocky crag, masonry watchtower, and pulsing rose horizon beacon
   outlook: {
     id: 'outlook',
-    target: new THREE.Vector3(0, 6.5, -15.5),
-    camPos: new THREE.Vector3(22, 29, 6),
-    zoom: 1.45,
+    target: new THREE.Vector3(0, 5.8, -15.5),
+    camPos: new THREE.Vector3(19.0, 22.0, 4.0),
+    zoom: 1.58,
     duration: 1.4,
   },
 };
@@ -154,28 +155,28 @@ export class RTSCameraController {
   }
 
   /**
-   * Initiates travel to a specified destination configuration
-   * @param destId Target destination id
-   * @param hasPanel Whether the editorial side panel is open (adjusts horizontal framing)
-   * @param onArrival Callback triggered upon arrival
+   * Smoothly moves the camera toward a destination
    */
   public travelToDestination(
     destId: string,
-    hasPanel = false,
+    offsetForSidePanel = true,
     onArrival?: (destId: string | null) => void
   ): boolean {
     const config = DESTINATION_CAMERA_CONFIGS[destId];
-    if (!config) return false;
+    if (!config) {
+      console.warn(`[RTSCameraController] Unknown destination id: ${destId}`);
+      return false;
+    }
 
-    // Base target and camera positions
     const resolvedTarget = config.target.clone();
     const resolvedCamPos = config.camPos.clone();
 
-    // Adjust horizontal framing when the editorial side panel is open on desktop
-    if (hasPanel) {
-      const forward = new THREE.Vector3().subVectors(resolvedTarget, resolvedCamPos).setY(0).normalize();
-      const right = new THREE.Vector3().crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
-      const offsetDist = 5.2 / (config.zoom || 1.5);
+    // Adjust horizontal framing when side information panel is open
+    if (offsetForSidePanel) {
+      const viewDir = new THREE.Vector3().subVectors(resolvedTarget, resolvedCamPos).normalize();
+      const up = new THREE.Vector3(0, 1, 0);
+      const right = new THREE.Vector3().crossVectors(viewDir, up).normalize();
+      const offsetDist = 3.2;
       resolvedTarget.addScaledVector(right, -offsetDist);
       resolvedCamPos.addScaledVector(right, -offsetDist);
     }
@@ -321,4 +322,3 @@ export class RTSCameraController {
     this.camera.updateProjectionMatrix();
   }
 }
-
