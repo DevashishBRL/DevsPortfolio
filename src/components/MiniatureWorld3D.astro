@@ -213,10 +213,10 @@ const destinations = getDestinations(base);
     
     // Day vs Night palette configurations
     let isNightMode = false;
-    const dayBg = new THREE.Color(0x131a26);
-    const nightBg = new THREE.Color(0x0a0e17);
+    const dayBg = new THREE.Color(0x0e1520);
+    const nightBg = new THREE.Color(0x070b12);
     scene.background = dayBg;
-    scene.fog = new THREE.FogExp2(0x131a26, 0.012);
+    scene.fog = new THREE.FogExp2(0x0e1520, 0.009);
 
     // ── Orthographic Camera ──
     const aspect = container.clientWidth / container.clientHeight;
@@ -257,61 +257,76 @@ const destinations = getDestinations(base);
     // ── Palette & Materials (Warm Editorial Miniature Landscape) ──
     // Landscape & Plinth
     const matTerrariumRim = new THREE.MeshPhysicalMaterial({
-      color: 0x88ccff,
-      roughness: 0.1,
-      transmission: 0.85,
-      thickness: 1.2,
+      color: 0x93c5fd,
+      roughness: 0.08,
+      transmission: 0.88,
+      thickness: 1.4,
       transparent: true,
-      opacity: 0.7,
-      metalness: 0.1,
+      opacity: 0.75,
+      metalness: 0.05,
     });
-    const matPedestal = new THREE.MeshStandardMaterial({ color: 0x181e28, roughness: 0.85, metalness: 0.1 });
-    const matSoil = new THREE.MeshStandardMaterial({ color: 0x2b221b, roughness: 0.95 });
-    const matTerrainBase = new THREE.MeshStandardMaterial({ color: 0x3d5a36, roughness: 0.88 }); // Lush warm moss/grass
-    const matTerraceRock = new THREE.MeshStandardMaterial({ color: 0x5a6358, roughness: 0.8 }); // Layered rock shelves
-    const matSandstone = new THREE.MeshStandardMaterial({ color: 0xc8b598, roughness: 0.7 }); // Paved sandstone courtyards
-    const matCobblePath = new THREE.MeshStandardMaterial({ color: 0x80766a, roughness: 0.75 }); // Winding pathways
+    const matPedestal = new THREE.MeshStandardMaterial({ color: 0x141a24, roughness: 0.88, metalness: 0.15 });
+    const matSoil = new THREE.MeshStandardMaterial({ color: 0x241c16, roughness: 0.95 });
+    const matTerrainBase = new THREE.MeshStandardMaterial({ color: 0x36532d, roughness: 0.84 }); // Rich mossy green
+    const matTerrainHigh = new THREE.MeshStandardMaterial({ color: 0x476a3b, roughness: 0.82 }); // Lighter hillside grass
+    const matTerraceRock = new THREE.MeshStandardMaterial({ color: 0x4f584e, roughness: 0.78 }); // Layered rock shelves
+    const matTerraceRockDark = new THREE.MeshStandardMaterial({ color: 0x3a4239, roughness: 0.85 }); // Deep rock strata
+    const matSandstone = new THREE.MeshStandardMaterial({ color: 0xc4b294, roughness: 0.68 }); // Sandstone courtyards
+    const matCobblePath = new THREE.MeshStandardMaterial({ color: 0x7a7165, roughness: 0.75 }); // Winding pathways
+    const matKerbStone = new THREE.MeshStandardMaterial({ color: 0x5e564d, roughness: 0.8 }); // Path borders
     
     // Architecture & Construction
-    const matPlasterWarm = new THREE.MeshStandardMaterial({ color: 0xdfd7c6, roughness: 0.65 }); // Warm limestone stucco
-    const matTimberDark = new THREE.MeshStandardMaterial({ color: 0x5c4033, roughness: 0.75 }); // Cedar wood framing
-    const matRoofTileTerracotta = new THREE.MeshStandardMaterial({ color: 0xb85636, roughness: 0.6 }); // Mediterranean terracotta
-    const matRoofSlate = new THREE.MeshStandardMaterial({ color: 0x34424b, roughness: 0.5 }); // Slate shingles
-    const matMetalBrass = new THREE.MeshStandardMaterial({ color: 0xd49b42, roughness: 0.35, metalness: 0.8 });
-    const matMetalSteel = new THREE.MeshStandardMaterial({ color: 0x8a99a8, roughness: 0.4, metalness: 0.75 });
+    const matPlasterWarm = new THREE.MeshStandardMaterial({ color: 0xded5c2, roughness: 0.62 }); // Warm limestone stucco
+    const matPlasterLight = new THREE.MeshStandardMaterial({ color: 0xede6d8, roughness: 0.55 }); // Crisp pavilion walls
+    const matTimberDark = new THREE.MeshStandardMaterial({ color: 0x4e3629, roughness: 0.78 }); // Cedar wood framing
+    const matRoofTileTerracotta = new THREE.MeshStandardMaterial({ color: 0xbf5433, roughness: 0.55 }); // Warm terracotta
+    const matRoofSlate = new THREE.MeshStandardMaterial({ color: 0x2e3b44, roughness: 0.48 }); // Deep slate shingles
+    const matMetalBrass = new THREE.MeshStandardMaterial({ color: 0xd99f3b, roughness: 0.32, metalness: 0.82 });
+    const matMetalSteel = new THREE.MeshStandardMaterial({ color: 0x8291a0, roughness: 0.38, metalness: 0.78 });
+    const matDarkIron = new THREE.MeshStandardMaterial({ color: 0x22262c, roughness: 0.6, metalness: 0.65 });
 
     // Emissive & Feature Accents
     const matWindowAmber = new THREE.MeshStandardMaterial({
       color: 0xf59e0b,
       roughness: 0.2,
       emissive: 0xd97706,
-      emissiveIntensity: 0.4,
+      emissiveIntensity: 0.45,
     });
     const matWindowCyan = new THREE.MeshStandardMaterial({
       color: 0x38bdf8,
       roughness: 0.2,
       emissive: 0x0284c7,
-      emissiveIntensity: 0.45,
+      emissiveIntensity: 0.5,
     });
     const matWindowRose = new THREE.MeshStandardMaterial({
       color: 0xf43f5e,
       roughness: 0.2,
       emissive: 0xe11d48,
-      emissiveIntensity: 0.5,
+      emissiveIntensity: 0.55,
     });
-    const matFoliage = new THREE.MeshStandardMaterial({ color: 0x2d6a4f, roughness: 0.85 });
-    const matTreeTrunk = new THREE.MeshStandardMaterial({ color: 0x4a3728, roughness: 0.9 });
+    const matFoliage = new THREE.MeshStandardMaterial({ color: 0x265e45, roughness: 0.85 });
+    const matFoliageLight = new THREE.MeshStandardMaterial({ color: 0x3b7a5a, roughness: 0.82 });
+    const matFoliageWarm = new THREE.MeshStandardMaterial({ color: 0x4f7035, roughness: 0.85 });
+    const matTreeTrunk = new THREE.MeshStandardMaterial({ color: 0x3f2e22, roughness: 0.92 });
+    
+    // Living Water Material with subtle transparency
     const matWaterPond = new THREE.MeshStandardMaterial({
-      color: 0x1e4e6b,
-      roughness: 0.15,
-      metalness: 0.3,
+      color: 0x1b5478,
+      roughness: 0.1,
+      metalness: 0.45,
+      transparent: true,
+      opacity: 0.92,
     });
 
-    // ── Coordinated Lighting ──
-    const ambientLight = new THREE.AmbientLight(0xfef3c7, 0.7); // Warm cream ambient
+    // ── Coordinated Atmospheric Lighting ──
+    const ambientLight = new THREE.AmbientLight(0xfef3c7, 0.75); // Warm cream ambient
     scene.add(ambientLight);
 
-    const sunLight = new THREE.DirectionalLight(0xfff7ed, 1.8);
+    // Hemisphere sky/ground fill for grounded depth
+    const hemiLight = new THREE.HemisphereLight(0xe0f2fe, 0x1c1917, 0.4);
+    scene.add(hemiLight);
+
+    const sunLight = new THREE.DirectionalLight(0xfff7ed, 1.85);
     sunLight.position.set(40, 55, 30);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 2048;
@@ -325,38 +340,60 @@ const destinations = getDestinations(base);
     sunLight.shadow.bias = -0.0004;
     scene.add(sunLight);
 
-    const rimFillLight = new THREE.DirectionalLight(0x7dd3fc, 0.4);
+    // Cool architectural rim light
+    const rimFillLight = new THREE.DirectionalLight(0x7dd3fc, 0.45);
     rimFillLight.position.set(-30, 25, -25);
     scene.add(rimFillLight);
+
+    // Subtle warm ground bounce light
+    const groundBounceLight = new THREE.DirectionalLight(0xfde68a, 0.22);
+    groundBounceLight.position.set(10, -10, 10);
+    scene.add(groundBounceLight);
+
+    // Dynamic district highlight spotlight (gives selected district focused presence)
+    const districtSpot = new THREE.SpotLight(0xffedd5, 0, 50, Math.PI / 4, 0.6, 1.2);
+    districtSpot.position.set(0, 30, 0);
+    scene.add(districtSpot);
+    scene.add(districtSpot.target);
 
     function updateLightingTheme(night: boolean) {
       isNightMode = night;
       if (night) {
         scene.background = nightBg;
-        scene.fog = new THREE.FogExp2(0x0a0e17, 0.015);
+        scene.fog = new THREE.FogExp2(0x070b12, 0.013);
         ambientLight.color.setHex(0x1e293b);
-        ambientLight.intensity = 0.35;
+        ambientLight.intensity = 0.4;
+        hemiLight.color.setHex(0x38bdf8);
+        hemiLight.groundColor.setHex(0x0f172a);
+        hemiLight.intensity = 0.35;
         sunLight.color.setHex(0x93c5fd); // Moonlit cool tone
-        sunLight.intensity = 0.85;
+        sunLight.intensity = 0.9;
         rimFillLight.color.setHex(0x38bdf8);
-        rimFillLight.intensity = 0.3;
-        matWindowAmber.emissiveIntensity = 0.9;
-        matWindowCyan.emissiveIntensity = 0.95;
-        matWindowRose.emissiveIntensity = 1.0;
+        rimFillLight.intensity = 0.4;
+        groundBounceLight.intensity = 0.08;
+        matWindowAmber.emissiveIntensity = 0.95;
+        matWindowCyan.emissiveIntensity = 1.0;
+        matWindowRose.emissiveIntensity = 1.05;
+        matWaterPond.color.setHex(0x0f2d42);
         if (hudThemeIcon) hudThemeIcon.textContent = '🌙';
         if (hudThemeLabel) hudThemeLabel.textContent = 'Dusk';
       } else {
         scene.background = dayBg;
-        scene.fog = new THREE.FogExp2(0x131a26, 0.012);
+        scene.fog = new THREE.FogExp2(0x0e1520, 0.009);
         ambientLight.color.setHex(0xfef3c7);
-        ambientLight.intensity = 0.7;
+        ambientLight.intensity = 0.75;
+        hemiLight.color.setHex(0xe0f2fe);
+        hemiLight.groundColor.setHex(0x1c1917);
+        hemiLight.intensity = 0.4;
         sunLight.color.setHex(0xfff7ed);
-        sunLight.intensity = 1.8;
+        sunLight.intensity = 1.85;
         rimFillLight.color.setHex(0x7dd3fc);
-        rimFillLight.intensity = 0.4;
-        matWindowAmber.emissiveIntensity = 0.4;
-        matWindowCyan.emissiveIntensity = 0.45;
-        matWindowRose.emissiveIntensity = 0.5;
+        rimFillLight.intensity = 0.45;
+        groundBounceLight.intensity = 0.22;
+        matWindowAmber.emissiveIntensity = 0.45;
+        matWindowCyan.emissiveIntensity = 0.5;
+        matWindowRose.emissiveIntensity = 0.55;
+        matWaterPond.color.setHex(0x1b5478);
         if (hudThemeIcon) hudThemeIcon.textContent = '☀️';
         if (hudThemeLabel) hudThemeLabel.textContent = 'Daylight';
       }
@@ -392,6 +429,12 @@ const destinations = getDestinations(base);
     soilLayer.receiveShadow = true;
     worldGroup.add(soilLayer);
 
+    // Geological bedrock shelf tier
+    const bedrockLayer = new THREE.Mesh(new THREE.CylinderGeometry(26.5, 27.0, 0.6, 48), matTerraceRockDark);
+    bedrockLayer.position.y = 0.0;
+    bedrockLayer.receiveShadow = true;
+    worldGroup.add(bedrockLayer);
+
     // Main sculpted landscape disc
     const mainLandscape = new THREE.Mesh(new THREE.CylinderGeometry(26.2, 26.8, 1.2, 48), matTerrainBase);
     mainLandscape.position.y = 0.4;
@@ -405,6 +448,13 @@ const destinations = getDestinations(base);
     glassRimMesh.position.y = 1.2;
     worldGroup.add(glassRimMesh);
 
+    // Secondary brass trim ring beneath glass rim
+    const rimBrassGeo = new THREE.TorusGeometry(26.7, 0.12, 12, 64);
+    rimBrassGeo.rotateX(Math.PI / 2);
+    const rimBrassMesh = new THREE.Mesh(rimBrassGeo, matMetalBrass);
+    rimBrassMesh.position.y = 0.85;
+    worldGroup.add(rimBrassMesh);
+
     // ── 2. Varied Topography & Raised Platforms ──
     // A. Northwest Elevated Plateau (The Lab)
     const labPlatform = new THREE.Mesh(new THREE.CylinderGeometry(9.5, 10.5, 1.6, 24), matTerraceRock);
@@ -412,10 +462,22 @@ const destinations = getDestinations(base);
     labPlatform.receiveShadow = true;
     worldGroup.add(labPlatform);
 
-    const labTopPad = new THREE.Mesh(new THREE.BoxGeometry(13, 0.4, 13), matTerrainBase);
+    // Sub-retaining wall for Lab plateau
+    const labWall = new THREE.Mesh(new THREE.CylinderGeometry(10.1, 10.4, 0.4, 24), matDarkIron);
+    labWall.position.set(-12, 1.9, -12);
+    labWall.receiveShadow = true;
+    worldGroup.add(labWall);
+
+    const labTopPad = new THREE.Mesh(new THREE.BoxGeometry(13, 0.4, 13), matTerrainHigh);
     labTopPad.position.set(-12, 2.1, -12);
     labTopPad.receiveShadow = true;
     worldGroup.add(labTopPad);
+
+    // Precision paving apron for the Lab high-bay
+    const labApron = new THREE.Mesh(new THREE.BoxGeometry(10.5, 0.15, 9.5), matSandstone);
+    labApron.position.set(-12, 2.32, -11.5);
+    labApron.receiveShadow = true;
+    worldGroup.add(labApron);
 
     // B. East Stepped Terrace (The Foundry)
     const foundryPlatform = new THREE.Mesh(new THREE.CylinderGeometry(9, 10, 1.2, 24), matTerraceRock);
@@ -423,11 +485,23 @@ const destinations = getDestinations(base);
     foundryPlatform.receiveShadow = true;
     worldGroup.add(foundryPlatform);
 
+    // Foundry sandstone upper terrace
+    const foundryPaving = new THREE.Mesh(new THREE.BoxGeometry(11, 0.35, 11), matSandstone);
+    foundryPaving.position.set(13, 1.65, -12);
+    foundryPaving.receiveShadow = true;
+    worldGroup.add(foundryPaving);
+
     // C. Southeast Garden Terrace (The Observatory)
     const obsPlatform = new THREE.Mesh(new THREE.CylinderGeometry(8.5, 9.5, 0.9, 24), matTerraceRock);
     obsPlatform.position.set(12, 0.85, 12);
     obsPlatform.receiveShadow = true;
     worldGroup.add(obsPlatform);
+
+    // Observatory mosaic circle plaza
+    const obsPlaza = new THREE.Mesh(new THREE.CylinderGeometry(7.0, 7.2, 0.25, 24), matSandstone);
+    obsPlaza.position.set(12, 1.35, 12);
+    obsPlaza.receiveShadow = true;
+    worldGroup.add(obsPlaza);
 
     // D. Southwest Sunken Workshop Basin (The Yard)
     const yardPaving = new THREE.Mesh(new THREE.BoxGeometry(14, 0.3, 13), matSandstone);
@@ -435,12 +509,33 @@ const destinations = getDestinations(base);
     yardPaving.receiveShadow = true;
     worldGroup.add(yardPaving);
 
+    // Heavy industrial concrete slab for Yard testing
+    const yardTestBed = new THREE.Mesh(new THREE.BoxGeometry(9.0, 0.18, 7.5), matTerraceRockDark);
+    yardTestBed.position.set(-11.5, 0.72, 12.5);
+    yardTestBed.receiveShadow = true;
+    worldGroup.add(yardTestBed);
+
     // E. Outlook Rocky Crag Spire (North Elevation)
     const cragBase = new THREE.Mesh(new THREE.ConeGeometry(7, 4.5, 8), matTerraceRock);
     cragBase.position.set(0, 2.4, -16);
     cragBase.receiveShadow = true;
     cragBase.castShadow = true;
     worldGroup.add(cragBase);
+
+    // Secondary crag boulder flanking
+    const cragBoulderA = new THREE.Mesh(new THREE.DodecahedronGeometry(2.2), matTerraceRockDark);
+    cragBoulderA.position.set(-3.5, 2.2, -15);
+    cragBoulderA.rotation.set(0.4, 0.8, -0.3);
+    cragBoulderA.castShadow = true;
+    cragBoulderA.receiveShadow = true;
+    worldGroup.add(cragBoulderA);
+
+    const cragBoulderB = new THREE.Mesh(new THREE.DodecahedronGeometry(1.8), matTerraceRock);
+    cragBoulderB.position.set(3.2, 2.0, -16.5);
+    cragBoulderB.rotation.set(-0.2, 0.5, 0.4);
+    cragBoulderB.castShadow = true;
+    cragBoulderB.receiveShadow = true;
+    worldGroup.add(cragBoulderB);
 
     // F. Central Courtyard Agora (The Commons)
     const commonsPiazza = new THREE.Mesh(new THREE.CylinderGeometry(7.5, 7.8, 0.5, 32), matSandstone);
@@ -454,12 +549,18 @@ const destinations = getDestinations(base);
     commonsInnerRing.receiveShadow = true;
     worldGroup.add(commonsInnerRing);
 
+    // Stone basin rim for pond
+    const pondRimMesh = new THREE.Mesh(new THREE.CylinderGeometry(2.35, 2.45, 0.35, 24), matSandstone);
+    pondRimMesh.position.set(0, 1.35, 0);
+    pondRimMesh.receiveShadow = true;
+    worldGroup.add(pondRimMesh);
+
     // Reflective miniature pond in Commons
-    const pondMesh = new THREE.Mesh(new THREE.CylinderGeometry(2.0, 2.0, 0.1, 16), matWaterPond);
-    pondMesh.position.set(0, 1.35, 0);
+    const pondMesh = new THREE.Mesh(new THREE.CylinderGeometry(2.1, 2.1, 0.1, 24), matWaterPond);
+    pondMesh.position.set(0, 1.48, 0);
     worldGroup.add(pondMesh);
 
-    // ── 3. Curving Connecting Pathways ──
+    // ── 3. Curving Connecting Pathways with Kerb Edges ──
     function createCurvedPath(p0: THREE.Vector3, p1: THREE.Vector3, p2: THREE.Vector3, width: number) {
       const curve = new THREE.QuadraticBezierCurve3(p0, p1, p2);
       const points = curve.getPoints(14);
@@ -473,6 +574,21 @@ const destinations = getDestinations(base);
         segMesh.lookAt(ptB);
         segMesh.receiveShadow = true;
         worldGroup.add(segMesh);
+
+        // Subtle side kerbstones
+        const kerbGeo = new THREE.BoxGeometry(0.18, 0.22, segLen);
+        const kerbLeft = new THREE.Mesh(kerbGeo, matKerbStone);
+        const kerbRight = new THREE.Mesh(kerbGeo, matKerbStone);
+        kerbLeft.position.copy(segMesh.position);
+        kerbRight.position.copy(segMesh.position);
+        kerbLeft.rotation.copy(segMesh.rotation);
+        kerbRight.rotation.copy(segMesh.rotation);
+        kerbLeft.translateX(-width * 0.52);
+        kerbRight.translateX(width * 0.52);
+        kerbLeft.receiveShadow = true;
+        kerbRight.receiveShadow = true;
+        worldGroup.add(kerbLeft);
+        worldGroup.add(kerbRight);
       }
     }
 
@@ -509,17 +625,32 @@ const destinations = getDestinations(base);
     labGlazedBay.castShadow = true;
     labGroup.add(labGlazedBay);
 
-    // Rooftop HVAC & precision sensor telemetry dish
+    // Telemetry antenna dish array (rotating ambient element)
     const labDishPole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 2.8, 8), matMetalSteel);
     labDishPole.position.set(-2.6, 7.8, -1.8);
     labDishPole.castShadow = true;
     labGroup.add(labDishPole);
 
+    const labDishRotator = new THREE.Group();
+    labDishRotator.position.set(-2.6, 9.2, -1.8);
+    labGroup.add(labDishRotator);
+
     const labDish = new THREE.Mesh(new THREE.SphereGeometry(1.1, 12, 8, 0, Math.PI * 2, 0, Math.PI * 0.45), matMetalSteel);
-    labDish.position.set(-2.6, 9.2, -1.8);
     labDish.rotation.x = -Math.PI / 3;
-    labDish.rotation.y = Math.PI / 4;
-    labGroup.add(labDish);
+    labDish.castShadow = true;
+    labDishRotator.add(labDish);
+
+    // Mini radar feed probe
+    const labProbe = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.8, 6), matMetalBrass);
+    labProbe.position.set(0, 0.4, 0.3);
+    labProbe.rotation.x = Math.PI / 6;
+    labDishRotator.add(labProbe);
+
+    // Precision server rack cooling units on side
+    const hvacUnit = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.2, 2.2), matDarkIron);
+    hvacUnit.position.set(-3.5, 5.2, 0.5);
+    hvacUnit.castShadow = true;
+    labGroup.add(hvacUnit);
 
     // Articulated robotic arm on exterior proving pedestal
     const robotArmPedestal = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.6, 0.6, 16), matMetalSteel);
@@ -547,6 +678,15 @@ const destinations = getDestinations(base);
     const armGripper = new THREE.Mesh(new THREE.SphereGeometry(0.3, 8, 8), matWindowAmber);
     armGripper.position.set(6.7, 4.8, 3.8);
     labGroup.add(armGripper);
+
+    // Sensor test beacon in Lab yard
+    const labBeacon = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1.2, 8), matMetalBrass);
+    labBeacon.position.set(2.2, 0.6, 4.2);
+    labGroup.add(labBeacon);
+
+    const labBeaconLight = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 8), matWindowAmber);
+    labBeaconLight.position.set(2.2, 1.3, 4.2);
+    labGroup.add(labBeaconLight);
 
     worldGroup.add(labGroup);
 
@@ -579,6 +719,19 @@ const destinations = getDestinations(base);
     foundryRoof.castShadow = true;
     foundryGroup.add(foundryRoof);
 
+    // Miniature rooftop solar panels
+    const solarGeo = new THREE.BoxGeometry(2.4, 0.08, 1.6);
+    const matSolar = new THREE.MeshStandardMaterial({ color: 0x1e3a5f, roughness: 0.2, metalness: 0.8 });
+    const solarA = new THREE.Mesh(solarGeo, matSolar);
+    solarA.position.set(-1.2, 8.0, 0.5);
+    solarA.rotation.x = -0.2;
+    foundryGroup.add(solarA);
+
+    const solarB = new THREE.Mesh(solarGeo, matSolar);
+    solarB.position.set(1.6, 8.0, 0.5);
+    solarB.rotation.x = -0.2;
+    foundryGroup.add(solarB);
+
     // Tall Communications & Digital Antenna Mast
     const mastPole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 6.5, 8), matMetalSteel);
     mastPole.position.set(2.8, 10.8, 2.8);
@@ -594,6 +747,12 @@ const destinations = getDestinations(base);
     screenMesh.position.set(-2.5, 2.2, 3.8);
     screenMesh.rotation.y = 0.25;
     foundryGroup.add(screenMesh);
+
+    // Studio workbench & material drafting desk
+    const foundryDesk = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.8, 1.2), matTimberDark);
+    foundryDesk.position.set(3.4, 0.4, 3.2);
+    foundryDesk.castShadow = true;
+    foundryGroup.add(foundryDesk);
 
     worldGroup.add(foundryGroup);
 
@@ -614,18 +773,21 @@ const destinations = getDestinations(base);
     obsEaves.position.y = 3.9;
     obsGroup.add(obsEaves);
 
-    // Celestial observation dome
-    const obsDome = new THREE.Mesh(new THREE.SphereGeometry(3.2, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.5), matWindowAmber);
-    obsDome.position.y = 4.0;
-    obsDome.castShadow = true;
-    obsGroup.add(obsDome);
+    // Rotating celestial observation dome
+    const obsDomePivot = new THREE.Group();
+    obsDomePivot.position.set(0, 4.0, 0);
+    obsGroup.add(obsDomePivot);
 
-    // Telescope viewing slit tube
+    const obsDome = new THREE.Mesh(new THREE.SphereGeometry(3.2, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.5), matWindowAmber);
+    obsDome.castShadow = true;
+    obsDomePivot.add(obsDome);
+
+    // Brass observatory telescope slit
     const telescope = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.45, 3.4, 8), matMetalBrass);
-    telescope.position.set(1.2, 5.8, 1.2);
+    telescope.position.set(1.2, 1.8, 1.2);
     telescope.rotation.x = -Math.PI / 4;
     telescope.rotation.z = Math.PI / 6;
-    obsGroup.add(telescope);
+    obsDomePivot.add(telescope);
 
     // Visual thinking easels & design board on the terrace
     const easelPost = new THREE.Mesh(new THREE.BoxGeometry(0.15, 2.2, 0.15), matTimberDark);
@@ -636,6 +798,26 @@ const destinations = getDestinations(base);
     easelBoard.position.set(-3.8, 1.8, 3.4);
     easelBoard.rotation.y = 0.3;
     obsGroup.add(easelBoard);
+
+    // Second drafting canvas easel
+    const easel2Post = new THREE.Mesh(new THREE.BoxGeometry(0.15, 2.0, 0.15), matTimberDark);
+    easel2Post.position.set(-2.2, 1.0, 4.4);
+    obsGroup.add(easel2Post);
+
+    const easel2Board = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.0, 0.1), matPlasterLight);
+    easel2Board.position.set(-2.2, 1.6, 4.4);
+    easel2Board.rotation.y = 0.15;
+    obsGroup.add(easel2Board);
+
+    // Geometric garden sculpture
+    const sculptBase = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.8, 0.8, 6), matTerraceRock);
+    sculptBase.position.set(4.0, 0.4, 2.6);
+    obsGroup.add(sculptBase);
+
+    const sculptArmillary = new THREE.Mesh(new THREE.TorusGeometry(0.7, 0.08, 8, 16), matMetalBrass);
+    sculptArmillary.position.set(4.0, 1.4, 2.6);
+    sculptArmillary.rotation.x = 0.7;
+    obsGroup.add(sculptArmillary);
 
     worldGroup.add(obsGroup);
 
@@ -673,6 +855,17 @@ const destinations = getDestinations(base);
     gantryCrossbeam.position.set(-3.8, 3.7, 2.4);
     yardGroup.add(gantryCrossbeam);
 
+    // Animated gantry toolhead carriage
+    const gantryCarriage = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.5, 0.6), matDarkIron);
+    gantryCarriage.position.set(-3.8, 3.4, 2.4);
+    gantryCarriage.castShadow = true;
+    yardGroup.add(gantryCarriage);
+
+    const gantryToolTip = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.4, 8), matWindowCyan);
+    gantryToolTip.position.set(-3.8, 3.0, 2.4);
+    gantryToolTip.rotation.x = Math.PI;
+    yardGroup.add(gantryToolTip);
+
     // Prototyping materials stack & crates
     const crateA = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.0, 1.2), matTimberDark);
     crateA.position.set(4.4, 0.5, -2.4);
@@ -681,6 +874,11 @@ const destinations = getDestinations(base);
     const crateB = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.8, 0.9), matPlasterWarm);
     crateB.position.set(4.4, 1.3, -2.4);
     yardGroup.add(crateB);
+
+    const steelPipes = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 2.8, 8), matMetalSteel);
+    steelPipes.position.set(4.2, 0.2, -0.6);
+    steelPipes.rotation.z = Math.PI / 2;
+    yardGroup.add(steelPipes);
 
     worldGroup.add(yardGroup);
 
@@ -719,6 +917,21 @@ const destinations = getDestinations(base);
     addBench(3.2, 0, Math.PI / 2);
     addBench(-3.2, 0, Math.PI / 2);
 
+    // Agora Stone Lanterns
+    function addLantern(x: number, z: number) {
+      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 1.4, 8), matMetalBrass);
+      pole.position.set(x, 0.7, z);
+      commonsGroup.add(pole);
+
+      const lamp = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), matWindowAmber);
+      lamp.position.set(x, 1.4, z);
+      commonsGroup.add(lamp);
+    }
+    addLantern(2.4, 2.4);
+    addLantern(-2.4, 2.4);
+    addLantern(2.4, -2.4);
+    addLantern(-2.4, -2.4);
+
     worldGroup.add(commonsGroup);
 
     // ── DISTRICT 06: THE OUTLOOK (North Rocky Pinnacle Lookout) ──
@@ -754,10 +967,17 @@ const destinations = getDestinations(base);
     horizonBeacon.position.y = 11.0;
     outlookGroup.add(horizonBeacon);
 
+    // Outlook Weather Vane / Wind Gauge
+    const vaneArm = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.08, 0.08), matMetalBrass);
+    vaneArm.position.set(0, 12.0, 0);
+    outlookGroup.add(vaneArm);
+
     worldGroup.add(outlookGroup);
 
-    // ── 5. Environmental Trees & Sculpted Foliage ──
-    function createTree(x: number, y: number, z: number, scale = 1.0) {
+    // ── 5. Environmental Trees & Sculpted Foliage with Gentle Sway ──
+    const swayingFoliage: { mesh: THREE.Object3D; baseRotZ: number; speed: number; phase: number }[] = [];
+
+    function createTree(x: number, y: number, z: number, scale = 1.0, foliageType = 0) {
       const treeGroup = new THREE.Group();
       treeGroup.position.set(x, y, z);
       treeGroup.scale.setScalar(scale);
@@ -765,32 +985,74 @@ const destinations = getDestinations(base);
       const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.35, 1.8, 6), matTreeTrunk);
       trunk.position.y = 0.9;
       trunk.castShadow = true;
+      trunk.receiveShadow = true;
       treeGroup.add(trunk);
 
-      // Low-poly layered foliage canopy
-      const canopy1 = new THREE.Mesh(new THREE.DodecahedronGeometry(1.4), matFoliage);
+      // Distinct layered foliage geometry
+      const chosenMatA = foliageType === 1 ? matFoliageLight : foliageType === 2 ? matFoliageWarm : matFoliage;
+      const chosenMatB = foliageType === 1 ? matTerrainHigh : matTerrainBase;
+
+      const canopy1 = new THREE.Mesh(new THREE.DodecahedronGeometry(1.4), chosenMatA);
       canopy1.position.y = 2.4;
       canopy1.castShadow = true;
       treeGroup.add(canopy1);
 
-      const canopy2 = new THREE.Mesh(new THREE.DodecahedronGeometry(1.0), matTerrainBase);
+      const canopy2 = new THREE.Mesh(new THREE.DodecahedronGeometry(1.0), chosenMatB);
       canopy2.position.set(0.3, 3.2, 0.1);
       canopy2.castShadow = true;
       treeGroup.add(canopy2);
 
+      swayingFoliage.push({
+        mesh: canopy1,
+        baseRotZ: 0,
+        speed: 1.2 + Math.random() * 0.6,
+        phase: Math.random() * Math.PI * 2,
+      });
+
       worldGroup.add(treeGroup);
     }
 
-    // Curated landscape placement
-    createTree(-5.5, 0.8, -5.5, 1.1);
-    createTree(6.2, 0.8, -4.8, 0.95);
-    createTree(7.5, 0.8, 5.2, 1.2);
-    createTree(-6.8, 0.8, 5.5, 1.0);
-    createTree(-17.5, 0.5, 0.0, 1.3);
-    createTree(17.5, 0.5, 0.0, 1.25);
-    createTree(0.0, 0.6, 17.5, 1.4);
-    createTree(-7.5, 1.8, -17.5, 0.9);
-    createTree(7.5, 1.8, -17.5, 0.9);
+    // Curated landscape placement across campus
+    createTree(-5.5, 0.8, -5.5, 1.1, 0);
+    createTree(6.2, 0.8, -4.8, 0.95, 1);
+    createTree(7.5, 0.8, 5.2, 1.2, 2);
+    createTree(-6.8, 0.8, 5.5, 1.0, 1);
+    createTree(-17.5, 0.5, 0.0, 1.3, 0);
+    createTree(17.5, 0.5, 0.0, 1.25, 2);
+    createTree(0.0, 0.6, 17.5, 1.4, 1);
+    createTree(-7.5, 1.8, -17.5, 0.9, 0);
+    createTree(7.5, 1.8, -17.5, 0.9, 1);
+    createTree(-15.5, 1.8, -8.0, 0.85, 2);
+    createTree(15.5, 1.4, -6.5, 0.9, 0);
+
+    // ── 6. Gentle Ambient Water Ripple & Dust Motes ──
+    // Ambient terrarium dust motes (subtle floating golden particles)
+    const particleCount = 28;
+    const particleGeo = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(particleCount * 3);
+    const particleVelocities: { x: number; y: number; z: number }[] = [];
+
+    for (let i = 0; i < particleCount; i++) {
+      particlePositions[i * 3] = (Math.random() - 0.5) * 44;
+      particlePositions[i * 3 + 1] = 1.0 + Math.random() * 14;
+      particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 44;
+      particleVelocities.push({
+        x: (Math.random() - 0.5) * 0.3,
+        y: 0.15 + Math.random() * 0.25,
+        z: (Math.random() - 0.5) * 0.3,
+      });
+    }
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+
+    const particleMat = new THREE.PointsMaterial({
+      color: 0xfef08a,
+      size: 0.45,
+      transparent: true,
+      opacity: 0.45,
+      blending: THREE.AdditiveBlending,
+    });
+    const particleSystem = new THREE.Points(particleGeo, particleMat);
+    worldGroup.add(particleSystem);
 
     // ── RTS Guided Exploration Camera Controller ──
     const cameraController = new RTSCameraController(camera);
@@ -832,6 +1094,12 @@ const destinations = getDestinations(base);
         card.setAttribute('aria-pressed', String(isMatch));
       });
 
+      // Position dynamic spotlight over the selected district for grounded emphasis
+      const targetPos = dest.targetPos;
+      districtSpot.target.position.set(targetPos[0], targetPos[1], targetPos[2]);
+      districtSpot.position.set(targetPos[0] + 5, targetPos[1] + 24, targetPos[2] + 5);
+      districtSpot.intensity = 1.6;
+
       // Guided RTS Camera Travel to Destination (with panel framing offset)
       cameraController.travelToDestination(id, true);
 
@@ -844,6 +1112,7 @@ const destinations = getDestinations(base);
       if (infoPanel) {
         infoPanel.classList.remove('is-visible');
       }
+      districtSpot.intensity = 0;
       cameraController.returnToOverview();
 
       // Clear selection states from tabs and cards
@@ -938,12 +1207,52 @@ const destinations = getDestinations(base);
       const delta = clock.getDelta();
       const time = clock.getElapsedTime();
 
-      // Ambient detail pulses
-      mastBeacon.position.y = 14.2 + Math.sin(time * 2.5) * 0.25;
-      totemGem.rotation.y += delta * 0.5;
-      totemGem.position.y = 3.6 + Math.sin(time * 2.0) * 0.12;
-      armForearm.rotation.z = 0.55 + Math.sin(time * 1.6) * 0.1;
-      horizonBeacon.scale.setScalar(1.0 + Math.sin(time * 3.0) * 0.08);
+      // 1. Ambient District Silhouettes Motion
+      // Foundry mast beacon & screen
+      mastBeacon.position.y = 14.2 + Math.sin(time * 2.2) * 0.22;
+      screenMesh.rotation.y = 0.25 + Math.sin(time * 1.4) * 0.05;
+
+      // Commons agora totem float & spin
+      totemGem.rotation.y += delta * 0.45;
+      totemGem.position.y = 3.6 + Math.sin(time * 1.8) * 0.12;
+
+      // Lab articulated robotic arm & dish scan
+      armForearm.rotation.z = 0.55 + Math.sin(time * 1.4) * 0.1;
+      labDishRotator.rotation.y = Math.sin(time * 0.6) * 0.45;
+
+      // Yard gantry carriage subtle travel
+      gantryCarriage.position.z = 2.4 + Math.sin(time * 1.1) * 1.2;
+      gantryToolTip.position.z = gantryCarriage.position.z;
+
+      // Observatory celestial dome slow atmospheric rotation
+      obsDomePivot.rotation.y = time * 0.08;
+
+      // Outlook horizon rose beacon pulse & wind vane
+      horizonBeacon.scale.setScalar(1.0 + Math.sin(time * 2.6) * 0.07);
+      vaneArm.rotation.y = Math.sin(time * 0.5) * 0.4 + time * 0.1;
+
+      // 2. Reflective Pond Surface Ripple
+      pondMesh.scale.set(1.0 + Math.sin(time * 2.0) * 0.015, 1.0, 1.0 + Math.cos(time * 2.0) * 0.015);
+
+      // 3. Gentle Foliage Wind Sway
+      for (let i = 0; i < swayingFoliage.length; i++) {
+        const item = swayingFoliage[i];
+        item.mesh.rotation.z = Math.sin(time * item.speed + item.phase) * 0.04;
+      }
+
+      // 4. Subtle Floating Terrarium Dust Motes
+      const positions = particleGeo.attributes.position.array as Float32Array;
+      for (let i = 0; i < particleCount; i++) {
+        positions[i * 3 + 1] += particleVelocities[i].y * delta;
+        positions[i * 3] += particleVelocities[i].x * delta;
+        positions[i * 3 + 2] += particleVelocities[i].z * delta;
+
+        // Wrap around inside terrarium
+        if (positions[i * 3 + 1] > 16) {
+          positions[i * 3 + 1] = 1.0;
+        }
+      }
+      particleGeo.attributes.position.needsUpdate = true;
 
       // RTS Guided Exploration Camera Controller Update
       cameraController.update(delta);
