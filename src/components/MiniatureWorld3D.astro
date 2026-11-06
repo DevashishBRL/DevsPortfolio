@@ -325,15 +325,16 @@ const destinations = getDestinations(base);
 
     // ── Coordinated Atmospheric Lighting Hierarchy ──
     // 1. Warm cream ambient baseline
-    const ambientLight = new THREE.AmbientLight(0xfef3c7, 0.45);
+    // 1. Environmental ambient lighting baseline
+    const ambientLight = new THREE.AmbientLight(0xfef3c7, 0.50);
     scene.add(ambientLight);
 
     // 2. Hemisphere sky/ground fill for grounded contact contrast
-    const hemiLight = new THREE.HemisphereLight(0xdbeafe, 0x1c1917, 0.35);
+    const hemiLight = new THREE.HemisphereLight(0xdbeafe, 0x1c1917, 0.40);
     scene.add(hemiLight);
 
-    // 3. Primary Sun directional key light with crisp, dimensional shadow projection
-    const sunLight = new THREE.DirectionalLight(0xfffaed, 2.3);
+    // 3. Primary Sun directional key light with crisp shadows
+    const sunLight = new THREE.DirectionalLight(0xfffaed, 2.2);
     sunLight.position.set(42, 60, 32);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 2048;
@@ -347,71 +348,92 @@ const destinations = getDestinations(base);
     sunLight.shadow.bias = -0.0003;
     scene.add(sunLight);
 
-    // 4. Cool blue architectural rim kicker from opposite corner
+    // 4. Cool blue architectural rim kicker
     const rimFillLight = new THREE.DirectionalLight(0x7dd3fc, 0.55);
     rimFillLight.position.set(-32, 28, -28);
     scene.add(rimFillLight);
 
-    // 5. Subtle warm bounce fill light
-    const groundBounceLight = new THREE.DirectionalLight(0xfde68a, 0.18);
+    // 5. Ground bounce fill light
+    const groundBounceLight = new THREE.DirectionalLight(0xfde68a, 0.20);
     groundBounceLight.position.set(10, -12, 10);
     scene.add(groundBounceLight);
 
-    // 6. Dynamic district highlight spotlight (gives selected district focused presence)
+    // 6. Dynamic district highlight spotlight
     const districtSpot = new THREE.SpotLight(0xffedd5, 0, 55, Math.PI / 4, 0.6, 1.2);
     districtSpot.position.set(0, 32, 0);
     scene.add(districtSpot);
     scene.add(districtSpot.target);
 
     // 7. Localized Point Lights for true physical emissive illumination
-    // Commons Agora Center Light
-    const commonsPointLight = new THREE.PointLight(0xf59e0b, 1.6, 14, 1.8);
-    commonsPointLight.position.set(0, 2.5, 0);
+    // Commons Stage Presentation Light
+    const commonsPointLight = new THREE.PointLight(0xf59e0b, 1.5, 14, 1.8);
+    commonsPointLight.position.set(0, 2.4, 0);
     scene.add(commonsPointLight);
 
-    // Yard Toolhead Cyan Work Light
-    const yardPointLight = new THREE.PointLight(0x38bdf8, 1.3, 11, 2.0);
+    // Yard Prototyping Workshop Cyan Light
+    const yardPointLight = new THREE.PointLight(0x38bdf8, 1.4, 12, 2.0);
     yardPointLight.position.set(-15.8, 3.8, 14.4);
     scene.add(yardPointLight);
 
-    // Outlook Horizon Rose Beacon Light
-    const outlookPointLight = new THREE.PointLight(0xf43f5e, 1.5, 16, 1.8);
-    outlookPointLight.position.set(0, 14.8, -16);
+    // Outlook Lighthouse Beacon Warm Yellow PointLight
+    const outlookPointLight = new THREE.PointLight(0xfef08a, 2.0, 28, 1.4);
+    outlookPointLight.position.set(0, 19.5, -16);
     scene.add(outlookPointLight);
 
-    // Observatory Warm Dome Internal Light
+    // Observatory Dome Interior Warm Light
     const obsPointLight = new THREE.PointLight(0xfbbf24, 1.2, 12, 2.0);
-    obsPointLight.position.set(12, 4.8, 12);
+    obsPointLight.position.set(12, 5.2, 12);
     scene.add(obsPointLight);
+
+    // Lab Inspection Spot Light (mounted to robotic arm base area)
+    const labArmLight = new THREE.PointLight(0xf59e0b, 1.5, 10, 2.0);
+    labArmLight.position.set(-5.5, 5.0, -8.0);
+    scene.add(labArmLight);
+
+    // Dedicated streetlight lamp material with toggleable emissive
+    const matStreetlampGlow = new THREE.MeshStandardMaterial({
+      color: 0x222222,
+      emissive: 0x000000,
+      emissiveIntensity: 0.0,
+      roughness: 0.4,
+    });
+    const streetlightSprites: THREE.Sprite[] = [];
 
     function updateLightingTheme(night: boolean) {
       isNightMode = night;
       if (night) {
         scene.background = nightBg;
-        scene.fog = new THREE.FogExp2(0x05080e, 0.012);
-        ambientLight.color.setHex(0x111827);
-        ambientLight.intensity = 0.25;
-        hemiLight.color.setHex(0x38bdf8);
-        hemiLight.groundColor.setHex(0x030712);
-        hemiLight.intensity = 0.28;
-        sunLight.color.setHex(0x93c5fd); // Moonlit cool tone
-        sunLight.intensity = 0.95;
+        scene.fog = new THREE.FogExp2(0x070c16, 0.009);
+        ambientLight.color.setHex(0x1a2638);
+        ambientLight.intensity = 0.52;
+        hemiLight.color.setHex(0x60a5fa);
+        hemiLight.groundColor.setHex(0x18241b);
+        hemiLight.intensity = 0.45;
+        sunLight.color.setHex(0x93c5fd); // Cool moonlit directional key
+        sunLight.intensity = 1.15;
         rimFillLight.color.setHex(0x38bdf8);
-        rimFillLight.intensity = 0.55;
-        groundBounceLight.intensity = 0.05;
+        rimFillLight.intensity = 0.65;
+        groundBounceLight.intensity = 0.12;
         
-        // Emissives blaze into life at dusk
-        matWindowAmber.emissiveIntensity = 1.35;
-        matWindowCyan.emissiveIntensity = 1.45;
-        matWindowRose.emissiveIntensity = 1.50;
-        matWaterPond.color.setHex(0x0a1d2c);
+        // Emissives activate at dusk
+        matWindowAmber.emissiveIntensity = 1.25;
+        matWindowCyan.emissiveIntensity = 1.35;
+        matWindowRose.emissiveIntensity = 1.35;
+        matWaterPond.color.setHex(0x0c253b);
         
-        // Local point lights become dominant focal points
-        commonsPointLight.intensity = 2.8;
-        yardPointLight.intensity = 2.4;
-        outlookPointLight.intensity = 2.8;
-        obsPointLight.intensity = 2.2;
-        renderer.toneMappingExposure = 1.15;
+        // Streetlights activate at dusk
+        matStreetlampGlow.color.setHex(0xfef08a);
+        matStreetlampGlow.emissive.setHex(0xf59e0b);
+        matStreetlampGlow.emissiveIntensity = 1.1;
+        streetlightSprites.forEach(s => s.visible = true);
+        
+        // Local point lights provide warm pools of illumination
+        commonsPointLight.intensity = 2.6;
+        yardPointLight.intensity = 2.2;
+        outlookPointLight.intensity = 3.2;
+        obsPointLight.intensity = 2.0;
+        labArmLight.intensity = 2.2;
+        renderer.toneMappingExposure = 1.18;
 
         if (hudThemeIcon) hudThemeIcon.textContent = '🌙';
         if (hudThemeLabel) hudThemeLabel.textContent = 'Dusk';
@@ -419,32 +441,38 @@ const destinations = getDestinations(base);
         scene.background = dayBg;
         scene.fog = new THREE.FogExp2(0x0c131d, 0.0075);
         ambientLight.color.setHex(0xfef3c7);
-        ambientLight.intensity = 0.45;
+        ambientLight.intensity = 0.50;
         hemiLight.color.setHex(0xdbeafe);
         hemiLight.groundColor.setHex(0x1c1917);
-        hemiLight.intensity = 0.35;
+        hemiLight.intensity = 0.40;
         sunLight.color.setHex(0xfffaed);
-        sunLight.intensity = 2.3;
+        sunLight.intensity = 2.2;
         rimFillLight.color.setHex(0x7dd3fc);
         rimFillLight.intensity = 0.55;
-        groundBounceLight.intensity = 0.18;
+        groundBounceLight.intensity = 0.20;
 
-        matWindowAmber.emissiveIntensity = 0.65;
-        matWindowCyan.emissiveIntensity = 0.70;
-        matWindowRose.emissiveIntensity = 0.75;
+        matWindowAmber.emissiveIntensity = 0.55;
+        matWindowCyan.emissiveIntensity = 0.60;
+        matWindowRose.emissiveIntensity = 0.65;
         matWaterPond.color.setHex(0x164664);
 
-        commonsPointLight.intensity = 1.6;
-        yardPointLight.intensity = 1.3;
-        outlookPointLight.intensity = 1.5;
-        obsPointLight.intensity = 1.2;
+        // Streetlights shut off in daylight
+        matStreetlampGlow.color.setHex(0x334155);
+        matStreetlampGlow.emissive.setHex(0x000000);
+        matStreetlampGlow.emissiveIntensity = 0.0;
+        streetlightSprites.forEach(s => s.visible = false);
+
+        commonsPointLight.intensity = 1.4;
+        yardPointLight.intensity = 1.2;
+        outlookPointLight.intensity = 1.8;
+        obsPointLight.intensity = 1.1;
+        labArmLight.intensity = 1.2;
         renderer.toneMappingExposure = 1.05;
 
         if (hudThemeIcon) hudThemeIcon.textContent = '☀️';
         if (hudThemeLabel) hudThemeLabel.textContent = 'Daylight';
       }
     }
-
     if (hudThemeToggle) {
       hudThemeToggle.addEventListener('click', () => {
         updateLightingTheme(!isNightMode);
@@ -463,38 +491,32 @@ const destinations = getDestinations(base);
     }
 
     // ── 1. Terrarium Enclosure & Layered Island Base ──
-    // Bottom mounting plinth
     const plinthBase = new THREE.Mesh(new THREE.CylinderGeometry(27.5, 29, 3.2, 48), matPedestal);
     plinthBase.position.y = -2.2;
     plinthBase.receiveShadow = true;
     worldGroup.add(plinthBase);
 
-    // Cutaway dark soil layer
     const soilLayer = new THREE.Mesh(new THREE.CylinderGeometry(26.8, 27.4, 1.8, 48), matSoil);
     soilLayer.position.y = -0.7;
     soilLayer.receiveShadow = true;
     worldGroup.add(soilLayer);
 
-    // Geological bedrock shelf tier
     const bedrockLayer = new THREE.Mesh(new THREE.CylinderGeometry(26.5, 27.0, 0.6, 48), matTerraceRockDark);
     bedrockLayer.position.y = 0.0;
     bedrockLayer.receiveShadow = true;
     worldGroup.add(bedrockLayer);
 
-    // Main sculpted landscape disc
     const mainLandscape = new THREE.Mesh(new THREE.CylinderGeometry(26.2, 26.8, 1.2, 48), matTerrainBase);
     mainLandscape.position.y = 0.4;
     mainLandscape.receiveShadow = true;
     worldGroup.add(mainLandscape);
 
-    // Terrarium Glass Rim (Outer glass habitat lip)
     const glassRimGeo = new THREE.TorusGeometry(26.6, 0.35, 16, 64);
     glassRimGeo.rotateX(Math.PI / 2);
     const glassRimMesh = new THREE.Mesh(glassRimGeo, matTerrariumRim);
     glassRimMesh.position.y = 1.2;
     worldGroup.add(glassRimMesh);
 
-    // Glass cylinder bell-jar lower lip
     const glassSkirtGeo = new THREE.CylinderGeometry(26.7, 26.7, 1.4, 64, 1, true);
     const glassSkirtMat = new THREE.MeshPhysicalMaterial({
       color: 0x93c5fd,
@@ -509,21 +531,20 @@ const destinations = getDestinations(base);
     glassSkirtMesh.position.y = 1.7;
     worldGroup.add(glassSkirtMesh);
 
-    // Secondary brass trim ring beneath glass rim
     const rimBrassGeo = new THREE.TorusGeometry(26.7, 0.12, 12, 64);
     rimBrassGeo.rotateX(Math.PI / 2);
     const rimBrassMesh = new THREE.Mesh(rimBrassGeo, matMetalBrass);
     rimBrassMesh.position.y = 0.85;
     worldGroup.add(rimBrassMesh);
 
-    // ── 2. Topographical Masterplan & Elevated Terraces ──
-    // A. Northwest High Tech Plateau (The Lab) - Stepped retaining walls & access ramp
-    const labPlatform = new THREE.Mesh(new THREE.CylinderGeometry(10.0, 11.2, 1.8, 28), matTerraceRock);
+    // ── 2. Topographical Masterplan & Clean Elevated Terraces ──
+    // A. Northwest High Tech Plateau (The Lab)
+    const labPlatform = new THREE.Mesh(new THREE.CylinderGeometry(10.0, 11.0, 1.8, 28), matTerraceRock);
     labPlatform.position.set(-12, 1.3, -12);
     labPlatform.receiveShadow = true;
     worldGroup.add(labPlatform);
 
-    const labWall = new THREE.Mesh(new THREE.CylinderGeometry(10.5, 10.8, 0.45, 28), matDarkIron);
+    const labWall = new THREE.Mesh(new THREE.CylinderGeometry(10.3, 10.5, 0.45, 28), matDarkIron);
     labWall.position.set(-12, 2.1, -12);
     labWall.receiveShadow = true;
     worldGroup.add(labWall);
@@ -538,8 +559,8 @@ const destinations = getDestinations(base);
     labApron.receiveShadow = true;
     worldGroup.add(labApron);
 
-    // B. East Industrial Stepped Terrace (The Foundry) - Staged loading & maker yard
-    const foundryPlatform = new THREE.Mesh(new THREE.CylinderGeometry(9.5, 10.6, 1.4, 28), matTerraceRock);
+    // B. East Industrial Stepped Terrace (The Foundry)
+    const foundryPlatform = new THREE.Mesh(new THREE.CylinderGeometry(9.5, 10.5, 1.4, 28), matTerraceRock);
     foundryPlatform.position.set(13, 1.1, -12);
     foundryPlatform.receiveShadow = true;
     worldGroup.add(foundryPlatform);
@@ -549,14 +570,13 @@ const destinations = getDestinations(base);
     foundryPaving.receiveShadow = true;
     worldGroup.add(foundryPaving);
 
-    // Foundry loading ramp
-    const fRamp = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.25, 4.0), matCobblePath);
+    const fRamp = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.22, 3.8), matCobblePath);
     fRamp.position.set(10.2, 1.3, -8.5);
     fRamp.rotation.x = 0.18;
     fRamp.receiveShadow = true;
     worldGroup.add(fRamp);
 
-    // C. Southeast Observation Garden Terraces (The Observatory) - Elevated circular crest
+    // C. Southeast Observation Garden Terraces (The Observatory)
     const obsPlatform = new THREE.Mesh(new THREE.CylinderGeometry(9.2, 10.2, 1.1, 28), matTerraceRock);
     obsPlatform.position.set(12, 0.95, 12);
     obsPlatform.receiveShadow = true;
@@ -567,18 +587,12 @@ const destinations = getDestinations(base);
     obsPlaza.receiveShadow = true;
     worldGroup.add(obsPlaza);
 
-    // Concentric garden ring around Observatory
     const obsGardenRing = new THREE.Mesh(new THREE.TorusGeometry(6.2, 0.45, 8, 32), matTerrainHigh);
     obsGardenRing.position.set(12, 1.62, 12);
     obsGardenRing.rotation.x = Math.PI / 2;
     worldGroup.add(obsGardenRing);
 
-    // D. Southwest Recessed Workshop Basin (The Yard) - Lower fabrication ground
-    const yardBasinRim = new THREE.Mesh(new THREE.BoxGeometry(15.2, 0.3, 14.2), matTerraceRockDark);
-    yardBasinRim.position.set(-12, 0.45, 12);
-    yardBasinRim.receiveShadow = true;
-    worldGroup.add(yardBasinRim);
-
+    // D. Southwest Clean Fabrication Grounds (The Yard)
     const yardPaving = new THREE.Mesh(new THREE.BoxGeometry(14.2, 0.25, 13.2), matSandstone);
     yardPaving.position.set(-12, 0.6, 12);
     yardPaving.receiveShadow = true;
@@ -589,42 +603,68 @@ const destinations = getDestinations(base);
     yardTestBed.receiveShadow = true;
     worldGroup.add(yardTestBed);
 
-    // E. North Mountain Spire & Lighthouse Crag (The Outlook) - Highest natural promontory
-    const cragBase = new THREE.Mesh(new THREE.ConeGeometry(7.6, 5.2, 10), matTerraceRock);
-    cragBase.position.set(0, 2.6, -16);
+    // E. North Mountain Spire & Elevated Lighthouse Ridge (The Outlook - Tallest Landmark)
+    const cragBase = new THREE.Mesh(new THREE.ConeGeometry(8.5, 7.5, 10), matTerraceRock);
+    cragBase.position.set(0, 3.8, -16);
     cragBase.receiveShadow = true;
     cragBase.castShadow = true;
     worldGroup.add(cragBase);
 
-    const cragBoulderA = new THREE.Mesh(new THREE.DodecahedronGeometry(2.4), matTerraceRockDark);
-    cragBoulderA.position.set(-3.8, 2.4, -15);
+    const cragPlateau = new THREE.Mesh(new THREE.CylinderGeometry(4.8, 5.5, 1.2, 16), matTerraceRockDark);
+    cragPlateau.position.set(0, 7.2, -16);
+    cragPlateau.receiveShadow = true;
+    worldGroup.add(cragPlateau);
+
+    const cragBoulderA = new THREE.Mesh(new THREE.DodecahedronGeometry(2.8), matTerraceRockDark);
+    cragBoulderA.position.set(-4.0, 3.5, -15);
     cragBoulderA.rotation.set(0.4, 0.8, -0.3);
     cragBoulderA.castShadow = true;
     cragBoulderA.receiveShadow = true;
     worldGroup.add(cragBoulderA);
 
-    const cragBoulderB = new THREE.Mesh(new THREE.DodecahedronGeometry(2.0), matTerraceRock);
-    cragBoulderB.position.set(3.5, 2.2, -16.5);
+    const cragBoulderB = new THREE.Mesh(new THREE.DodecahedronGeometry(2.4), matTerraceRock);
+    cragBoulderB.position.set(3.8, 3.2, -16.5);
     cragBoulderB.rotation.set(-0.2, 0.5, 0.4);
     cragBoulderB.castShadow = true;
     cragBoulderB.receiveShadow = true;
     worldGroup.add(cragBoulderB);
 
-    const cragBoulderC = new THREE.Mesh(new THREE.DodecahedronGeometry(1.6), matTerraceRockDark);
-    cragBoulderC.position.set(0.5, 4.2, -18.0);
-    cragBoulderC.castShadow = true;
-    cragBoulderC.receiveShadow = true;
-    worldGroup.add(cragBoulderC);
-
-    // F. Central Sunken Amphitheatre Plaza (The Commons) - Community gathering bowl
+    // F. Central Amphitheatre Plaza Base (The Commons)
     const commonsPlazaBase = new THREE.Mesh(new THREE.CylinderGeometry(8.8, 9.2, 0.6, 32), matSandstone);
     commonsPlazaBase.position.set(0, 0.85, 0);
     commonsPlazaBase.receiveShadow = true;
     worldGroup.add(commonsPlazaBase);
 
-    // ── 3. Road Hierarchy & Pedestrian Campus Circulation ──
-    // Material for campus arterial roads
-    const matAsphaltRoad = new THREE.MeshStandardMaterial({ color: 0x3a424e, roughness: 0.75, metalness: 0.1 });
+    // G. Landscaped Campus Water Feature (South-Central Ecological Reflection Pond)
+    const pondGroup = new THREE.Group();
+    pondGroup.position.set(4.8, 0.92, -3.2);
+
+    // Pond stone embankment rim
+    const pondBasinGeo = new THREE.CylinderGeometry(2.8, 3.2, 0.35, 24);
+    const pondBasinMesh = new THREE.Mesh(pondBasinGeo, matSandstone);
+    pondBasinMesh.receiveShadow = true;
+    pondGroup.add(pondBasinMesh);
+
+    // Reflective living water surface
+    const pondWaterGeo = new THREE.CylinderGeometry(2.5, 2.5, 0.12, 24);
+    const pondMesh = new THREE.Mesh(pondWaterGeo, matWaterPond);
+    pondMesh.position.y = 0.14;
+    pondGroup.add(pondMesh);
+
+    // Surrounding shoreline stepping stones
+    for (let s = 0; s < 5; s++) {
+      const stoneAngle = (s / 5) * Math.PI * 1.6 - 0.4;
+      const stoneR = 2.9 + (s % 2) * 0.25;
+      const stone = new THREE.Mesh(new THREE.DodecahedronGeometry(0.35), matTerraceRock);
+      stone.position.set(Math.cos(stoneAngle) * stoneR, 0.18, Math.sin(stoneAngle) * stoneR);
+      stone.castShadow = true;
+      stone.receiveShadow = true;
+      pondGroup.add(stone);
+    }
+    worldGroup.add(pondGroup);
+
+    // ── 3. Road Network & Pedestrian Campus Circulation ──
+    const matAsphaltRoad = new THREE.MeshStandardMaterial({ color: 0x333b47, roughness: 0.75, metalness: 0.1 });
     const matCrossingWhite = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, roughness: 0.4 });
 
     function createCurvedRoad(p0: THREE.Vector3, p1: THREE.Vector3, p2: THREE.Vector3, width: number, isPedestrian = false) {
@@ -636,7 +676,7 @@ const destinations = getDestinations(base);
         const ptA = points[i];
         const ptB = points[i + 1];
         const segLen = ptA.distanceTo(ptB);
-        const segGeo = new THREE.BoxGeometry(width, 0.18, segLen);
+        const segGeo = new THREE.BoxGeometry(width, 0.16, segLen);
         const segMesh = new THREE.Mesh(segGeo, roadMat);
         segMesh.position.copy(ptA).lerp(ptB, 0.5);
         segMesh.lookAt(ptB);
@@ -644,15 +684,15 @@ const destinations = getDestinations(base);
         worldGroup.add(segMesh);
 
         // Curbs
-        const kerbGeo = new THREE.BoxGeometry(0.20, 0.24, segLen);
+        const kerbGeo = new THREE.BoxGeometry(0.18, 0.22, segLen);
         const kerbLeft = new THREE.Mesh(kerbGeo, matKerbStone);
         const kerbRight = new THREE.Mesh(kerbGeo, matKerbStone);
         kerbLeft.position.copy(segMesh.position);
         kerbRight.position.copy(segMesh.position);
         kerbLeft.rotation.copy(segMesh.rotation);
         kerbRight.rotation.copy(segMesh.rotation);
-        kerbLeft.translateX(-width * 0.53);
-        kerbRight.translateX(width * 0.53);
+        kerbLeft.translateX(-width * 0.52);
+        kerbRight.translateX(width * 0.52);
         kerbLeft.receiveShadow = true;
         kerbRight.receiveShadow = true;
         worldGroup.add(kerbLeft);
@@ -660,46 +700,41 @@ const destinations = getDestinations(base);
       }
     }
 
-    // Campus Primary Circulation Arteries (Connecting Central Hub to Districts)
-    // 1. South West -> Commons
-    createCurvedRoad(new THREE.Vector3(-10, 0.72, 10), new THREE.Vector3(-5, 0.85, 6), new THREE.Vector3(0, 1.05, 0), 2.2);
-    // 2. South East -> Commons
-    createCurvedRoad(new THREE.Vector3(10, 1.0, 10), new THREE.Vector3(6, 0.95, 6), new THREE.Vector3(0, 1.05, 0), 2.2);
-    // 3. North East -> Commons
-    createCurvedRoad(new THREE.Vector3(11, 1.5, -10), new THREE.Vector3(6, 1.15, -5), new THREE.Vector3(0, 1.05, 0), 2.2);
-    // 4. North West -> Commons
-    createCurvedRoad(new THREE.Vector3(-10, 2.1, -10), new THREE.Vector3(-6, 1.25, -4), new THREE.Vector3(0, 1.05, 0), 2.2);
-    // 5. Commons -> Outlook Winding Hill Path
-    createCurvedRoad(new THREE.Vector3(0, 1.05, 0), new THREE.Vector3(2.5, 2.2, -8), new THREE.Vector3(0, 4.2, -14), 1.8, true);
+    // Arterial roads connecting districts to central hub
+    createCurvedRoad(new THREE.Vector3(-10, 0.72, 10), new THREE.Vector3(-5, 0.85, 6), new THREE.Vector3(-1.8, 1.05, 1.8), 2.2);
+    createCurvedRoad(new THREE.Vector3(10, 1.0, 10), new THREE.Vector3(6, 0.95, 6), new THREE.Vector3(1.8, 1.05, 1.8), 2.2);
+    createCurvedRoad(new THREE.Vector3(11, 1.5, -10), new THREE.Vector3(6, 1.15, -6), new THREE.Vector3(1.8, 1.05, -1.8), 2.2);
+    createCurvedRoad(new THREE.Vector3(-10, 2.1, -10), new THREE.Vector3(-6, 1.25, -4), new THREE.Vector3(-1.8, 1.05, -1.8), 2.2);
 
-    // Cross-campus connectors
+    // Pedestrian path winding up to Outlook Lighthouse summit
+    createCurvedRoad(new THREE.Vector3(0, 1.05, -2.5), new THREE.Vector3(2.8, 3.5, -8.5), new THREE.Vector3(0, 7.3, -13.5), 1.6, true);
+
+    // Connectors
     createCurvedRoad(new THREE.Vector3(-10, 2.1, -10), new THREE.Vector3(-13, 1.4, 0), new THREE.Vector3(-10, 0.72, 10), 1.6, true);
     createCurvedRoad(new THREE.Vector3(11, 1.5, -10), new THREE.Vector3(13, 1.2, 0), new THREE.Vector3(10, 1.0, 10), 1.6, true);
 
-    // Pedestrian Zebra Crossings at entry to Commons
     function addZebraCrossing(pos: THREE.Vector3, rotY: number) {
       const zGroup = new THREE.Group();
       zGroup.position.copy(pos);
       zGroup.rotation.y = rotY;
-      for (let s = -1.0; s <= 1.0; s += 0.5) {
-        const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.04, 1.6), matCrossingWhite);
+      for (let s = -0.9; s <= 0.9; s += 0.45) {
+        const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.20, 0.04, 1.5), matCrossingWhite);
         stripe.position.set(s, 0.1, 0);
         zGroup.add(stripe);
       }
       worldGroup.add(zGroup);
     }
-    addZebraCrossing(new THREE.Vector3(-3.8, 1.02, 3.8), Math.PI / 4);
-    addZebraCrossing(new THREE.Vector3(3.8, 1.02, 3.8), -Math.PI / 4);
-    addZebraCrossing(new THREE.Vector3(3.8, 1.12, -3.8), Math.PI / 4);
-    addZebraCrossing(new THREE.Vector3(-3.8, 1.18, -3.8), -Math.PI / 4);
+    addZebraCrossing(new THREE.Vector3(-3.4, 1.02, 3.4), Math.PI / 4);
+    addZebraCrossing(new THREE.Vector3(3.4, 1.02, 3.4), -Math.PI / 4);
+    addZebraCrossing(new THREE.Vector3(3.4, 1.12, -3.4), Math.PI / 4);
+    addZebraCrossing(new THREE.Vector3(-3.4, 1.18, -3.4), -Math.PI / 4);
 
-    // ── 4. Architectural District Identities (Science-Park Landmarks) ──
+    // ── 4. Architectural District Identities (Spatially Polished) ──
 
     // ── DISTRICT 01: THE LAB (Robotics & Mechatronics Research Centre) ──
     const labGroup = new THREE.Group();
     labGroup.position.set(-12, 2.3, -12);
 
-    // Research centre glass-and-steel building
     const labMainBlock = new THREE.Mesh(new THREE.BoxGeometry(9.0, 4.6, 6.8), matPlasterWarm);
     labMainBlock.position.set(-0.5, 2.3, -0.5);
     labMainBlock.castShadow = true;
@@ -707,19 +742,16 @@ const destinations = getDestinations(base);
     labGroup.add(labMainBlock);
     registerInteractive(labMainBlock, 'lab');
 
-    // Research wing glazed curtain wall (amber glow)
     const labCurtainWall = new THREE.Mesh(new THREE.BoxGeometry(7.8, 3.4, 0.4), matWindowAmber);
     labCurtainWall.position.set(-0.5, 2.4, 2.95);
     labCurtainWall.castShadow = true;
     labGroup.add(labCurtainWall);
 
-    // Roof parapet & sun deck
     const labRoofSlab = new THREE.Mesh(new THREE.BoxGeometry(9.6, 0.45, 7.4), matRoofSlate);
     labRoofSlab.position.set(-0.5, 4.7, -0.5);
     labRoofSlab.castShadow = true;
     labGroup.add(labRoofSlab);
 
-    // Cantilevered upper level robotics observation module
     const labGlazedBay = new THREE.Mesh(new THREE.BoxGeometry(5.2, 2.6, 4.2), matWindowAmber);
     labGlazedBay.position.set(0.5, 6.1, 0.2);
     labGlazedBay.castShadow = true;
@@ -729,32 +761,41 @@ const destinations = getDestinations(base);
     labBayGlow.position.set(0.5, 6.1, 0.2);
     labGroup.add(labBayGlow);
 
-    // Rooftop sensor dome
     const labSensorDome = new THREE.Mesh(new THREE.SphereGeometry(1.2, 14, 10, 0, Math.PI * 2, 0, Math.PI * 0.5), matWindowAmber);
     labSensorDome.position.set(2.4, 4.9, -1.8);
     labGroup.add(labSensorDome);
 
-    // Telemetry antenna dish mast
-    const labDishPole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 3.2, 8), matMetalSteel);
-    labDishPole.position.set(-3.2, 6.3, -2.4);
+    // Mechanically Correct Telemetry Dish Assembly
+    const dishMastBase = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.35, 0.5, 8), matDarkIron);
+    dishMastBase.position.set(-3.2, 4.9, -2.4);
+    labGroup.add(dishMastBase);
+
+    const labDishPole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 2.4, 8), matMetalSteel);
+    labDishPole.position.set(-3.2, 6.2, -2.4);
     labDishPole.castShadow = true;
     labGroup.add(labDishPole);
 
     const labDishRotator = new THREE.Group();
-    labDishRotator.position.set(-3.2, 7.9, -2.4);
+    labDishRotator.position.set(-3.2, 7.4, -2.4);
     labGroup.add(labDishRotator);
 
-    const labDish = new THREE.Mesh(new THREE.SphereGeometry(1.2, 14, 8, 0, Math.PI * 2, 0, Math.PI * 0.45), matMetalSteel);
-    labDish.rotation.x = -Math.PI / 3;
+    const dishBackPlate = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.15, 12), matDarkIron);
+    dishBackPlate.rotation.x = Math.PI / 2;
+    labDishRotator.add(dishBackPlate);
+
+    const dishParabolaGeo = new THREE.CylinderGeometry(1.4, 0.2, 0.6, 16, 1, true);
+    dishParabolaGeo.rotateX(Math.PI / 2);
+    const labDish = new THREE.Mesh(dishParabolaGeo, matMetalSteel);
+    labDish.position.set(0, 0.2, 0.3);
     labDish.castShadow = true;
     labDishRotator.add(labDish);
 
-    const labProbe = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.8, 6), matMetalBrass);
-    labProbe.position.set(0, 0.4, 0.3);
-    labProbe.rotation.x = Math.PI / 6;
+    const labProbe = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.9, 6), matMetalBrass);
+    labProbe.position.set(0, 0.2, 0.75);
+    labProbe.rotation.x = Math.PI / 2;
     labDishRotator.add(labProbe);
 
-    // Outdoor Robotics Proving Ground (Proving yard with yellow safety perimeter)
+    // Connected Robotics Proving Ground & Fully Articulated Arm
     const safetyBarrierMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.4 });
     const safetyFenceA = new THREE.Mesh(new THREE.BoxGeometry(5.4, 0.35, 0.12), safetyBarrierMat);
     safetyFenceA.position.set(4.4, 0.2, 1.8);
@@ -764,42 +805,50 @@ const destinations = getDestinations(base);
     safetyFenceB.position.set(7.1, 0.2, 4.2);
     labGroup.add(safetyFenceB);
 
-    // Exterior Articulated Industrial Robotic Inspection Arm
-    const robotArmPedestal = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.8, 0.6, 16), matMetalSteel);
-    robotArmPedestal.position.set(4.6, 0.3, 4.2);
+    const robotArmRoot = new THREE.Group();
+    robotArmRoot.position.set(4.6, 0.2, 4.0);
+    labGroup.add(robotArmRoot);
+
+    const robotArmPedestal = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.6, 0.5, 16), matMetalSteel);
+    robotArmPedestal.position.y = 0.25;
     robotArmPedestal.castShadow = true;
-    labGroup.add(robotArmPedestal);
+    robotArmRoot.add(robotArmPedestal);
 
-    const armTurret = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.95, 0.8, 12), matMetalBrass);
-    armTurret.position.set(4.6, 0.9, 4.2);
+    const armTurret = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.9, 0.7, 12), matMetalBrass);
+    armTurret.position.y = 0.8;
     armTurret.castShadow = true;
-    labGroup.add(armTurret);
+    robotArmRoot.add(armTurret);
 
-    const armBicep = new THREE.Mesh(new THREE.BoxGeometry(0.45, 3.4, 0.45), matPlasterWarm);
-    armBicep.position.set(4.6, 2.5, 4.2);
-    armBicep.rotation.z = -0.32;
+    const armBicep = new THREE.Mesh(new THREE.BoxGeometry(0.45, 3.2, 0.45), matPlasterWarm);
+    armBicep.position.set(0, 2.2, 0);
+    armBicep.rotation.z = -0.35;
     armBicep.castShadow = true;
-    labGroup.add(armBicep);
+    robotArmRoot.add(armBicep);
 
-    const armForearm = new THREE.Mesh(new THREE.BoxGeometry(0.38, 2.8, 0.38), matMetalSteel);
-    armForearm.position.set(5.6, 4.2, 4.2);
-    armForearm.rotation.z = 0.55;
-    armForearm.castShadow = true;
-    labGroup.add(armForearm);
+    // Forearm parented directly to bicep joint
+    const armForearm = new THREE.Group();
+    armForearm.position.set(1.1, 3.4, 0);
+    armForearm.rotation.z = 0.65;
+    robotArmRoot.add(armForearm);
 
-    // End effector with inspection light
-    const armGripper = new THREE.Mesh(new THREE.SphereGeometry(0.32, 10, 10), matWindowAmber);
-    armGripper.position.set(6.7, 5.1, 4.2);
-    labGroup.add(armGripper);
+    const forearmMesh = new THREE.Mesh(new THREE.BoxGeometry(0.38, 2.6, 0.38), matMetalSteel);
+    forearmMesh.position.y = 1.2;
+    forearmMesh.castShadow = true;
+    armForearm.add(forearmMesh);
 
-    const armSpotlight = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.35, 8), matMetalBrass);
-    armSpotlight.position.set(6.7, 4.8, 4.2);
-    armSpotlight.rotation.x = Math.PI;
-    labGroup.add(armSpotlight);
+    // Inspection Lamp rigidly attached to forearm end-effector
+    const armLampHead = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.35, 0.45, 12), matMetalBrass);
+    armLampHead.position.set(0, 2.5, 0);
+    armLampHead.rotation.x = Math.PI / 2;
+    armForearm.add(armLampHead);
 
-    const armLightGlow = createGlowSprite(0xf59e0b, 2.4, 0.7);
-    armLightGlow.position.set(6.7, 4.8, 4.2);
-    labGroup.add(armLightGlow);
+    const armLampLens = new THREE.Mesh(new THREE.SphereGeometry(0.24, 8, 8), matWindowAmber);
+    armLampLens.position.set(0, 2.5, 0.22);
+    armForearm.add(armLampLens);
+
+    const armLightGlow = createGlowSprite(0xf59e0b, 2.8, 0.8);
+    armLightGlow.position.set(0, 2.5, 0.3);
+    armForearm.add(armLightGlow);
 
     worldGroup.add(labGroup);
 
@@ -807,7 +856,6 @@ const destinations = getDestinations(base);
     const foundryGroup = new THREE.Group();
     foundryGroup.position.set(13, 1.7, -12);
 
-    // Heavy workshop base building
     const foundryTier1 = new THREE.Mesh(new THREE.BoxGeometry(8.2, 4.2, 8.2), matPlasterWarm);
     foundryTier1.position.set(0, 2.1, 0);
     foundryTier1.castShadow = true;
@@ -815,7 +863,6 @@ const destinations = getDestinations(base);
     foundryGroup.add(foundryTier1);
     registerInteractive(foundryTier1, 'foundry');
 
-    // Large industrial sliding workshop doors
     const matWorkshopDoor = new THREE.MeshStandardMaterial({ color: 0x1f2937, roughness: 0.6, metalness: 0.5 });
     const workshopDoorLeft = new THREE.Mesh(new THREE.BoxGeometry(2.2, 3.2, 0.2), matWorkshopDoor);
     workshopDoorLeft.position.set(-1.4, 1.6, 4.15);
@@ -825,7 +872,6 @@ const destinations = getDestinations(base);
     workshopDoorRight.position.set(1.4, 1.6, 4.15);
     foundryGroup.add(workshopDoorRight);
 
-    // Interior workshop glow spilling from open doorway
     const doorSpill = new THREE.Mesh(new THREE.BoxGeometry(3.6, 3.0, 0.1), matWindowCyan);
     doorSpill.position.set(0, 1.5, 4.08);
     foundryGroup.add(doorSpill);
@@ -834,12 +880,10 @@ const destinations = getDestinations(base);
     doorSpillGlow.position.set(0, 1.5, 4.2);
     foundryGroup.add(doorSpillGlow);
 
-    // Horizontal dark ribbon accent
     const foundryTrim = new THREE.Mesh(new THREE.BoxGeometry(8.6, 0.35, 8.6), matTimberDark);
     foundryTrim.position.y = 4.3;
     foundryGroup.add(foundryTrim);
 
-    // Cantilevered upper glass product studio
     const foundryTier2 = new THREE.Mesh(new THREE.BoxGeometry(6.6, 3.8, 6.6), matWindowCyan);
     foundryTier2.position.set(0.4, 6.2, 0.4);
     foundryTier2.castShadow = true;
@@ -849,13 +893,11 @@ const destinations = getDestinations(base);
     foundryStudioGlow.position.set(0.4, 6.2, 0.4);
     foundryGroup.add(foundryStudioGlow);
 
-    // Flat roof with solar panels & industrial extraction vents
     const foundryRoof = new THREE.Mesh(new THREE.BoxGeometry(7.4, 0.35, 7.4), matRoofSlate);
     foundryRoof.position.set(0.4, 8.2, 0.4);
     foundryRoof.castShadow = true;
     foundryGroup.add(foundryRoof);
 
-    // Extraction vents
     for (let v = 0; v < 3; v++) {
       const vent = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 1.2, 10), matMetalSteel);
       vent.position.set(-1.8 + v * 1.6, 8.8, -1.8);
@@ -867,7 +909,6 @@ const destinations = getDestinations(base);
       foundryGroup.add(ventCap);
     }
 
-    // Rooftop solar array
     const solarGeo = new THREE.BoxGeometry(2.5, 0.08, 1.8);
     const matSolar = new THREE.MeshStandardMaterial({ color: 0x1e3a5f, roughness: 0.2, metalness: 0.8 });
     const solarA = new THREE.Mesh(solarGeo, matSolar);
@@ -880,7 +921,6 @@ const destinations = getDestinations(base);
     solarB.rotation.x = -0.22;
     foundryGroup.add(solarB);
 
-    // Digital Prototype screen & communications beacon
     const mastPole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 6.8, 8), matMetalSteel);
     mastPole.position.set(2.8, 11.2, 2.8);
     foundryGroup.add(mastPole);
@@ -893,7 +933,6 @@ const destinations = getDestinations(base);
     mastBeaconGlow.position.set(2.8, 14.6, 2.8);
     foundryGroup.add(mastBeaconGlow);
 
-    // Outdoor prototyping drafting workbench
     const foundryDesk = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.8, 1.3), matTimberDark);
     foundryDesk.position.set(3.8, 0.4, 3.2);
     foundryDesk.castShadow = true;
@@ -911,7 +950,6 @@ const destinations = getDestinations(base);
     const obsGroup = new THREE.Group();
     obsGroup.position.set(12, 1.45, 12);
 
-    // High rotunda gallery base
     const obsRotunda = new THREE.Mesh(new THREE.CylinderGeometry(5.0, 5.4, 4.4, 16), matPlasterWarm);
     obsRotunda.position.y = 2.2;
     obsRotunda.castShadow = true;
@@ -919,7 +957,6 @@ const destinations = getDestinations(base);
     obsGroup.add(obsRotunda);
     registerInteractive(obsRotunda, 'observatory');
 
-    // Observation deck balcony with brass balustrade
     const obsBalconyRing = new THREE.Mesh(new THREE.CylinderGeometry(5.8, 5.4, 0.4, 24), matSandstone);
     obsBalconyRing.position.y = 4.4;
     obsBalconyRing.castShadow = true;
@@ -930,7 +967,7 @@ const destinations = getDestinations(base);
     obsBalconyRailing.rotation.x = Math.PI / 2;
     obsGroup.add(obsBalconyRailing);
 
-    // Large Distinct Celestial Dome with Slit & Telescope
+    // Dome Pivot & Rotating Observatory Dome
     const obsDomePivot = new THREE.Group();
     obsDomePivot.position.set(0, 4.6, 0);
     obsGroup.add(obsDomePivot);
@@ -943,33 +980,42 @@ const destinations = getDestinations(base);
     obsDomeGlow.position.set(0, 4.8, 0);
     obsGroup.add(obsDomeGlow);
 
-    // Prominent Brass Telescope peering out of the dome
-    const telescopeMount = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.6, 1.2, 10), matDarkIron);
-    telescopeMount.position.set(1.4, 2.0, 1.4);
+    // Correctly Oriented Astronomical Telescope
+    // Elevation: angled 42° upward, pointing toward camera/approach
+    const telescopeMount = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.65, 1.4, 12), matDarkIron);
+    telescopeMount.position.set(0, 2.0, 1.5);
     obsDomePivot.add(telescopeMount);
 
-    const telescope = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.52, 4.6, 12), matMetalBrass);
-    telescope.position.set(1.8, 3.2, 1.8);
-    telescope.rotation.x = -Math.PI / 3.8;
-    telescope.rotation.z = Math.PI / 5.2;
-    telescope.castShadow = true;
-    obsDomePivot.add(telescope);
+    const telescopeTube = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.50, 4.4, 14), matMetalBrass);
+    telescopeTube.position.set(0, 3.2, 2.6);
+    telescopeTube.rotation.x = -Math.PI / 4.2;
+    telescopeTube.castShadow = true;
+    obsDomePivot.add(telescopeTube);
 
-    // Telescope lens ring
-    const lensRing = new THREE.Mesh(new THREE.TorusGeometry(0.54, 0.08, 8, 16), matWindowCyan);
-    lensRing.position.set(2.8, 4.6, 2.8);
-    lensRing.rotation.x = -Math.PI / 3.8;
+    const lensRing = new THREE.Mesh(new THREE.TorusGeometry(0.52, 0.08, 8, 16), matWindowCyan);
+    lensRing.position.set(0, 4.6, 4.0);
+    lensRing.rotation.x = -Math.PI / 4.2;
     obsDomePivot.add(lensRing);
 
-    // Terraced Garden Easels & Design Ideas Board
-    const easelPost = new THREE.Mesh(new THREE.BoxGeometry(0.15, 2.2, 0.15), matTimberDark);
-    easelPost.position.set(-4.2, 1.1, 3.6);
-    obsGroup.add(easelPost);
+    // Signpost / Directional Plaque (Angled facing south toward overview camera)
+    const signpostGroup = new THREE.Group();
+    signpostGroup.position.set(-4.5, 0.2, 3.8);
+    signpostGroup.rotation.y = Math.PI / 6;
 
-    const easelBoard = new THREE.Mesh(new THREE.BoxGeometry(1.8, 1.3, 0.1), matSandstone);
-    easelBoard.position.set(-4.2, 1.8, 3.6);
-    easelBoard.rotation.y = 0.3;
-    obsGroup.add(easelBoard);
+    const signPole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.8, 8), matTimberDark);
+    signPole.position.y = 0.9;
+    signPole.castShadow = true;
+    signpostGroup.add(signPole);
+
+    const signBoard = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.9, 0.1), matSandstone);
+    signBoard.position.y = 1.5;
+    signBoard.castShadow = true;
+    signpostGroup.add(signBoard);
+
+    const signPlate = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.7, 0.05), matWindowAmber);
+    signPlate.position.set(0, 1.5, 0.06);
+    signpostGroup.add(signPlate);
+    obsGroup.add(signpostGroup);
 
     const sculptArmillary = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.08, 8, 20), matMetalBrass);
     sculptArmillary.position.set(4.4, 1.6, 2.8);
@@ -978,11 +1024,10 @@ const destinations = getDestinations(base);
 
     worldGroup.add(obsGroup);
 
-    // ── DISTRICT 04: THE YARD (Fabrication Grounds & Outdoor CNC Gantry) ──
+    // ── DISTRICT 04: THE YARD (Fabrication Grounds & Clean Prototyping Bay) ──
     const yardGroup = new THREE.Group();
     yardGroup.position.set(-12, 0.75, 12);
 
-    // Open fabrication shed with exposed steel portal frame
     const hangarGeo = new THREE.CylinderGeometry(4.6, 4.6, 8.4, 20, 1, false, 0, Math.PI);
     hangarGeo.rotateZ(Math.PI / 2);
     hangarGeo.rotateY(Math.PI / 4);
@@ -993,13 +1038,12 @@ const destinations = getDestinations(base);
     yardGroup.add(hangarMesh);
     registerInteractive(hangarMesh, 'yard');
 
-    // Workshop front portal with glowing cyan interior light
     const hangarPortal = new THREE.Mesh(new THREE.BoxGeometry(4.8, 3.0, 0.4), matWindowCyan);
     hangarPortal.position.set(2.4, 1.5, 2.4);
     hangarPortal.rotation.y = -Math.PI / 4;
     yardGroup.add(hangarPortal);
 
-    // Large Outdoor CNC / 3D-Printer Fabrication Gantry
+    // Outdoor CNC / 3D-Printer Fabrication Gantry
     const gantryLegA = new THREE.Mesh(new THREE.BoxGeometry(0.4, 4.2, 0.4), matMetalSteel);
     gantryLegA.position.set(-4.2, 2.1, 4.6);
     gantryLegA.castShadow = true;
@@ -1015,7 +1059,6 @@ const destinations = getDestinations(base);
     gantryCrossbeam.castShadow = true;
     yardGroup.add(gantryCrossbeam);
 
-    // Animated gantry toolhead carriage
     const gantryCarriage = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.6, 0.7), matDarkIron);
     gantryCarriage.position.set(-4.2, 3.7, 2.4);
     gantryCarriage.castShadow = true;
@@ -1026,7 +1069,6 @@ const destinations = getDestinations(base);
     gantryToolTip.rotation.x = Math.PI;
     yardGroup.add(gantryToolTip);
 
-    // Industrial Cyan Toolhead Glow Sprite & Ground Spill
     const gantryGlow = createGlowSprite(0x38bdf8, 3.0, 0.75);
     gantryGlow.position.set(-4.2, 3.3, 2.4);
     yardGroup.add(gantryGlow);
@@ -1035,38 +1077,50 @@ const destinations = getDestinations(base);
     yardGroundSpill.position.set(-4.2, 0.05, 2.4);
     yardGroup.add(yardGroundSpill);
 
-    // Prototyping materials stacks & machinery crates
-    const crateA = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.2, 1.4), matTimberDark);
-    crateA.position.set(4.6, 0.6, -2.6);
-    crateA.castShadow = true;
-    yardGroup.add(crateA);
+    // Believable miniature campus information kiosk (scaled down from oversized postbox)
+    const kioskGroup = new THREE.Group();
+    kioskGroup.position.set(4.2, 0.1, 4.2);
+    kioskGroup.rotation.y = -Math.PI / 4;
 
-    const crateB = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.9, 1.0), matPlasterWarm);
-    crateB.position.set(4.6, 1.5, -2.6);
-    yardGroup.add(crateB);
+    const kioskBase = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.3, 0.2, 8), matDarkIron);
+    kioskBase.position.y = 0.1;
+    kioskGroup.add(kioskBase);
 
-    // Steel fabrication pipes
-    for (let p = 0; p < 3; p++) {
-      const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 3.2, 8), matMetalSteel);
-      pipe.position.set(4.2, 0.2 + p * 0.3, -0.6);
-      pipe.rotation.z = Math.PI / 2;
-      pipe.castShadow = true;
-      yardGroup.add(pipe);
-    }
+    const kioskPole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.2, 8), matMetalSteel);
+    kioskPole.position.y = 0.7;
+    kioskGroup.add(kioskPole);
+
+    const kioskHousing = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.0, 0.3), matTimberDark);
+    kioskHousing.position.y = 1.4;
+    kioskHousing.castShadow = true;
+    kioskGroup.add(kioskHousing);
+
+    const kioskScreen = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.75, 0.06), matWindowCyan);
+    kioskScreen.position.set(0, 1.4, 0.14);
+    kioskGroup.add(kioskScreen);
+    yardGroup.add(kioskGroup);
+
+    // Workshop Material Racks (organized tidy stacks)
+    const matRack = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.4, 0.8), matDarkIron);
+    matRack.position.set(4.4, 0.7, -2.2);
+    matRack.castShadow = true;
+    yardGroup.add(matRack);
+
+    const sheetMaterials = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.2, 0.6), matPlasterWarm);
+    sheetMaterials.position.set(4.4, 0.7, -2.2);
+    yardGroup.add(sheetMaterials);
 
     worldGroup.add(yardGroup);
 
-    // ── DISTRICT 05: THE COMMONS (Central Community Amphitheatre & Gathering Plaza) ──
+    // ── DISTRICT 05: THE COMMONS (Central Community Amphitheatre & Grounded Audience) ──
     const commonsGroup = new THREE.Group();
     commonsGroup.position.set(0, 0.85, 0);
 
-    // Stepped Circular Amphitheatre Seating Bowl (3 Tiered curved rows)
     const tierRadii = [3.2, 4.4, 5.6];
     const tierHeights = [0.35, 0.70, 1.05];
     const matAmphiStone = new THREE.MeshStandardMaterial({ color: 0xdecbb5, roughness: 0.65 });
 
     for (let t = 0; t < 3; t++) {
-      // Amphitheatre arc from PI*0.15 to PI*0.85 (facing south towards camera)
       const seatGeo = new THREE.CylinderGeometry(tierRadii[t], tierRadii[t] + 0.8, 0.35, 24, 1, false, Math.PI * 0.12, Math.PI * 0.76);
       const seatMesh = new THREE.Mesh(seatGeo, matAmphiStone);
       seatMesh.position.y = tierHeights[t];
@@ -1074,27 +1128,23 @@ const destinations = getDestinations(base);
       commonsGroup.add(seatMesh);
     }
 
-    // Elevated Central Stage
     const stageMesh = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 2.6, 0.45, 24), matSandstone);
     stageMesh.position.set(0, 0.25, 0);
     stageMesh.receiveShadow = true;
     commonsGroup.add(stageMesh);
     registerInteractive(stageMesh, 'commons');
 
-    // Stage Presentation Backdrop Screen (Curved acoustic shell with cyan emissive display)
     const stageBackdropGeo = new THREE.CylinderGeometry(2.2, 2.2, 2.6, 16, 1, false, Math.PI * 1.15, Math.PI * 0.7);
     const stageBackdrop = new THREE.Mesh(stageBackdropGeo, matPlasterWarm);
     stageBackdrop.position.set(0, 1.4, 0);
     stageBackdrop.castShadow = true;
     commonsGroup.add(stageBackdrop);
 
-    // Screen display panel on backdrop
     const stageScreenGeo = new THREE.CylinderGeometry(2.15, 2.15, 1.8, 16, 1, false, Math.PI * 1.25, Math.PI * 0.5);
     const stageScreen = new THREE.Mesh(stageScreenGeo, matWindowCyan);
     stageScreen.position.set(0, 1.4, 0);
     commonsGroup.add(stageScreen);
 
-    // Stage warm presentation spotlight core
     const lanternCore = new THREE.Mesh(new THREE.OctahedronGeometry(0.55), matWindowAmber);
     lanternCore.position.set(0, 1.8, 0);
     commonsGroup.add(lanternCore);
@@ -1107,7 +1157,7 @@ const destinations = getDestinations(base);
     commonsGroundSpill.position.set(0, 0.15, 0);
     commonsGroup.add(commonsGroundSpill);
 
-    // Animated Low-Poly Audience Figures in Amphitheatre
+    // Grounded, Unclipped Amphitheatre Audience (Feet resting accurately on tiers)
     const audienceMembers: { mesh: THREE.Group; speed: number; phase: number }[] = [];
     const matAudienceClothes = [
       new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.8 }),
@@ -1118,136 +1168,149 @@ const destinations = getDestinations(base);
     ];
     const matSkin = new THREE.MeshStandardMaterial({ color: 0xfbcfe8, roughness: 0.7 });
 
-    function addAudienceFigure(r: number, angle: number, height: number) {
+    function addAudienceFigure(r: number, angle: number, tierSurfaceY: number) {
       const fig = new THREE.Group();
       const x = Math.cos(angle) * r;
       const z = Math.sin(angle) * r;
-      fig.position.set(x, height, z);
-      fig.lookAt(0, height, 0); // look toward the stage
+      fig.position.set(x, tierSurfaceY, z);
+      fig.lookAt(0, tierSurfaceY, 0); // Directly face central stage
 
       const clothMat = matAudienceClothes[Math.floor(Math.random() * matAudienceClothes.length)];
-      // Body
-      const body = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.42, 0.28), clothMat);
-      body.position.y = 0.22;
+      
+      // Legs (height 0.28, base at y = 0.0)
+      const legs = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.28, 0.18), new THREE.MeshStandardMaterial({ color: 0x1e293b }));
+      legs.position.y = 0.14;
+      legs.castShadow = true;
+      fig.add(legs);
+
+      // Torso (height 0.38, base at y = 0.28)
+      const body = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.38, 0.24), clothMat);
+      body.position.y = 0.47;
       body.castShadow = true;
       fig.add(body);
 
-      // Head
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.14, 8, 8), matSkin);
-      head.position.y = 0.52;
+      // Head (radius 0.13, center at y = 0.79)
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.13, 8, 8), matSkin);
+      head.position.y = 0.79;
       head.castShadow = true;
       fig.add(head);
 
       commonsGroup.add(fig);
       audienceMembers.push({
         mesh: fig,
-        speed: 1.5 + Math.random() * 1.5,
+        speed: 1.2 + Math.random() * 1.2,
         phase: Math.random() * Math.PI * 2,
       });
     }
 
-    // Populate seating arcs
+    // Tier 1 (surface Y = 0.35 + 0.175 = 0.525)
+    for (let a = 0; a < 3; a++) {
+      addAudienceFigure(3.6, Math.PI * 0.32 + a * 0.18, 0.525);
+    }
+    // Tier 2 (surface Y = 0.70 + 0.175 = 0.875)
     for (let a = 0; a < 4; a++) {
-      addAudienceFigure(3.6, Math.PI * 0.28 + a * 0.14, 0.35);
+      addAudienceFigure(4.8, Math.PI * 0.28 + a * 0.15, 0.875);
     }
-    for (let a = 0; a < 6; a++) {
-      addAudienceFigure(4.8, Math.PI * 0.22 + a * 0.11, 0.70);
+    // Tier 3 (surface Y = 1.05 + 0.175 = 1.225)
+    for (let a = 0; a < 5; a++) {
+      addAudienceFigure(6.0, Math.PI * 0.25 + a * 0.13, 1.225);
     }
-    for (let a = 0; a < 6; a++) {
-      addAudienceFigure(6.0, Math.PI * 0.24 + a * 0.10, 1.05);
-    }
-
-    // Plaza perimeter benches & lighting
-    function addCommonsBench(x: number, z: number, rotY: number) {
-      const bench = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.3, 0.6), matTimberDark);
-      bench.position.set(x, 0.25, z);
-      bench.rotation.y = rotY;
-      bench.receiveShadow = true;
-      commonsGroup.add(bench);
-    }
-    addCommonsBench(-5.5, -2.5, 0.4);
-    addCommonsBench(5.5, -2.5, -0.4);
 
     worldGroup.add(commonsGroup);
 
-    // ── DISTRICT 06: THE OUTLOOK (Mountain Pinnacle Lighthouse & Panoramic Beacon) ──
+    // ── DISTRICT 06: THE OUTLOOK (Mountain Pinnacle Lighthouse & Rotating Yellow Beam) ──
     const outlookGroup = new THREE.Group();
-    outlookGroup.position.set(0, 4.2, -16);
+    outlookGroup.position.set(0, 7.8, -16); // Elevated summit base
 
-    // Tall Tapered Science Lighthouse Tower
-    const towerBody = new THREE.Mesh(new THREE.CylinderGeometry(1.8, 2.6, 7.8, 16), matPlasterWarm);
-    towerBody.position.y = 3.9;
+    // Tall Architectural Lighthouse Body
+    const towerBody = new THREE.Mesh(new THREE.CylinderGeometry(2.0, 2.8, 9.5, 16), matPlasterWarm);
+    towerBody.position.y = 4.75;
     towerBody.castShadow = true;
     towerBody.receiveShadow = true;
     outlookGroup.add(towerBody);
     registerInteractive(towerBody, 'outlook');
 
-    // Horizontal architectural banding rings
-    const towerBand = new THREE.Mesh(new THREE.TorusGeometry(2.1, 0.15, 8, 24), matDarkIron);
-    towerBand.position.y = 4.2;
-    towerBand.rotation.x = Math.PI / 2;
-    outlookGroup.add(towerBand);
+    const towerBandA = new THREE.Mesh(new THREE.TorusGeometry(2.3, 0.15, 8, 24), matDarkIron);
+    towerBandA.position.y = 3.2;
+    towerBandA.rotation.x = Math.PI / 2;
+    outlookGroup.add(towerBandA);
+
+    const towerBandB = new THREE.Mesh(new THREE.TorusGeometry(2.05, 0.15, 8, 24), matDarkIron);
+    towerBandB.position.y = 6.4;
+    towerBandB.rotation.x = Math.PI / 2;
+    outlookGroup.add(towerBandB);
 
     // Lighthouse Observation Balcony Platform
-    const platformDeck = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 3.2, 0.6, 16), matSandstone);
-    platformDeck.position.y = 7.8;
+    const platformDeck = new THREE.Mesh(new THREE.CylinderGeometry(3.8, 3.4, 0.6, 16), matSandstone);
+    platformDeck.position.y = 9.8;
     platformDeck.castShadow = true;
     outlookGroup.add(platformDeck);
 
-    // Panoramic observation railing
-    const railing = new THREE.Mesh(new THREE.TorusGeometry(3.4, 0.12, 8, 24), matMetalBrass);
-    railing.position.y = 8.5;
+    const railing = new THREE.Mesh(new THREE.TorusGeometry(3.6, 0.12, 8, 24), matMetalBrass);
+    railing.position.y = 10.5;
     railing.rotation.x = Math.PI / 2;
     outlookGroup.add(railing);
 
-    // Glazed Lantern Room Enclosure
-    const lanternRoomGeo = new THREE.CylinderGeometry(1.9, 1.9, 2.2, 12);
-    const lanternRoomMesh = new THREE.Mesh(lanternRoomGeo, matWindowRose);
-    lanternRoomMesh.position.y = 9.2;
+    // Lantern Room Enclosure
+    const lanternRoomMesh = new THREE.Mesh(new THREE.CylinderGeometry(2.1, 2.1, 2.4, 14), matWindowAmber);
+    lanternRoomMesh.position.y = 11.3;
     outlookGroup.add(lanternRoomMesh);
 
-    // Conical lighthouse copper roof cap
-    const roofCap = new THREE.Mesh(new THREE.ConeGeometry(2.4, 1.4, 16), matRoofSlate);
-    roofCap.position.y = 11.0;
+    // Conical Copper Roof Cap
+    const roofCap = new THREE.Mesh(new THREE.ConeGeometry(2.6, 1.6, 16), matRoofSlate);
+    roofCap.position.y = 13.3;
     roofCap.castShadow = true;
     outlookGroup.add(roofCap);
 
-    // Horizon Beacon Spire & Rose Light
-    const beaconMast = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 3.6, 8), matMetalSteel);
-    beaconMast.position.y = 12.6;
+    // Spire Mast & Wind Vane
+    const beaconMast = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 2.8, 8), matMetalSteel);
+    beaconMast.position.y = 14.8;
     outlookGroup.add(beaconMast);
 
-    const horizonBeacon = new THREE.Mesh(new THREE.SphereGeometry(0.85, 16, 16), matWindowRose);
-    horizonBeacon.position.y = 9.2;
+    const vaneArm = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.08, 0.08), matMetalBrass);
+    vaneArm.position.set(0, 16.2, 0);
+    outlookGroup.add(vaneArm);
+
+    // Core Lantern Room Light Source
+    const horizonBeacon = new THREE.Mesh(new THREE.SphereGeometry(0.75, 16, 16), matWindowAmber);
+    horizonBeacon.position.y = 11.3;
     outlookGroup.add(horizonBeacon);
 
-    // Rose Horizon Beacon Atmospheric Halo Glow
-    const beaconHaloGlow = createGlowSprite(0xf43f5e, 5.8, 0.75);
-    beaconHaloGlow.position.set(0, 9.2, 0);
+    const beaconHaloGlow = createGlowSprite(0xfef08a, 4.5, 0.65);
+    beaconHaloGlow.position.set(0, 11.3, 0);
     outlookGroup.add(beaconHaloGlow);
 
-    // Tower Deck Light Spill
-    const deckLightSpill = createGroundSpill(0xf43f5e, 3.8, 0.35);
-    deckLightSpill.position.set(0, 8.15, 0);
-    outlookGroup.add(deckLightSpill);
+    // ── Rotating Volumetric Lighthouse Light Beam ──
+    const lighthouseBeamGroup = new THREE.Group();
+    lighthouseBeamGroup.position.set(0, 11.3, 0);
+    outlookGroup.add(lighthouseBeamGroup);
 
-    // Outlook Weather Vane & Wind Anemometer
-    const vaneArm = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.08, 0.08), matMetalBrass);
-    vaneArm.position.set(0, 14.5, 0);
-    outlookGroup.add(vaneArm);
+    const matLightBeam = new THREE.MeshBasicMaterial({
+      color: 0xfef08a,
+      transparent: true,
+      opacity: 0.32,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+
+    // Primary forward projecting beam cone
+    const beamGeo = new THREE.ConeGeometry(3.6, 18.0, 16, 1, true);
+    beamGeo.rotateX(Math.PI / 2); // Point along forward Z
+    beamGeo.translate(0, 0, 9.0); // Apex at lantern room origin
+    const beamMeshA = new THREE.Mesh(beamGeo, matLightBeam);
+    lighthouseBeamGroup.add(beamMeshA);
+
+    // Secondary opposing softer beam cone (true dual-lens lighthouse effect)
+    const beamMeshB = new THREE.Mesh(beamGeo, matLightBeam);
+    beamMeshB.rotation.y = Math.PI;
+    lighthouseBeamGroup.add(beamMeshB);
 
     worldGroup.add(outlookGroup);
 
-    // ── 5. Campus Life Elements (Streetlights, Vehicles, Pedestrians & Agricultural Plots) ──
-    // A. Architectural Streetlights with Local PointLights
+    // ── 5. Campus Life Elements (Streetlights, Vehicles & Clean Crop Plot) ──
     const streetlightMat = new THREE.MeshStandardMaterial({ color: 0x1f2937, roughness: 0.6, metalness: 0.8 });
-    const streetlightLampMat = new THREE.MeshStandardMaterial({
-      color: 0xfef08a,
-      emissive: 0xf59e0b,
-      emissiveIntensity: 0.9,
-    });
 
-    const streetlights: THREE.Mesh[] = [];
     function addStreetlight(x: number, y: number, z: number) {
       const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.10, 2.4, 8), streetlightMat);
       pole.position.set(x, y + 1.2, z);
@@ -1258,85 +1321,118 @@ const destinations = getDestinations(base);
       arm.position.set(x + 0.2, y + 2.35, z);
       worldGroup.add(arm);
 
-      const lamp = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.16, 0.24), streetlightLampMat);
+      const lamp = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.16, 0.24), matStreetlampGlow);
       lamp.position.set(x + 0.4, y + 2.25, z);
       worldGroup.add(lamp);
 
-      const glow = createGlowSprite(0xf59e0b, 1.8, 0.4);
+      const glow = createGlowSprite(0xf59e0b, 1.8, 0.45);
       glow.position.copy(lamp.position);
+      glow.visible = false; // Initialized off in daylight
       worldGroup.add(glow);
-
-      streetlights.push(lamp);
+      streetlightSprites.push(glow);
     }
 
-    // Streetlight nodes along arterial paths
-    addStreetlight(-7.2, 1.0, 5.0);
-    addStreetlight(-4.0, 1.0, 2.5);
-    addStreetlight(6.8, 1.0, 5.2);
-    addStreetlight(4.2, 1.0, 2.5);
-    addStreetlight(8.2, 1.2, -6.5);
-    addStreetlight(4.5, 1.1, -3.2);
-    addStreetlight(-7.5, 1.4, -6.0);
-    addStreetlight(-4.2, 1.2, -3.0);
-    addStreetlight(1.5, 1.8, -7.5);
-    addStreetlight(1.5, 3.2, -11.5);
+    addStreetlight(-6.8, 1.0, 4.8);
+    addStreetlight(-3.8, 1.0, 2.4);
+    addStreetlight(6.5, 1.0, 4.8);
+    addStreetlight(3.8, 1.0, 2.4);
+    addStreetlight(7.8, 1.2, -6.2);
+    addStreetlight(4.2, 1.1, -3.2);
+    addStreetlight(-7.2, 1.4, -5.8);
+    addStreetlight(-3.8, 1.2, -3.0);
+    addStreetlight(1.8, 2.2, -7.0);
 
-    // B. Autonomous Campus Shuttles / Electric Utility Vehicles
-    const campusVehicles: { mesh: THREE.Group; pathRadius: number; speed: number; angle: number; y: number }[] = [];
-    const matShuttleBody = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.3, metalness: 0.4 });
-    const matShuttleWheel = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.9 });
+    // Tangent-Steered Autonomous Campus Shuttles
+    interface CampusShuttle {
+      mesh: THREE.Group;
+      waypoints: THREE.Vector3[];
+      currentIdx: number;
+      t: number;
+      speed: number;
+    }
+    const campusShuttles: CampusShuttle[] = [];
 
-    function createCampusShuttle(colorHex: number): THREE.Group {
-      const shuttle = new THREE.Group();
+    function createShuttleMesh(colorHex: number): THREE.Group {
+      const sGroup = new THREE.Group();
       const bodyMat = new THREE.MeshStandardMaterial({ color: colorHex, roughness: 0.3, metalness: 0.4 });
 
       // Chassis
-      const chassis = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.5, 0.9), bodyMat);
+      const chassis = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.5, 1.6), bodyMat);
       chassis.position.y = 0.35;
       chassis.castShadow = true;
-      shuttle.add(chassis);
+      sGroup.add(chassis);
 
-      // Glass cabin
-      const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.45, 0.8), matWindowCyan);
-      cabin.position.set(-0.1, 0.75, 0);
-      shuttle.add(cabin);
+      // Cabin Glass
+      const cabin = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.45, 1.0), matWindowCyan);
+      cabin.position.set(0, 0.75, -0.1);
+      sGroup.add(cabin);
 
-      // Headlights
-      const headL = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.12, 0.18), matWindowAmber);
-      headL.position.set(0.8, 0.35, 0.28);
-      shuttle.add(headL);
+      // Front Headlights
+      const headL = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.12, 0.08), matWindowAmber);
+      headL.position.set(-0.28, 0.35, 0.8);
+      sGroup.add(headL);
 
-      const headR = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.12, 0.18), matWindowAmber);
-      headR.position.set(0.8, 0.35, -0.28);
-      shuttle.add(headR);
+      const headR = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.12, 0.08), matWindowAmber);
+      headR.position.set(0.28, 0.35, 0.8);
+      sGroup.add(headR);
 
       // Wheels
       const wheelGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.14, 10);
-      wheelGeo.rotateX(Math.PI / 2);
+      wheelGeo.rotateZ(Math.PI / 2);
       const wPositions = [
-        [0.5, 0.2, 0.48],
-        [-0.5, 0.2, 0.48],
-        [0.5, 0.2, -0.48],
-        [-0.5, 0.2, -0.48],
+        [0.48, 0.2, 0.5],
+        [-0.48, 0.2, 0.5],
+        [0.48, 0.2, -0.5],
+        [-0.48, 0.2, -0.5],
       ];
       wPositions.forEach((p) => {
-        const wheel = new THREE.Mesh(wheelGeo, matShuttleWheel);
+        const wheel = new THREE.Mesh(wheelGeo, new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.9 }));
         wheel.position.set(p[0], p[1], p[2]);
-        shuttle.add(wheel);
+        sGroup.add(wheel);
       });
 
-      return shuttle;
+      return sGroup;
     }
 
-    const shuttleA = createCampusShuttle(0x0284c7);
-    worldGroup.add(shuttleA);
-    campusVehicles.push({ mesh: shuttleA, pathRadius: 7.2, speed: 0.35, angle: 0, y: 1.05 });
+    const sMeshA = createShuttleMesh(0x0284c7);
+    worldGroup.add(sMeshA);
+    campusShuttles.push({
+      mesh: sMeshA,
+      waypoints: [
+        new THREE.Vector3(-9.2, 0.72, 9.2),
+        new THREE.Vector3(-4.8, 0.85, 5.8),
+        new THREE.Vector3(-1.8, 1.05, 1.8),
+        new THREE.Vector3(1.8, 1.05, 1.8),
+        new THREE.Vector3(5.8, 0.95, 5.8),
+        new THREE.Vector3(9.2, 1.0, 9.2),
+        new THREE.Vector3(5.8, 0.95, 5.8),
+        new THREE.Vector3(1.8, 1.05, 1.8),
+      ],
+      currentIdx: 0,
+      t: 0,
+      speed: 0.22,
+    });
 
-    const shuttleB = createCampusShuttle(0xd97706);
-    worldGroup.add(shuttleB);
-    campusVehicles.push({ mesh: shuttleB, pathRadius: 10.4, speed: -0.25, angle: Math.PI, y: 0.95 });
+    const sMeshB = createShuttleMesh(0xd97706);
+    worldGroup.add(sMeshB);
+    campusShuttles.push({
+      mesh: sMeshB,
+      waypoints: [
+        new THREE.Vector3(10.2, 1.5, -9.2),
+        new THREE.Vector3(5.8, 1.15, -5.8),
+        new THREE.Vector3(1.8, 1.05, -1.8),
+        new THREE.Vector3(-1.8, 1.05, -1.8),
+        new THREE.Vector3(-5.8, 1.25, -4.0),
+        new THREE.Vector3(-9.2, 2.1, -9.2),
+        new THREE.Vector3(-5.8, 1.25, -4.0),
+        new THREE.Vector3(-1.8, 1.05, -1.8),
+      ],
+      currentIdx: 0,
+      t: 0.5,
+      speed: 0.20,
+    });
 
-    // C. Campus Pedestrians (Researchers & Engineers walking between districts)
+    // Campus Pedestrians along dedicated footpaths
     const pedestrians: { mesh: THREE.Group; waypoints: THREE.Vector3[]; currentIdx: number; t: number; speed: number }[] = [];
 
     function createPedestrian(shirtColor: number): THREE.Group {
@@ -1368,10 +1464,10 @@ const destinations = getDestinations(base);
     pedestrians.push({
       mesh: pedA,
       waypoints: [
-        new THREE.Vector3(-8, 1.2, -6),
-        new THREE.Vector3(-2, 1.0, -1),
-        new THREE.Vector3(-2, 1.0, 2),
-        new THREE.Vector3(-8, 0.8, 8),
+        new THREE.Vector3(-7.5, 1.2, -5.5),
+        new THREE.Vector3(-2.2, 1.0, -1.2),
+        new THREE.Vector3(-2.2, 1.0, 2.2),
+        new THREE.Vector3(-7.5, 0.8, 7.5),
       ],
       currentIdx: 0,
       t: 0,
@@ -1383,37 +1479,38 @@ const destinations = getDestinations(base);
     pedestrians.push({
       mesh: pedB,
       waypoints: [
-        new THREE.Vector3(8, 1.1, -6),
-        new THREE.Vector3(2, 1.0, -1),
-        new THREE.Vector3(2, 1.0, 3),
-        new THREE.Vector3(8, 1.0, 8),
+        new THREE.Vector3(7.5, 1.1, -5.5),
+        new THREE.Vector3(2.2, 1.0, -1.2),
+        new THREE.Vector3(2.2, 1.0, 2.8),
+        new THREE.Vector3(7.5, 1.0, 7.5),
       ],
       currentIdx: 0,
       t: 0.5,
       speed: 0.15,
     });
 
-    // D. Agricultural Technology Research Test Beds (Precision crop rows with gentle sway)
+    // Clean Miniature Experimental Agricultural Crop Plot (Organic clusters close to soil)
     const cropPlants: { mesh: THREE.Object3D; speed: number; phase: number }[] = [];
     const agriPlotGroup = new THREE.Group();
-    agriPlotGroup.position.set(-15.5, 0.85, 3.5);
+    agriPlotGroup.position.set(-16.0, 0.85, 3.5);
 
-    const agriSoil = new THREE.Mesh(new THREE.BoxGeometry(5.2, 0.15, 4.4), matSoil);
+    const agriSoil = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.12, 4.0), matSoil);
     agriSoil.receiveShadow = true;
     agriPlotGroup.add(agriSoil);
 
-    const matCropGreen = new THREE.MeshStandardMaterial({ color: 0x4ade80, roughness: 0.8 });
-    const cropGeo = new THREE.ConeGeometry(0.18, 0.45, 6);
+    const matCropGreenA = new THREE.MeshStandardMaterial({ color: 0x4ade80, roughness: 0.85 });
+    const matCropGreenB = new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.85 });
 
-    for (let row = -1.6; row <= 1.6; row += 0.8) {
-      for (let col = -2.0; col <= 2.0; col += 0.65) {
-        const crop = new THREE.Mesh(cropGeo, matCropGreen);
-        crop.position.set(col, 0.3, row);
-        crop.castShadow = true;
-        agriPlotGroup.add(crop);
+    // Distinct leafy crop mounds close to the bed
+    for (let r = -1.4; r <= 1.4; r += 0.7) {
+      for (let c = -1.8; c <= 1.8; c += 0.6) {
+        const cropMound = new THREE.Mesh(new THREE.DodecahedronGeometry(0.24), (r + c > 0) ? matCropGreenA : matCropGreenB);
+        cropMound.position.set(c, 0.16, r);
+        cropMound.castShadow = true;
+        agriPlotGroup.add(cropMound);
         cropPlants.push({
-          mesh: crop,
-          speed: 2.0 + Math.random() * 1.5,
+          mesh: cropMound,
+          speed: 1.6 + Math.random() * 0.8,
           phase: Math.random() * Math.PI * 2,
         });
       }
@@ -1434,7 +1531,6 @@ const destinations = getDestinations(base);
       trunk.receiveShadow = true;
       treeGroup.add(trunk);
 
-      // Distinct layered foliage geometry
       const chosenMatA = foliageType === 1 ? matFoliageLight : foliageType === 2 ? matFoliageWarm : matFoliage;
       const chosenMatB = foliageType === 1 ? matTerrainHigh : matTerrainBase;
 
@@ -1458,7 +1554,6 @@ const destinations = getDestinations(base);
       worldGroup.add(treeGroup);
     }
 
-    // Curated landscape placement across campus
     createTree(-5.5, 0.8, -5.5, 1.1, 0);
     createTree(6.2, 0.8, -4.8, 0.95, 1);
     createTree(7.5, 0.8, 5.2, 1.2, 2);
@@ -1668,18 +1763,24 @@ const destinations = getDestinations(base);
       // Commons Audience subtle idle movements
       for (let i = 0; i < audienceMembers.length; i++) {
         const aud = audienceMembers[i];
-        aud.mesh.rotation.y += Math.sin(time * aud.speed + aud.phase) * 0.006;
+        aud.mesh.rotation.y += Math.sin(time * aud.speed + aud.phase) * 0.005;
       }
 
-      // Campus Autonomous Shuttle Patrols
-      for (let v = 0; v < campusVehicles.length; v++) {
-        const veh = campusVehicles[v];
-        veh.angle += veh.speed * delta;
-        const vx = Math.cos(veh.angle) * veh.pathRadius;
-        const vz = Math.sin(veh.angle) * veh.pathRadius;
-        veh.mesh.position.set(vx, veh.y, vz);
-        // Face tangential direction
-        veh.mesh.rotation.y = -veh.angle + (veh.speed > 0 ? 0 : Math.PI);
+      // Smooth Tangent-Aligned Campus Shuttle Travel
+      for (let s = 0; s < campusShuttles.length; s++) {
+        const sht = campusShuttles[s];
+        const pA = sht.waypoints[sht.currentIdx];
+        const nextIdx = (sht.currentIdx + 1) % sht.waypoints.length;
+        const pB = sht.waypoints[nextIdx];
+
+        sht.t += delta * sht.speed;
+        if (sht.t >= 1.0) {
+          sht.t = 0;
+          sht.currentIdx = nextIdx;
+        } else {
+          sht.mesh.position.lerpVectors(pA, pB, sht.t);
+          sht.mesh.lookAt(pB.x, sht.mesh.position.y, pB.z);
+        }
       }
 
       // Campus Pedestrian Movement
@@ -1698,15 +1799,17 @@ const destinations = getDestinations(base);
         }
       }
 
-      // Agricultural Crop Wind Sway
+      // Agricultural Crop Soft Sway
       for (let c = 0; c < cropPlants.length; c++) {
         const cp = cropPlants[c];
-        cp.mesh.rotation.z = Math.sin(time * cp.speed + cp.phase) * 0.08;
+        cp.mesh.rotation.z = Math.sin(time * cp.speed + cp.phase) * 0.04;
       }
 
-      // Lab articulated robotic arm & dish scan
-      armForearm.rotation.z = 0.55 + Math.sin(time * 1.4) * 0.1;
+      // Lab dish scan & robotic arm inspection micro-sweep
       labDishRotator.rotation.y = Math.sin(time * 0.6) * 0.45;
+      armForearm.rotation.z = 0.65 + Math.sin(time * 1.2) * 0.08;
+      // Sync inspection point light to arm inspection head in world space
+      labArmLight.position.set(-6.4, 5.6 + Math.sin(time * 1.2) * 0.2, -7.8);
 
       // Yard gantry carriage subtle travel & toolhead glow
       gantryCarriage.position.z = 2.4 + Math.sin(time * 1.1) * 1.2;
@@ -1714,14 +1817,15 @@ const destinations = getDestinations(base);
       gantryGlow.position.z = gantryCarriage.position.z;
       yardPointLight.position.z = 12 + gantryCarriage.position.z;
 
-      // Observatory celestial dome slow atmospheric rotation
+      // Observatory celestial dome atmospheric rotation
       obsDomePivot.rotation.y = time * 0.08;
 
-      // Outlook horizon rose beacon pulse & wind vane
-      const beaconPulse = 1.0 + Math.sin(time * 2.6) * 0.08;
-      horizonBeacon.scale.setScalar(beaconPulse);
-      beaconHaloGlow.scale.setScalar(5.8 * beaconPulse);
+      // Outlook Lighthouse Rotating Yellow Light Beam
+      lighthouseBeamGroup.rotation.y = time * 0.65;
       vaneArm.rotation.y = Math.sin(time * 0.5) * 0.4 + time * 0.1;
+
+      // Reflective Pond gentle water surface ripple
+      pondMesh.scale.set(1.0 + Math.sin(time * 2.0) * 0.015, 1.0, 1.0 + Math.cos(time * 2.0) * 0.015);
 
       // 2. Gentle Foliage Wind Sway
       for (let i = 0; i < swayingFoliage.length; i++) {
@@ -1736,7 +1840,6 @@ const destinations = getDestinations(base);
         positions[i * 3] += particleVelocities[i].x * delta;
         positions[i * 3 + 2] += particleVelocities[i].z * delta;
 
-        // Wrap around inside terrarium
         if (positions[i * 3 + 1] > 16) {
           positions[i * 3 + 1] = 1.0;
         }

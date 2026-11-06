@@ -82,9 +82,9 @@ export const DESTINATION_CAMERA_CONFIGS: Record<string, DestinationCameraPose> =
   // Dramatic low-to-high framing up the rocky crag, masonry watchtower, and pulsing rose horizon beacon
   outlook: {
     id: 'outlook',
-    target: new THREE.Vector3(0, 5.8, -15.5),
-    camPos: new THREE.Vector3(19.0, 22.0, 4.0),
-    zoom: 1.58,
+    target: new THREE.Vector3(0, 9.8, -16),
+    camPos: new THREE.Vector3(20.0, 26.0, 4.0),
+    zoom: 1.48,
     duration: 1.4,
   },
 };

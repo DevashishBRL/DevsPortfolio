@@ -70,9 +70,9 @@ export const DESTINATION_CAMERA_POSES: Record<
     duration: 1.1,
   },
   outlook: {
-    targetPos: [0, 6.5, -15.5],
-    camPos: [22, 29, 6],
-    zoom: 1.45,
+    targetPos: [0, 9.8, -16],
+    camPos: [20, 26, 4],
+    zoom: 1.48,
     duration: 1.4,
   },
 };
