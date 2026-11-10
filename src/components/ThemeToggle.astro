@@ -1,0 +1,157 @@
+---
+/**
+ * ThemeToggle.astro
+ *
+ * Accessible, compact, zero-flash theme controller.
+ * Supports:
+ * 1. System: respects operating system preference (prefers-color-scheme).
+ * 2. Light: warm editorial aesthetic.
+ * 3. Dark: sophisticated charcoal / ink aesthetic.
+ *
+ * Persists selection via localStorage ('theme-preference').
+ * Emits and listens to custom 'theme-change' event.
+ */
+---
+
+<div class="theme-toggle-wrap" id="theme-toggle-container">
+  <button
+    type="button"
+    class="theme-toggle-btn"
+    id="theme-toggle-btn"
+    aria-label="Toggle visual theme (Light, Dark, or System)"
+    aria-live="polite"
+    title="Toggle visual theme"
+  >
+    <span class="theme-icon theme-icon--light" aria-hidden="true">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    </span>
+    <span class="theme-icon theme-icon--dark" aria-hidden="true">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </span>
+    <span class="theme-label" id="theme-current-label">Theme</span>
+  </button>
+</div>
+
+<style>
+  .theme-toggle-wrap {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .theme-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: var(--colour-surface-2);
+    border: 1px solid var(--colour-border);
+    border-radius: var(--radius-full, 9999px);
+    color: var(--colour-fg-muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-out);
+    outline: none;
+    min-height: 32px;
+  }
+
+  .theme-toggle-btn:hover {
+    color: var(--colour-fg);
+    border-color: var(--colour-border-focus, var(--colour-accent));
+    background: var(--colour-surface);
+  }
+
+  .theme-toggle-btn:focus-visible {
+    box-shadow: var(--focus-ring);
+  }
+
+  .theme-icon {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    color: var(--colour-accent);
+  }
+
+  /* Show sun when dark to toggle to light; show moon when light to toggle to dark */
+  :global(html[data-theme="light"]) .theme-icon--dark {
+    display: inline-flex;
+  }
+
+  :global(html[data-theme="dark"]) .theme-icon--light {
+    display: inline-flex;
+  }
+
+  :global(html:not([data-theme])) .theme-icon--dark {
+    display: inline-flex;
+  }
+
+  .theme-label {
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    font-weight: 500;
+  }
+</style>
+
+<script>
+  function setupThemeToggle() {
+    const btn = document.getElementById('theme-toggle-btn');
+    const label = document.getElementById('theme-current-label');
+    if (!btn) return;
+
+    function getPreferredTheme(): 'light' | 'dark' {
+      const stored = localStorage.getItem('theme-preference');
+      if (stored === 'light' || stored === 'dark') return stored;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    function updateLabel(theme: 'light' | 'dark') {
+      if (label) {
+        label.textContent = theme === 'dark' ? 'Dark' : 'Light';
+      }
+    }
+
+    // Initialize state
+    const current = (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || getPreferredTheme();
+    updateLabel(current);
+
+    btn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || getPreferredTheme();
+      const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+      document.documentElement.setAttribute('data-theme', nextTheme);
+      localStorage.setItem('theme-preference', nextTheme);
+      updateLabel(nextTheme);
+
+      window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: nextTheme } }));
+    });
+
+    // Listen for OS changes if user hasn't explicitly set a preference
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (!localStorage.getItem('theme-preference')) {
+        const sysTheme = e.matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', sysTheme);
+        updateLabel(sysTheme);
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupThemeToggle);
+  } else {
+    setupThemeToggle();
+  }
+</script>
+

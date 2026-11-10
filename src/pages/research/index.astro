@@ -1,16 +1,16 @@
 ---
 /**
- * /research/ — Knowledge Laboratory & Systems Investigation
- * Color identity: CYAN / ELECTRIC BLUE (#38bdf8)
- * Personality: Curiosity, systems thinking, discovery, and intellectual exploration.
+ * /research/ — The Observatory & Systems Investigation
+ * Color identity: CYAN / ELECTRIC BLUE (#38bdf8 / var(--accent-research))
+ * Personality: Curiosity, analytical depth, systems thinking, experimental discovery.
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import { getCollection } from 'astro:content';
-import { researchAreas, workHistory } from '../../data/content';
+import { researchAreas } from '../../data/content';
 
 const base = import.meta.env.BASE_URL;
 
-// Live project collection for cross-referencing research work
+// Query live projects from CMS collection
 const allProjects = await getCollection('projects');
 
 const researchStatusLabels: Record<string, string> = {
@@ -21,40 +21,47 @@ const researchStatusLabels: Record<string, string> = {
 ---
 
 <PageLayout
-  title="Research — Systems Investigation & Robotics"
-  description="Knowledge laboratory, human-robot interaction vectors, biomechatronics research, and systems thinking by Devashish Tambade."
-  label="02 / RESEARCH"
-  heading="Curiosity & Systems Investigation"
-  subheading="An evolving knowledge laboratory exploring the interface between mechatronics, accessible assistive devices, and human intent."
+  title="Research — The Observatory & Systems Investigation"
+  description="Curiosity, systems thinking, biomechatronics research, and human-robot interaction by Devashish Tambade."
+  label="02 / THE OBSERVATORY"
+  heading="Questions worth exploring."
+  subheading="An evolving knowledge laboratory investigating biomechatronics, accessible assistive technology, and human intent."
 >
   <div class="research-lab">
     <!-- District Identity Banner -->
     <div class="district-badge-row">
       <div class="district-badge-pill">
         <span class="badge-dot" aria-hidden="true"></span>
-        <span>THE OBSERVATORY // CYAN & ELECTRIC BLUE ACCENT</span>
+        <span>DISTRICT 02 // THE OBSERVATORY</span>
       </div>
-      <span class="district-meta">Laboratory Notebook & Active Hypotheses</span>
+      <a href={`${base}#miniature-world-3d`} class="district-world-link" title="View Observatory in 3D Miniature Terrarium">
+        <span>Locate in World</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+        </svg>
+      </a>
     </div>
 
     <!-- Editorial Abstract / Investigation Thesis -->
     <section class="research-hero-abstract" aria-labelledby="abstract-heading">
       <div class="abstract-card">
         <div class="abstract-meta-header">
-          <span class="mono-label">RESEARCH THESIS & METHODOLOGY</span>
+          <span class="mono-label">INVESTIGATION THESIS & METHODOLOGY</span>
           <span class="mono-status">UNIVERSITY OF BRISTOL · ROBOTICS MENG</span>
         </div>
         <p class="abstract-lead">
-          Engineering is fundamentally about understanding the invisible constraints of complex systems. My research focus bridges mechanical hardware, embedded sensory loops, and human-centred kinematics.
+          Engineering is fundamentally about illuminating the invisible constraints of physical and human systems. My investigations bridge kinematic hardware, low-latency telemetry, and human-centred compliance.
         </p>
         <p class="abstract-body">
-          Rather than treating robotics purely as autonomous computing, my investigations focus on accessible prosthetic mechanisms and wearable enclosures: how physical systems negotiate contact, compliance, and cognitive affordance with real human users.
+          Rather than treating robotics strictly as an algorithm in software, The Observatory treats physical assemblies, compliance layers, and wearable enclosures as empirical research instruments: asking how machines can negotiate contact, mechanical impedance, and cognitive affordance with real human bodies.
         </p>
         <div class="abstract-tags">
           <span class="theme-tag">Biomechatronics</span>
           <span class="theme-tag">Human–Robot Interaction</span>
-          <span class="theme-tag">Embedded Telemetry</span>
+          <span class="theme-tag">Wearable Telemetry</span>
           <span class="theme-tag">Physical Prototyping</span>
+          <span class="theme-tag">Kinematic Sensing</span>
         </div>
       </div>
     </section>
@@ -64,17 +71,17 @@ const researchStatusLabels: Record<string, string> = {
       <div class="section-heading-bar">
         <div class="heading-icon-wrap">
           <span class="vector-pulse" aria-hidden="true"></span>
-          <h2 class="section-title" id="vectors-heading">Active Enquiry & Research Domains</h2>
+          <h2 class="section-title" id="vectors-heading">Active Vectors & Research Domains</h2>
         </div>
-        <span class="heading-count">{researchAreas.length} Areas</span>
+        <span class="heading-count">{researchAreas.length} Domains</span>
       </div>
 
       <div class="research-cards-grid">
         {researchAreas.map((area) => {
-          // Find connected live CMS projects
+          // Find connected live CMS projects by slug or tags
           const relatedProjects = allProjects.filter(p =>
             area.relatedProjectIds?.includes(p.slug) ||
-            p.data.tags.some(t => area.tags.includes(t))
+            p.data.tags?.some(t => area.tags.includes(t))
           );
 
           return (
@@ -99,7 +106,7 @@ const researchStatusLabels: Record<string, string> = {
 
               {relatedProjects.length > 0 && (
                 <div class="connected-projects-box">
-                  <span class="connected-label">Connected Technical Work:</span>
+                  <span class="connected-label">Connected Engineering Work:</span>
                   <ul class="connected-list">
                     {relatedProjects.map(proj => (
                       <li>
@@ -128,12 +135,13 @@ const researchStatusLabels: Record<string, string> = {
           <span class="principles-icon" aria-hidden="true">◈</span>
           <h2 class="section-title" id="principles-heading">Core Investigation Principles</h2>
         </div>
+        <span class="heading-count">3 Tenets</span>
       </div>
 
       <div class="principles-grid">
         <div class="principle-card">
           <span class="principle-num">01</span>
-          <h3 class="principle-title">Prototypes as Research Instruments</h3>
+          <h3 class="principle-title">Prototypes as Scientific Instruments</h3>
           <p class="principle-desc">
             Physical rigs and 3D-printed assemblies are not mere demonstration models; they are apparatuses for discovering physical truth and unanticipated material constraints early.
           </p>
@@ -151,7 +159,7 @@ const researchStatusLabels: Record<string, string> = {
           <span class="principle-num">03</span>
           <h3 class="principle-title">Transparent Negative Results</h3>
           <p class="principle-desc">
-            Documenting why a particular mechanism or sensor configuration failed provides as much technical value as successful trials. Intellectual integrity is non-negotiable.
+            Documenting why a particular mechanism, sensor placement, or firmware loop failed provides as much technical value as successful trials. Intellectual integrity is non-negotiable.
           </p>
         </div>
       </div>
@@ -171,8 +179,8 @@ const researchStatusLabels: Record<string, string> = {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-block: var(--space-4);
-    margin-bottom: var(--space-10);
+    padding-block: var(--space-3);
+    margin-bottom: var(--space-8);
     border-bottom: 1px solid var(--colour-border-subtle);
   }
 
@@ -180,9 +188,9 @@ const researchStatusLabels: Record<string, string> = {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(56, 189, 248, 0.10);
-    border: 1px solid rgba(56, 189, 248, 0.28);
-    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    color: var(--accent-research, #38bdf8);
     padding: 4px 12px;
     border-radius: 9999px;
     font-family: var(--font-mono);
@@ -195,26 +203,42 @@ const researchStatusLabels: Record<string, string> = {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #38bdf8;
-    box-shadow: 0 0 8px #38bdf8;
+    background: var(--accent-research, #38bdf8);
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
   }
 
-  .district-meta {
+  .district-world-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--colour-fg-subtle);
+    font-size: 11px;
+    color: var(--colour-fg-muted);
+    text-decoration: none;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    border: 1px solid var(--colour-border-subtle);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .district-world-link:hover {
+    color: var(--accent-research, #38bdf8);
+    border-color: rgba(56, 189, 248, 0.4);
+    background: rgba(56, 189, 248, 0.06);
+    transform: translateY(-1px);
   }
 
   .research-hero-abstract {
-    margin-bottom: var(--space-16);
+    margin-bottom: var(--space-12);
   }
 
   .abstract-card {
-    background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(15, 23, 42, 0.6) 100%);
-    border: 1px solid rgba(56, 189, 248, 0.25);
-    border-left: 4px solid #38bdf8;
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-left: 4px solid var(--accent-research, #38bdf8);
     border-radius: var(--radius-lg);
     padding: var(--space-8);
+    box-shadow: var(--shadow-sm);
   }
 
   .abstract-meta-header {
@@ -224,10 +248,12 @@ const researchStatusLabels: Record<string, string> = {
     margin-bottom: var(--space-4);
     font-family: var(--font-mono);
     font-size: var(--text-xs);
+    flex-wrap: wrap;
+    gap: var(--space-2);
   }
 
   .mono-label {
-    color: #38bdf8;
+    color: var(--accent-research, #38bdf8);
     font-weight: 600;
     letter-spacing: 0.05em;
   }
@@ -261,9 +287,9 @@ const researchStatusLabels: Record<string, string> = {
   .theme-tag {
     font-family: var(--font-mono);
     font-size: 11px;
-    color: #38bdf8;
-    background: rgba(56, 189, 248, 0.12);
-    border: 1px solid rgba(56, 189, 248, 0.25);
+    color: var(--accent-research, #38bdf8);
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.22);
     padding: 3px 10px;
     border-radius: 9999px;
   }
@@ -277,7 +303,7 @@ const researchStatusLabels: Record<string, string> = {
     align-items: center;
     justify-content: space-between;
     padding-bottom: var(--space-3);
-    border-bottom: 1px solid var(--colour-border);
+    border-bottom: 1px solid var(--colour-border-subtle);
     margin-bottom: var(--space-8);
   }
 
@@ -291,12 +317,12 @@ const researchStatusLabels: Record<string, string> = {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #38bdf8;
-    box-shadow: 0 0 10px #38bdf8;
+    background: var(--accent-research, #38bdf8);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
   }
 
   .principles-icon {
-    color: #38bdf8;
+    color: var(--accent-research, #38bdf8);
     font-size: 14px;
   }
 
@@ -315,7 +341,7 @@ const researchStatusLabels: Record<string, string> = {
 
   .research-cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: var(--space-6);
   }
 
@@ -329,12 +355,13 @@ const researchStatusLabels: Record<string, string> = {
     justify-content: space-between;
     transition: all var(--duration-fast) var(--ease-out);
     position: relative;
+    box-shadow: var(--shadow-sm);
   }
 
   .research-card:hover {
     border-color: rgba(56, 189, 248, 0.45);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-md);
   }
 
   .research-card-header {
@@ -356,7 +383,7 @@ const researchStatusLabels: Record<string, string> = {
   }
 
   .research-status-pill--active {
-    color: #38bdf8;
+    color: var(--accent-research, #38bdf8);
   }
 
   .status-indicator-dot {
@@ -395,7 +422,7 @@ const researchStatusLabels: Record<string, string> = {
     font-size: 10px;
     padding: 2px 8px;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--colour-surface-elevated, rgba(0,0,0,0.04));
     border: 1px solid var(--colour-border-subtle);
     color: var(--colour-fg-muted);
   }
@@ -431,7 +458,7 @@ const researchStatusLabels: Record<string, string> = {
     justify-content: space-between;
     font-size: var(--text-xs);
     font-weight: 500;
-    color: #38bdf8;
+    color: var(--accent-research, #38bdf8);
     text-decoration: none;
     padding: 4px 8px;
     background: rgba(56, 189, 248, 0.06);
@@ -442,7 +469,7 @@ const researchStatusLabels: Record<string, string> = {
 
   .connected-link:hover {
     background: rgba(56, 189, 248, 0.14);
-    border-color: #38bdf8;
+    border-color: var(--accent-research, #38bdf8);
     transform: translateX(2px);
   }
 
@@ -462,13 +489,14 @@ const researchStatusLabels: Record<string, string> = {
     border-radius: var(--radius-lg);
     padding: var(--space-6);
     position: relative;
+    box-shadow: var(--shadow-sm);
   }
 
   .principle-num {
     font-family: var(--font-mono);
     font-size: var(--text-2xl);
     font-weight: 800;
-    color: rgba(56, 189, 248, 0.25);
+    color: rgba(56, 189, 248, 0.35);
     margin-bottom: var(--space-2);
     display: block;
   }
