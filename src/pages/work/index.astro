@@ -1,104 +1,431 @@
 ---
 /**
- * /work/ — Engineering & research projects index.
+ * /work/ â€” Dynamic Engineering & Research Projects Index
+ * Single Source of Truth: Pulls directly from Astro Content Collections ('projects')
+ * managed via Pages CMS.
  */
 import PageLayout from '../../layouts/PageLayout.astro';
-import { engineeringProjects } from '../../data/content';
+import { getCollection } from 'astro:content';
 
 const base = import.meta.env.BASE_URL;
-const byStatus = {
-  active:    engineeringProjects.filter(p => p.status === 'active'),
-  ongoing:   engineeringProjects.filter(p => p.status === 'ongoing'),
-  completed: engineeringProjects.filter(p => p.status === 'completed'),
+
+// Fetch all CMS-managed projects
+const allProjects = await getCollection('projects');
+
+// Sort: Featured first, then by year descending
+const sortedProjects = allProjects.sort((a, b) => {
+  if (a.data.featured && !b.data.featured) return -1;
+  if (!a.data.featured && b.data.featured) return 1;
+  return (b.data.year ?? 0) - (a.data.year ?? 0);
+});
+
+// Group by status
+const activeProjects = sortedProjects.filter(p => p.data.status === 'active' || p.data.status === 'ongoing');
+const completedProjects = sortedProjects.filter(p => p.data.status === 'completed');
+
+const statusLabels: Record<string, string> = {
+  active: 'Active',
+  ongoing: 'Ongoing Research',
+  completed: 'Completed',
 };
 ---
 
 <PageLayout
-  title="Work"
-  description="Engineering projects, research and technical case studies by Devashish Tambade — spanning wearable hardware, prosthetic mechanisms, embedded IoT and digital products."
-  label="01 — Work"
-  heading="Building at the edge of hardware and software"
-  subheading="Engineering projects spanning wearable enclosures, assistive devices, embedded telemetry and technical product development."
+  title="Work â€” Engineering & Research"
+  description="Curated exhibition of engineering projects, biomechatronics research, and wearable hardware case studies by Devashish Tambade."
+  label="01 / WORK"
+  heading="Engineering & Tangible Outcomes"
+  subheading="A curated exhibition of hardware systems, mechatronics, accessible assistive devices, and embedded telemetry."
 >
-  <section class="section" aria-label="All projects">
-    <div class="container">
-
-      {(byStatus.active.length > 0 || byStatus.ongoing.length > 0) && (
-        <div class="work-group">
-          <h2 class="work-group-label">Active & Ongoing</h2>
-          <div class="card-grid">
-            {[...byStatus.active, ...byStatus.ongoing].map((project, i) => (
-              <a
-                href={project.href ?? '#'}
-                class="project-card"
-                aria-label={`${project.title} — ${project.subtitle}`}
-                style={`animation-delay:${i * 60}ms`}
-              >
-                <div class="card-status">
-                  <span class={`status-dot status-dot--${project.status}`} aria-hidden="true"></span>
-                  <span>{project.status === 'active' ? 'Active' : 'Ongoing'}</span>
-                  {project.year && <span class="status-year"> · {project.year}</span>}
-                </div>
-                <h3 class="card-title">{project.title}</h3>
-                <p class="card-subtitle">{project.subtitle}</p>
-                <p class="card-description">{project.description}</p>
-                {project.tags.length > 0 && (
-                  <ul class="card-tags" aria-label="Technologies" role="list">
-                    {project.tags.map(tag => <li class="tag">{tag}</li>)}
-                  </ul>
-                )}
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {byStatus.completed.length > 0 && (
-        <div class="work-group">
-          <h2 class="work-group-label">Completed</h2>
-          <div class="card-grid">
-            {byStatus.completed.map((project, i) => (
-              <a
-                href={project.href ?? '#'}
-                class="project-card"
-                aria-label={`${project.title} — ${project.subtitle}`}
-                style={`animation-delay:${i * 60}ms`}
-              >
-                <div class="card-status">
-                  <span class="status-dot status-dot--completed" aria-hidden="true"></span>
-                  <span>Completed</span>
-                  {project.year && <span class="status-year"> · {project.year}</span>}
-                </div>
-                <h3 class="card-title">{project.title}</h3>
-                <p class="card-subtitle">{project.subtitle}</p>
-                <p class="card-description">{project.description}</p>
-                {project.tags.length > 0 && (
-                  <ul class="card-tags" aria-label="Technologies" role="list">
-                    {project.tags.map(tag => <li class="tag">{tag}</li>)}
-                  </ul>
-                )}
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
-
+  <div class="work-experience">
+    <!-- District Accent Stripe -->
+    <div class="district-badge-row">
+      <span class="district-badge-pill">
+        <span class="badge-dot" aria-hidden="true"></span>
+        <span>THE LAB // AMBER ACCENT</span>
+      </span>
+      <span class="district-meta">{allProjects.length} Verified Projects in Archive</span>
     </div>
-  </section>
+
+    <!-- Active & Ongoing High-Priority Projects -->
+    {activeProjects.length > 0 && (
+      <section class="work-section" aria-labelledby="active-heading">
+        <div class="section-heading-bar">
+          <div class="heading-icon-wrap">
+            <span class="pulse-indicator" aria-hidden="true"></span>
+            <h2 class="work-group-title" id="active-heading">Active Prototyping & Ongoing Research</h2>
+          </div>
+          <span class="heading-count">{activeProjects.length} Initiatives</span>
+        </div>
+
+        <div class="projects-exhibition-grid">
+          {activeProjects.map((project) => (
+            <article class={`project-exhibit-card ${project.data.featured ? 'is-featured' : ''}`}>
+              <div class="exhibit-header">
+                <div class="status-chip status-chip--active">
+                  <span class="status-glow" aria-hidden="true"></span>
+                  <span>{statusLabels[project.data.status] || project.data.status}</span>
+                  {project.data.year && <span class="status-year">Â· {project.data.year}</span>}
+                </div>
+                {project.data.discipline && (
+                  <span class="discipline-tag">{project.data.discipline}</span>
+                )}
+              </div>
+
+              <div class="exhibit-body">
+                <h3 class="exhibit-title">
+                  <a href={`${base}work/${project.slug}/`} class="title-link">
+                    {project.data.title}
+                  </a>
+                </h3>
+                <p class="exhibit-subtitle">{project.data.subtitle}</p>
+                <p class="exhibit-description">{project.data.description}</p>
+              </div>
+
+              {project.data.tags && project.data.tags.length > 0 && (
+                <div class="exhibit-footer">
+                  <ul class="exhibit-tags" aria-label="Key Technologies">
+                    {project.data.tags.map(tag => (
+                      <li class="tech-tag">{tag}</li>
+                    ))}
+                  </ul>
+
+                  <a href={`${base}work/${project.slug}/`} class="case-study-action" aria-label={`Read case study for ${project.data.title}`}>
+                    <span>View Case Study</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </a>
+                </div>
+              )}
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Completed Case Studies -->
+    {completedProjects.length > 0 && (
+      <section class="work-section" aria-labelledby="completed-heading">
+        <div class="section-heading-bar">
+          <div class="heading-icon-wrap">
+            <span class="completed-check" aria-hidden="true">âœ“</span>
+            <h2 class="work-group-title" id="completed-heading">Completed Engineering Milestones</h2>
+          </div>
+          <span class="heading-count">{completedProjects.length} Deliverables</span>
+        </div>
+
+        <div class="projects-exhibition-grid">
+          {completedProjects.map((project) => (
+            <article class="project-exhibit-card">
+              <div class="exhibit-header">
+                <div class="status-chip status-chip--completed">
+                  <span class="completed-dot" aria-hidden="true"></span>
+                  <span>Completed</span>
+                  {project.data.year && <span class="status-year">Â· {project.data.year}</span>}
+                </div>
+                {project.data.discipline && (
+                  <span class="discipline-tag">{project.data.discipline}</span>
+                )}
+              </div>
+
+              <div class="exhibit-body">
+                <h3 class="exhibit-title">
+                  <a href={`${base}work/${project.slug}/`} class="title-link">
+                    {project.data.title}
+                  </a>
+                </h3>
+                <p class="exhibit-subtitle">{project.data.subtitle}</p>
+                <p class="exhibit-description">{project.data.description}</p>
+              </div>
+
+              {project.data.tags && project.data.tags.length > 0 && (
+                <div class="exhibit-footer">
+                  <ul class="exhibit-tags" aria-label="Key Technologies">
+                    {project.data.tags.map(tag => (
+                      <li class="tech-tag">{tag}</li>
+                    ))}
+                  </ul>
+
+                  <a href={`${base}work/${project.slug}/`} class="case-study-action" aria-label={`Read case study for ${project.data.title}`}>
+                    <span>View Case Study</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </a>
+                </div>
+              )}
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
+  </div>
 </PageLayout>
 
 <style>
-  .work-group {
-    margin-bottom: var(--space-16);
+  .work-experience {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    padding-block-end: var(--space-20);
   }
-  .work-group-label {
+
+  .district-badge-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: var(--space-4);
+    margin-bottom: var(--space-10);
+    border-bottom: 1px solid var(--colour-border-subtle);
+  }
+
+  .district-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(245, 158, 11, 0.10);
+    border: 1px solid rgba(245, 158, 11, 0.28);
+    color: #f59e0b;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #f59e0b;
+    box-shadow: 0 0 8px #f59e0b;
+  }
+
+  .district-meta {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    letter-spacing: var(--tracking-wider);
-    text-transform: uppercase;
-    color: var(--colour-label);
-    margin-bottom: var(--space-6);
+    color: var(--colour-fg-subtle);
+  }
+
+  .work-section {
+    margin-bottom: var(--space-16);
+  }
+
+  .section-heading-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding-bottom: var(--space-3);
-    border-bottom: 1px solid var(--colour-border-subtle);
+    border-bottom: 1px solid var(--colour-border);
+    margin-bottom: var(--space-8);
+  }
+
+  .heading-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .pulse-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #f59e0b;
+    box-shadow: 0 0 10px #f59e0b;
+  }
+
+  .completed-check {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: bold;
+    color: #10b981;
+  }
+
+  .work-group-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    letter-spacing: var(--tracking-tight);
+    color: var(--colour-fg);
+  }
+
+  .heading-count {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--colour-fg-subtle);
+  }
+
+  .projects-exhibition-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .project-exhibit-card {
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all var(--duration-fast) var(--ease-out);
+    position: relative;
+  }
+
+  .project-exhibit-card:hover {
+    border-color: rgba(245, 158, 11, 0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  }
+
+  .project-exhibit-card.is-featured {
+    border-left: 3px solid #f59e0b;
+  }
+
+  .exhibit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .status-chip--active {
+    color: #f59e0b;
+  }
+
+  .status-glow {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #f59e0b;
+    box-shadow: 0 0 6px #f59e0b;
+  }
+
+  .status-chip--completed {
+    color: #10b981;
+  }
+
+  .completed-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+  }
+
+  .status-year {
+    color: var(--colour-fg-subtle);
+  }
+
+  .discipline-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--colour-fg-muted);
+    background: var(--colour-surface-elevated, rgba(255, 255, 255, 0.05));
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--colour-border-subtle);
+  }
+
+  .exhibit-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    line-height: var(--leading-tight);
+    margin-bottom: var(--space-2);
+  }
+
+  .title-link {
+    color: var(--colour-fg);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .title-link:hover {
+    color: #f59e0b;
+  }
+
+  .exhibit-subtitle {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: #f59e0b;
+    margin-bottom: var(--space-3);
+  }
+
+  .exhibit-description {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-6);
+  }
+
+  .exhibit-footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-top: auto;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--colour-border-subtle);
+  }
+
+  .exhibit-tags {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tech-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--colour-border-subtle);
+    color: var(--colour-fg-muted);
+  }
+
+  .case-study-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: #f59e0b;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.20);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .case-study-action:hover {
+    background: rgba(245, 158, 11, 0.16);
+    border-color: rgba(245, 158, 11, 0.40);
+    transform: translateX(2px);
+  }
+
+  @media (max-width: 640px) {
+    .projects-exhibition-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

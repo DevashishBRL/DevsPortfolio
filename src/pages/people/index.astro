@@ -1,136 +1,367 @@
 ---
 /**
- * /people/ — Teaching, mentoring, leadership and community.
+ * /people/ â€” Community, Mentorship, Leadership and Shared Growth
+ * Color identity: PURPLE (#a78bfa)
+ * Personality: Community, collaboration, leadership, mentorship, teaching, and shared growth.
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import { communityActivities } from '../../data/content';
+
+const base = import.meta.env.BASE_URL;
 ---
 
 <PageLayout
-  title="People"
-  description="Mentoring, teaching, leadership and community work by Devashish Tambade — people-centred contributions alongside engineering and product work."
-  label="People & Community"
-  heading="People"
-  subheading="Engineering is about building things. But it is also about building the people around you."
+  title="People â€” Mentorship, Leadership & Community"
+  description="Collaborative leadership, engineering peer mentorship, design thinking facilitation, and student communities by Devashish Tambade."
+  label="04 / PEOPLE"
+  heading="Community, Leadership & Shared Growth"
+  subheading="Engineering is about building functional physical systems. But it is equally about investing in the people, teams, and collaborative communities around you."
 >
-
-  <section class="section" aria-labelledby="people-intro-heading">
-    <div class="container">
-      <div class="people-intro">
-        <p>Alongside projects and products, I invest time in mentoring fellow engineers, facilitating design thinking, and building communities of practice. This section documents that work — not as an appendix to the portfolio, but as a core part of how I work.</p>
+  <div class="people-experience">
+    <!-- District Accent Stripe -->
+    <div class="district-badge-row">
+      <div class="district-badge-pill">
+        <span class="badge-dot" aria-hidden="true"></span>
+        <span>THE COMMONS // PURPLE ACCENT</span>
       </div>
+      <span class="district-meta">{communityActivities.length} Active Leadership & Mentorship Records</span>
     </div>
-  </section>
 
-  <section class="section" aria-labelledby="people-activities-heading">
-    <div class="container">
-      <h2 class="section-title" id="people-activities-heading" style="margin-bottom: var(--space-8);">Activities</h2>
-      <div class="people-list">
-        {communityActivities.map(activity => (
-          <article class="people-card" aria-label={activity.title}>
-            <div class="people-card-header">
-              <div class="people-card-meta">
-                <span class="people-period">{activity.period}</span>
-                {activity.organisation && (
-                  <span class="people-org">{activity.organisation}</span>
-                )}
-              </div>
-              <div class="people-role-badge">{activity.role}</div>
+    <!-- People Manifesto / Collaborative Thesis -->
+    <section class="people-narrative-section" aria-labelledby="people-narrative-heading">
+      <div class="narrative-card">
+        <span class="narrative-kicker">COLLABORATIVE ETHOS</span>
+        <h2 class="narrative-lead" id="people-narrative-heading">
+          Technical excellence without mentorship is incomplete.
+        </h2>
+        <p class="narrative-body">
+          Throughout my time in engineering and product development, some of the most rewarding work hasn't been in CAD software or code compilers, but in working side-by-side with fellow students, de-mystifying complex engineering concepts, and helping peers build confidence in their own technical problem-solving.
+        </p>
+      </div>
+    </section>
+
+    <!-- Community & Mentorship Initiatives Grid -->
+    <section class="initiatives-section" aria-labelledby="initiatives-heading">
+      <div class="section-heading-bar">
+        <div class="heading-icon-wrap">
+          <span class="people-spark" aria-hidden="true"></span>
+          <h2 class="section-title" id="initiatives-heading">Mentorship, Teaching & Community Initiatives</h2>
+        </div>
+        <span class="heading-count">{communityActivities.length} Roles</span>
+      </div>
+
+      <div class="initiatives-grid">
+        {communityActivities.map((activity) => (
+          <article class="initiative-card">
+            <div class="initiative-header">
+              <span class="role-badge">{activity.role}</span>
+              <span class="period-badge">{activity.period}</span>
             </div>
-            <h3 class="people-title">{activity.title}</h3>
-            <p class="people-desc">{activity.description}</p>
-            <ul class="card-tags" role="list" style="margin-top: var(--space-4);">
-              {activity.tags.map(t => <li class="tag">{t}</li>)}
-            </ul>
+
+            <h3 class="initiative-title">{activity.title}</h3>
+            {activity.organisation && (
+              <p class="initiative-org">{activity.organisation}</p>
+            )}
+
+            <p class="initiative-desc">{activity.description}</p>
+
+            {activity.tags && activity.tags.length > 0 && (
+              <ul class="initiative-tags" aria-label="Leadership domains">
+                {activity.tags.map(tag => (
+                  <li class="community-tag">{tag}</li>
+                ))}
+              </ul>
+            )}
           </article>
         ))}
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="section" aria-labelledby="people-philosophy-heading">
-    <div class="container">
-      <div class="people-philosophy">
-        <h2 class="section-title" id="people-philosophy-heading">Why this matters</h2>
-        <p class="section-description" style="margin-top: var(--space-4);">
-          Technical skills are the foundation. But the engineers I have most respected are the ones who also helped other people improve — who shared knowledge without gatekeeping it, who made teams better rather than just projects better.
-        </p>
-        <p class="section-description" style="margin-top: var(--space-4);">
-          That is the kind of engineer I want to be. The people work is part of the engineering, not separate from it.
-        </p>
+    <!-- Leadership Perspectives -->
+    <section class="mentorship-values-section" aria-labelledby="values-heading">
+      <div class="section-heading-bar">
+        <div class="heading-icon-wrap">
+          <span class="values-glyph" aria-hidden="true">âœ¦</span>
+          <h2 class="section-title" id="values-heading">Mentorship Principles in Practice</h2>
+        </div>
       </div>
-    </div>
-  </section>
 
+      <div class="values-grid">
+        <div class="value-card">
+          <h3 class="value-title">Psychological Safety in Technical Inquiry</h3>
+          <p class="value-desc">
+            No one learns effectively when intimidated by technical jargon. Great engineering mentorship starts with creating spaces where any question can be asked without fear of judgment.
+          </p>
+        </div>
+
+        <div class="value-card">
+          <h3 class="value-title">Demystifying Problem-Framing</h3>
+          <p class="value-desc">
+            Students often freeze when faced with vague problem statements. Facilitating design thinking is about breaking intimidating challenges into tractable, testable sub-experiments.
+          </p>
+        </div>
+
+        <div class="value-card">
+          <h3 class="value-title">Building Communities of Practice</h3>
+          <p class="value-desc">
+            Sustainable learning happens peer-to-peer. Whether in faculty study groups or small software teams, lasting progress occurs when individuals teach and elevate one another.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
 </PageLayout>
 
 <style>
-  .people-intro {
-    max-width: 620px;
-    font-size: var(--text-md);
-    color: var(--colour-fg-muted);
-    line-height: var(--leading-loose);
+  .people-experience {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    padding-block-end: var(--space-20);
   }
-  .people-intro p { max-width: none; }
-  .people-list {
+
+  .district-badge-row {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-5);
-  }
-  .people-card {
-    padding: var(--space-6);
-    background: var(--colour-surface);
-    border: 1px solid var(--colour-border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-  }
-  .people-card-header {
-    display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: flex-start;
-    gap: var(--space-4);
-    flex-wrap: wrap;
-    margin-bottom: var(--space-3);
+    padding-block: var(--space-4);
+    margin-bottom: var(--space-10);
+    border-bottom: 1px solid var(--colour-border-subtle);
   }
-  .people-card-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .people-period {
+
+  .district-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(167, 139, 250, 0.10);
+    border: 1px solid rgba(167, 139, 250, 0.28);
+    color: #a78bfa;
+    padding: 4px 12px;
+    border-radius: 9999px;
     font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--colour-label);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
   }
-  .people-org {
-    font-size: var(--text-sm);
-    color: var(--colour-fg-muted);
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #a78bfa;
+    box-shadow: 0 0 8px #a78bfa;
   }
-  .people-role-badge {
+
+  .district-meta {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--colour-fg-subtle);
-    background: var(--colour-bg-subtle);
-    border: 1px solid var(--colour-border);
-    padding: var(--space-1) var(--space-3);
-    border-radius: var(--radius-sm);
-    white-space: nowrap;
   }
-  .people-title {
-    font-size: var(--text-lg);
+
+  .people-narrative-section {
+    margin-bottom: var(--space-16);
+  }
+
+  .narrative-card {
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.06) 0%, rgba(15, 23, 42, 0.7) 100%);
+    border: 1px solid rgba(167, 139, 250, 0.25);
+    border-left: 4px solid #a78bfa;
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+  }
+
+  .narrative-kicker {
+    font-family: var(--font-mono);
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: var(--tracking-tight);
+    color: #a78bfa;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-3);
+    display: block;
+  }
+
+  .narrative-lead {
+    font-size: var(--text-2xl);
+    font-weight: 700;
     color: var(--colour-fg);
+    line-height: var(--leading-tight);
+    margin-bottom: var(--space-4);
+  }
+
+  .narrative-body {
+    font-size: var(--text-base);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-relaxed);
+    max-width: 72ch;
+  }
+
+  .initiatives-section {
+    margin-bottom: var(--space-16);
+  }
+
+  .section-heading-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--colour-border);
+    margin-bottom: var(--space-8);
+  }
+
+  .heading-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .people-spark {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #a78bfa;
+    box-shadow: 0 0 10px #a78bfa;
+  }
+
+  .values-glyph {
+    color: #a78bfa;
+    font-size: 14px;
+  }
+
+  .section-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--colour-fg);
+  }
+
+  .heading-count {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--colour-fg-subtle);
+  }
+
+  .initiatives-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .initiative-card {
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .initiative-card:hover {
+    border-color: rgba(167, 139, 250, 0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  }
+
+  .initiative-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: var(--space-3);
   }
-  .people-desc {
+
+  .role-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: #a78bfa;
+    background: rgba(167, 139, 250, 0.12);
+    border: 1px solid rgba(167, 139, 250, 0.25);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .period-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--colour-fg-subtle);
+  }
+
+  .initiative-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--colour-fg);
+    margin-bottom: var(--space-1);
+  }
+
+  .initiative-org {
+    font-size: var(--text-xs);
+    color: #a78bfa;
+    font-family: var(--font-mono);
+    margin-bottom: var(--space-3);
+  }
+
+  .initiative-desc {
     font-size: var(--text-sm);
     color: var(--colour-fg-muted);
-    line-height: var(--leading-normal);
-    max-width: 65ch;
-    margin-bottom: 0;
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-5);
   }
-  .people-philosophy { max-width: 640px; }
+
+  .initiative-tags {
+    list-style: none;
+    padding: 0;
+    margin: auto 0 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--colour-border-subtle);
+  }
+
+  .community-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--colour-border-subtle);
+    color: var(--colour-fg-muted);
+  }
+
+  .mentorship-values-section {
+    margin-top: var(--space-12);
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .value-card {
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+  }
+
+  .value-title {
+    font-size: var(--text-md);
+    font-weight: 700;
+    color: var(--colour-fg);
+    margin-bottom: var(--space-2);
+  }
+
+  .value-desc {
+    font-size: var(--text-xs);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-relaxed);
+  }
+
+  @media (max-width: 640px) {
+    .initiatives-grid,
+    .values-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>

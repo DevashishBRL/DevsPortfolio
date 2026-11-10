@@ -1,112 +1,383 @@
 ---
 /**
- * /studio/ — KLA Interactives product studio index.
+ * /studio/ â€” KLA Interactives & Experimental Systems
+ * Color identity: ORANGE (#fb923c)
+ * Personality: Experimentation, imagination, prototyping, visual thinking and creative freedom.
+ * Single Source of Truth: Pulls directly from Astro Content Collections ('products') managed via Pages CMS.
  */
 import PageLayout from '../../layouts/PageLayout.astro';
-import { klaProducts } from '../../data/content';
+import { getCollection } from 'astro:content';
 
 const base = import.meta.env.BASE_URL;
 
-const statusLabel: Record<string, string> = {
-  concept: 'Concept', active: 'In Development', beta: 'Beta', launched: 'Launched'
+// Live products from CMS collection
+const allProducts = await getCollection('products');
+
+// Sort: featured first
+const sortedProducts = allProducts.sort((a, b) => {
+  if (a.data.featured && !b.data.featured) return -1;
+  if (!a.data.featured && b.data.featured) return 1;
+  return a.data.title.localeCompare(b.data.title);
+});
+
+const statusLabels: Record<string, string> = {
+  concept: 'Concept Stage',
+  active: 'In Active Development',
+  beta: 'Beta Release',
+  launched: 'Publicly Launched',
 };
 ---
 
 <PageLayout
-  title="Studio — KLA Interactives"
-  description="KLA Interactives: a small studio building digital tools for people who think. DraftGrid, AraLoom, TabZones and JobPal."
-  label="KLA Interactives"
-  heading="A studio for thoughtful digital tools"
-  subheading="KLA Interactives builds products around how people think and work — not how software expects them to."
+  title="Studio â€” KLA Interactives & Creative Prototyping"
+  description="KLA Interactives: A software playground and product laboratory crafting thoughtful tools around how people actually think and work."
+  label="03 / STUDIO"
+  heading="Experimentation & Digital Tools for Thought"
+  subheading="A creative playground and software foundry exploring focused digital utilities, visual knowledge mapping, and intentional productivity."
 >
-
-  <!-- Studio intro -->
-  <section class="section" aria-labelledby="studio-intro-heading">
-    <div class="container">
-      <div class="studio-intro-grid">
-        <div class="studio-intro-text">
-          <h2 class="section-title" id="studio-intro-heading">About KLA Interactives</h2>
-          <p class="section-description" style="margin-top: var(--space-4);">
-            KLA Interactives is a product design studio founded to build tools that work the way people actually think — structured, spatial, and honest about complexity.
-          </p>
-          <p class="section-description" style="margin-top: var(--space-4);">
-            The current product family is in active development. Nothing listed here is publicly available or commercially released. Every product listed is a genuine work in progress.
-          </p>
-        </div>
-        <div class="studio-meta-card">
-          <dl class="studio-meta-list">
-            <div class="case-meta-item"><dt>Founded</dt><dd>2023</dd></div>
-            <div class="case-meta-item"><dt>Focus</dt><dd>Digital productivity tools</dd></div>
-            <div class="case-meta-item"><dt>Status</dt><dd>Pre-launch — building in public</dd></div>
-          </dl>
-        </div>
+  <div class="studio-experience">
+    <!-- District Accent Stripe -->
+    <div class="district-badge-row">
+      <div class="district-badge-pill">
+        <span class="badge-dot" aria-hidden="true"></span>
+        <span>THE FOUNDRY // ORANGE ACCENT</span>
       </div>
+      <span class="district-meta">{allProducts.length} Product Prototypes in Development</span>
     </div>
-  </section>
 
-  <!-- Products -->
-  <section class="section" aria-labelledby="studio-products-heading">
-    <div class="container">
-      <h2 class="section-title" id="studio-products-heading">Products</h2>
-      <p class="section-description" style="margin-top: var(--space-3); margin-bottom: var(--space-8);">
-        Four tools, one design philosophy: make thinking easier.
-      </p>
-      <div class="card-grid card-grid--2">
-        {klaProducts.map((product, i) => (
-          <a href={product.href ?? '#'} class="project-card" style={`animation-delay:${i*60}ms`}>
-            <div class="card-status">
-              <span class="status-dot status-dot--active" aria-hidden="true"></span>
-              <span>{statusLabel[product.status]}</span>
+    <!-- Studio Manifest -->
+    <section class="studio-manifesto" aria-labelledby="manifesto-heading">
+      <div class="manifesto-card">
+        <div class="manifesto-tag">STUDIO PHILOSOPHY</div>
+        <h2 class="manifesto-lead" id="manifesto-heading">
+          Building software around human cognitive reality, not corporate compliance.
+        </h2>
+        <p class="manifesto-body">
+          Most modern tools demand that humans adapt to the database. At KLA Interactives, we prototype software designed around mental friction: reducing context switching, organizing sprawling research notes before writing, and removing dread from high-stakes workflows.
+        </p>
+      </div>
+    </section>
+
+    <!-- Products Gallery -->
+    <section class="studio-products-section" aria-labelledby="products-heading">
+      <div class="section-heading-bar">
+        <div class="heading-icon-wrap">
+          <span class="tool-dot" aria-hidden="true"></span>
+          <h2 class="section-title" id="products-heading">Software Rigs & Active Tools</h2>
+        </div>
+        <span class="heading-count">{allProducts.length} Tools</span>
+      </div>
+
+      <div class="products-showcase-grid">
+        {sortedProducts.map((product) => (
+          <article class={`product-canvas-card ${product.data.featured ? 'is-flagship' : ''}`}>
+            <div class="card-status-strip">
+              <span class="product-status-tag">
+                <span class="status-amber-dot" aria-hidden="true"></span>
+                <span>{statusLabels[product.data.status] || product.data.status}</span>
+              </span>
+              <span class="platform-badge">{product.data.platform}</span>
             </div>
-            <h3 class="card-title">{product.title}</h3>
-            <p class="card-subtitle">{product.subtitle}</p>
-            <p class="card-description">{product.description}</p>
-            {product.note && (
-              <p class="product-availability-note">{product.note}</p>
+
+            <div class="card-content-block">
+              <h3 class="product-name">
+                <a href={`${base}studio/${product.slug}/`} class="product-link">
+                  {product.data.title}
+                </a>
+              </h3>
+              <p class="product-subtitle">{product.data.subtitle}</p>
+              <p class="product-description">{product.data.description}</p>
+            </div>
+
+            {product.data.tags && product.data.tags.length > 0 && (
+              <ul class="product-tags" aria-label="Product concepts">
+                {product.data.tags.map(tag => (
+                  <li class="studio-tag">{tag}</li>
+                ))}
+              </ul>
             )}
-            <ul class="card-tags" role="list">
-              {product.tags.map(t => <li class="tag">{t}</li>)}
-            </ul>
-          </a>
+
+            <div class="card-action-bar">
+              <a href={`${base}studio/${product.slug}/`} class="inspect-btn">
+                <span>Inspect Tool Concept</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+            </div>
+          </article>
         ))}
       </div>
-    </div>
-  </section>
-
+    </section>
+  </div>
 </PageLayout>
 
 <style>
-  .studio-intro-grid {
-    display: grid;
-    grid-template-columns: 1fr 260px;
-    gap: var(--space-10);
-    align-items: start;
+  .studio-experience {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    padding-block-end: var(--space-20);
   }
-  .studio-meta-card {
+
+  .district-badge-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: var(--space-4);
+    margin-bottom: var(--space-10);
+    border-bottom: 1px solid var(--colour-border-subtle);
+  }
+
+  .district-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(251, 146, 60, 0.10);
+    border: 1px solid rgba(251, 146, 60, 0.28);
+    color: #fb923c;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #fb923c;
+    box-shadow: 0 0 8px #fb923c;
+  }
+
+  .district-meta {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--colour-fg-subtle);
+  }
+
+  .studio-manifesto {
+    margin-bottom: var(--space-16);
+  }
+
+  .manifesto-card {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.06) 0%, rgba(15, 23, 42, 0.7) 100%);
+    border: 1px solid rgba(251, 146, 60, 0.25);
+    border-left: 4px solid #fb923c;
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+  }
+
+  .manifesto-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: #fb923c;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-3);
+  }
+
+  .manifesto-lead {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    color: var(--colour-fg);
+    line-height: var(--leading-tight);
+    margin-bottom: var(--space-4);
+  }
+
+  .manifesto-body {
+    font-size: var(--text-base);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-relaxed);
+    max-width: 70ch;
+  }
+
+  .studio-products-section {
+    margin-bottom: var(--space-16);
+  }
+
+  .section-heading-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--colour-border);
+    margin-bottom: var(--space-8);
+  }
+
+  .heading-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .tool-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fb923c;
+    box-shadow: 0 0 10px #fb923c;
+  }
+
+  .section-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--colour-fg);
+  }
+
+  .heading-count {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--colour-fg-subtle);
+  }
+
+  .products-showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .product-canvas-card {
     background: var(--colour-surface);
     border: 1px solid var(--colour-border);
     border-radius: var(--radius-lg);
     padding: var(--space-6);
-    box-shadow: var(--shadow-sm);
-  }
-  .studio-meta-list {
-    list-style: none;
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    justify-content: space-between;
+    transition: all var(--duration-fast) var(--ease-out);
+    position: relative;
   }
-  .product-availability-note {
+
+  .product-canvas-card:hover {
+    border-color: rgba(251, 146, 60, 0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  }
+
+  .product-canvas-card.is-flagship {
+    border-left: 3px solid #fb923c;
+  }
+
+  .card-status-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+  }
+
+  .product-status-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #fb923c;
+    font-weight: 600;
+  }
+
+  .status-amber-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #fb923c;
+    box-shadow: 0 0 6px #fb923c;
+  }
+
+  .platform-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--colour-border-subtle);
+    color: var(--colour-fg-muted);
+  }
+
+  .product-name {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    margin-bottom: var(--space-2);
+  }
+
+  .product-link {
+    color: var(--colour-fg);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .product-link:hover {
+    color: #fb923c;
+  }
+
+  .product-subtitle {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    color: var(--colour-fg-subtle);
-    background: var(--colour-bg-subtle);
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-sm);
-    margin-top: var(--space-2);
-    margin-bottom: var(--space-2);
-    max-width: none;
+    color: #fb923c;
+    margin-bottom: var(--space-3);
   }
-  @media (max-width: 700px) {
-    .studio-intro-grid { grid-template-columns: 1fr; }
+
+  .product-description {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-6);
+  }
+
+  .product-tags {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-6) 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .studio-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--colour-border-subtle);
+    color: var(--colour-fg-muted);
+  }
+
+  .card-action-bar {
+    margin-top: auto;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--colour-border-subtle);
+  }
+
+  .inspect-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: #fb923c;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    background: rgba(251, 146, 60, 0.08);
+    border: 1px solid rgba(251, 146, 60, 0.22);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .inspect-btn:hover {
+    background: rgba(251, 146, 60, 0.18);
+    border-color: rgba(251, 146, 60, 0.45);
+    transform: translateX(2px);
+  }
+
+  @media (max-width: 640px) {
+    .products-showcase-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
