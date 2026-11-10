@@ -1,15 +1,19 @@
 ---
 /**
  * /about/ — Professional CV Experience & Multidisciplinary Profile
- * Color identity: ROSE / CRIMSON (#f43f5e)
+ * Color identity: ROSE / CRIMSON (#f43f5e / var(--accent-about))
  * Personality: Multidisciplinary integrator, intellectual curiosity, adaptability,
  * systems thinking, execution across hardware, software and communities.
  */
 import PageLayout from '../../layouts/PageLayout.astro';
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import { workHistory, researchAreas, communityActivities } from '../../data/content';
 
 const base = import.meta.env.BASE_URL;
+
+// Live profile from CMS site collection
+const profileEntry = await getEntry('site', 'profile');
+const profile = profileEntry?.data;
 
 // Live projects from CMS for dynamic "Selected Work" showcase
 const allProjects = await getCollection('projects');
@@ -38,21 +42,27 @@ const capabilityDomains = [
 ---
 
 <PageLayout
-  title="About — Professional CV & Profile"
+  title="About — Professional Profile & The Outlook"
   description="Curriculum vitae and professional profile of Devashish Tambade — robotics engineer, research technologist and multidisciplinary builder."
-  label="05 / ABOUT & CURRICULUM VITAE"
+  label="06 / THE OUTLOOK"
   heading="Devashish Tambade"
   subheading="Robotics Engineer · Research Technologist · Product Builder"
 >
   <div class="cv-experience">
-    <!-- District Accent Stripe -->
+    <!-- District Identity Banner -->
     <div class="district-badge-row">
       <div class="district-badge-pill">
         <span class="badge-dot" aria-hidden="true"></span>
-        <span>THE OUTLOOK // ROSE ACCENT</span>
+        <span>DISTRICT 06 // THE OUTLOOK</span>
       </div>
-      <div class="cv-actions">
-        <a href="#contact" class="cv-cta-btn">Connect for Collaboration</a>
+      <div class="district-actions">
+        <a href={`${base}#miniature-world-3d`} class="district-world-link" title="View The Outlook in 3D Miniature Terrarium">
+          <span>Locate in World</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+          </svg>
+        </a>
       </div>
     </div>
 
@@ -61,15 +71,21 @@ const capabilityDomains = [
       <div class="identity-card">
         <div class="identity-grid">
           <div class="identity-narrative">
+            <span class="identity-kicker">MULTIDISCIPLINARY BUILDER</span>
             <h2 class="identity-lead" id="cv-intro-heading">
               Engineering solutions at the intersection of mechanical hardware, firmware, and human-centred design.
             </h2>
             <p class="identity-body">
-              I am a robotics engineer and research technologist who thrives across interdisciplinary boundaries. Rather than confining myself to a narrow silo, I integrate mechanical mechatronics, embedded sensory telemetry, and thoughtful software tools to turn complex problems into tangible, testable outcomes.
+              {profile?.bio || "I am a robotics engineer and research technologist who thrives across interdisciplinary boundaries. Rather than confining myself to a narrow silo, I integrate mechanical mechatronics, embedded sensory telemetry, and thoughtful software tools to turn complex problems into tangible, testable outcomes."}
             </p>
             <p class="identity-subtext">
               My work spans accessible biomechatronic prosthetics at the University of Bristol, wearable medical enclosure engineering, telemetry interfaces for agriculture, and independent tools for thought at KLA Interactives.
             </p>
+            
+            <blockquote class="identity-quote">
+              <p>"{profile?.tagline || 'I build things that make problems smaller.'}"</p>
+              <cite>— Thoughtfully Brilliant. Extraordinarily Simple.</cite>
+            </blockquote>
           </div>
 
           <aside class="identity-summary-panel">
@@ -77,19 +93,25 @@ const capabilityDomains = [
             <dl class="summary-list">
               <div class="summary-row">
                 <dt>Current Focus</dt>
-                <dd>MEng Robotics Engineering, University of Bristol</dd>
+                <dd>{profile?.statusNotice || 'MEng Robotics Engineering · University of Bristol'}</dd>
               </div>
               <div class="summary-row">
                 <dt>Primary Domains</dt>
                 <dd>Biomechatronics, Embedded Telemetry, Human-Robot Systems</dd>
               </div>
               <div class="summary-row">
-                <dt>Studio</dt>
+                <dt>Product Studio</dt>
                 <dd>Founder, KLA Interactives</dd>
               </div>
               <div class="summary-row">
                 <dt>Location</dt>
-                <dd>Bristol, United Kingdom</dd>
+                <dd>{profile?.location || 'Bristol, United Kingdom'}</dd>
+              </div>
+              <div class="summary-row">
+                <dt>CV Status</dt>
+                <dd class="cv-status-note">
+                  <span class="status-indicator">◈</span> Structured format below
+                </dd>
               </div>
             </dl>
           </aside>
@@ -97,7 +119,7 @@ const capabilityDomains = [
       </div>
     </section>
 
-    <!-- 2. Overlapping Disciplines Diagram -->
+    <!-- 2. Multidisciplinary Practice Areas -->
     <section class="disciplines-section" aria-labelledby="disciplines-heading">
       <h2 class="section-title" id="disciplines-heading">Multidisciplinary Practice Areas</h2>
       <div class="disciplines-grid">
@@ -179,7 +201,7 @@ const capabilityDomains = [
     <!-- 4. Selected Live CMS Projects -->
     <section class="selected-projects-section" aria-labelledby="selected-work-heading">
       <div class="section-heading-bar">
-        <h2 class="section-title" id="selected-work-heading">Selected Engineering Work</h2>
+        <h2 class="section-title" id="selected-work-heading">Selected Technical Work</h2>
         <a href={`${base}work/`} class="all-link">View Full Work Gallery →</a>
       </div>
 
@@ -245,7 +267,43 @@ const capabilityDomains = [
       </div>
     </section>
 
-    <!-- 7. Contact & Collaboration -->
+    <!-- 7. Explore the World Ecosystem Nav -->
+    <section class="world-nav-section" aria-labelledby="world-nav-heading">
+      <div class="section-heading-bar">
+        <h2 class="section-title" id="world-nav-heading">Explore the Miniature World Districts</h2>
+        <span class="heading-count">5 Districts</span>
+      </div>
+
+      <nav class="world-nav-grid" aria-label="Portfolio districts navigation">
+        <a href={`${base}work/`} class="district-nav-card district-nav-card--work">
+          <span class="nav-district-num">01</span>
+          <span class="nav-district-name">The Lab</span>
+          <span class="nav-district-sub">Engineering & Hardware</span>
+        </a>
+        <a href={`${base}research/`} class="district-nav-card district-nav-card--research">
+          <span class="nav-district-num">02</span>
+          <span class="nav-district-name">The Observatory</span>
+          <span class="nav-district-sub">Systems Investigation</span>
+        </a>
+        <a href={`${base}studio/`} class="district-nav-card district-nav-card--studio">
+          <span class="nav-district-num">03</span>
+          <span class="nav-district-name">The Foundry</span>
+          <span class="nav-district-sub">KLA Digital Tools</span>
+        </a>
+        <a href={`${base}writing/`} class="district-nav-card district-nav-card--writing">
+          <span class="nav-district-num">04</span>
+          <span class="nav-district-name">AnyBody Can Design</span>
+          <span class="nav-district-sub">Essays & Perspectives</span>
+        </a>
+        <a href={`${base}people/`} class="district-nav-card district-nav-card--people">
+          <span class="nav-district-num">05</span>
+          <span class="nav-district-name">The Commons</span>
+          <span class="nav-district-sub">Community & Mentoring</span>
+        </a>
+      </nav>
+    </section>
+
+    <!-- 8. Contact & Collaboration -->
     <section class="contact-section" id="contact" aria-labelledby="contact-heading">
       <div class="contact-card">
         <span class="contact-label">COLLABORATION & ENQUIRIES</span>
@@ -255,7 +313,7 @@ const capabilityDomains = [
         </p>
         <div class="contact-actions">
           <a href="mailto:ka24911@bristol.ac.uk" class="contact-btn">Get in Touch via Email</a>
-          <a href={`${base}cv/`} class="contact-btn contact-btn--subtle">View CV Download Details</a>
+          <a href={`${base}cv/`} class="contact-btn contact-btn--subtle">View Dedicated CV View</a>
         </div>
       </div>
     </section>
@@ -274,8 +332,8 @@ const capabilityDomains = [
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-block: var(--space-4);
-    margin-bottom: var(--space-10);
+    padding-block: var(--space-3);
+    margin-bottom: var(--space-8);
     border-bottom: 1px solid var(--colour-border-subtle);
   }
 
@@ -283,9 +341,9 @@ const capabilityDomains = [
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(244, 63, 94, 0.10);
-    border: 1px solid rgba(244, 63, 94, 0.28);
-    color: #f43f5e;
+    background: rgba(244, 63, 94, 0.08);
+    border: 1px solid rgba(244, 63, 94, 0.25);
+    color: var(--accent-about, #f43f5e);
     padding: 4px 12px;
     border-radius: 9999px;
     font-family: var(--font-mono);
@@ -298,31 +356,29 @@ const capabilityDomains = [
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #f43f5e;
-    box-shadow: 0 0 8px #f43f5e;
+    background: var(--accent-about, #f43f5e);
+    box-shadow: 0 0 8px rgba(244, 63, 94, 0.8);
   }
 
-  .cv-actions {
-    display: flex;
-    gap: var(--space-3);
-  }
-
-  .cv-cta-btn {
-    font-family: var(--font-sans);
-    font-size: var(--text-xs);
-    font-weight: 600;
-    color: #f43f5e;
+  .district-world-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--colour-fg-muted);
     text-decoration: none;
-    padding: 6px 14px;
-    border-radius: var(--radius-sm);
-    background: rgba(244, 63, 94, 0.08);
-    border: 1px solid rgba(244, 63, 94, 0.25);
+    padding: 3px 10px;
+    border-radius: 9999px;
+    border: 1px solid var(--colour-border-subtle);
     transition: all var(--duration-fast) var(--ease-out);
   }
 
-  .cv-cta-btn:hover {
-    background: rgba(244, 63, 94, 0.18);
-    border-color: #f43f5e;
+  .district-world-link:hover {
+    color: var(--accent-about, #f43f5e);
+    border-color: rgba(244, 63, 94, 0.4);
+    background: rgba(244, 63, 94, 0.06);
+    transform: translateY(-1px);
   }
 
   .cv-intro-section {
@@ -332,8 +388,10 @@ const capabilityDomains = [
   .identity-card {
     background: var(--colour-surface);
     border: 1px solid var(--colour-border);
+    border-left: 4px solid var(--accent-about, #f43f5e);
     border-radius: var(--radius-lg);
     padding: var(--space-8);
+    box-shadow: var(--shadow-sm);
   }
 
   .identity-grid {
@@ -341,6 +399,16 @@ const capabilityDomains = [
     grid-template-columns: 1.6fr 1fr;
     gap: var(--space-8);
     align-items: start;
+  }
+
+  .identity-kicker {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent-about, #f43f5e);
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: var(--space-2);
   }
 
   .identity-lead {
@@ -362,10 +430,33 @@ const capabilityDomains = [
     font-size: var(--text-sm);
     color: var(--colour-fg-subtle);
     line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-4);
+  }
+
+  .identity-quote {
+    padding: var(--space-3) var(--space-4);
+    background: rgba(244, 63, 94, 0.04);
+    border-left: 2px solid var(--accent-about, #f43f5e);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: var(--space-4) 0 0 0;
+  }
+
+  .identity-quote p {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--colour-fg);
+    margin: 0 0 2px 0;
+  }
+
+  .identity-quote cite {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent-about, #f43f5e);
+    font-style: normal;
   }
 
   .identity-summary-panel {
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--colour-surface-elevated, rgba(0, 0, 0, 0.02));
     border: 1px solid var(--colour-border-subtle);
     border-radius: var(--radius-md);
     padding: var(--space-6);
@@ -375,7 +466,7 @@ const capabilityDomains = [
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 700;
-    color: #f43f5e;
+    color: var(--accent-about, #f43f5e);
     letter-spacing: 0.08em;
     margin-bottom: var(--space-4);
     text-transform: uppercase;
@@ -404,6 +495,18 @@ const capabilityDomains = [
     margin: 0;
   }
 
+  .cv-status-note {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--colour-fg-muted);
+  }
+
+  .status-indicator {
+    color: var(--accent-about, #f43f5e);
+    font-size: 10px;
+  }
+
   .disciplines-section {
     margin-bottom: var(--space-16);
   }
@@ -426,13 +529,14 @@ const capabilityDomains = [
     border: 1px solid var(--colour-border);
     border-radius: var(--radius-lg);
     padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
   }
 
   .discipline-tagline {
     font-family: var(--font-mono);
     font-size: 10px;
     font-weight: 700;
-    color: #f43f5e;
+    color: var(--accent-about, #f43f5e);
     letter-spacing: 0.05em;
     display: block;
     margin-bottom: var(--space-2);
@@ -460,31 +564,36 @@ const capabilityDomains = [
     justify-content: space-between;
     align-items: center;
     padding-bottom: var(--space-3);
-    border-bottom: 1px solid var(--colour-border);
+    border-bottom: 1px solid var(--colour-border-subtle);
     margin-bottom: var(--space-8);
   }
 
   .all-link {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    color: #f43f5e;
+    color: var(--accent-about, #f43f5e);
     text-decoration: none;
+  }
+
+  .all-link:hover {
+    text-decoration: underline;
   }
 
   .cv-timeline {
     display: flex;
     flex-direction: column;
-    gap: var(--space-8);
+    gap: var(--space-6);
   }
 
   .timeline-row {
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 180px 1fr;
     gap: var(--space-8);
     background: var(--colour-surface);
     border: 1px solid var(--colour-border);
     border-radius: var(--radius-lg);
     padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
   }
 
   .timeline-meta {
@@ -524,7 +633,7 @@ const capabilityDomains = [
   .timeline-org {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    color: #f43f5e;
+    color: var(--accent-about, #f43f5e);
     margin-bottom: var(--space-3);
   }
 
@@ -555,7 +664,7 @@ const capabilityDomains = [
     content: '→';
     position: absolute;
     left: 0;
-    color: #f43f5e;
+    color: var(--accent-about, #f43f5e);
   }
 
   .timeline-tags {
@@ -572,7 +681,7 @@ const capabilityDomains = [
     font-size: 10px;
     padding: 2px 7px;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--colour-surface-elevated, rgba(0, 0, 0, 0.04));
     border: 1px solid var(--colour-border-subtle);
     color: var(--colour-fg-muted);
   }
@@ -595,6 +704,14 @@ const capabilityDomains = [
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .selected-card:hover {
+    border-color: rgba(244, 63, 94, 0.45);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
   }
 
   .selected-card-top {
@@ -607,7 +724,7 @@ const capabilityDomains = [
   .selected-discipline {
     font-family: var(--font-mono);
     font-size: 10px;
-    color: #f43f5e;
+    color: var(--accent-about, #f43f5e);
   }
 
   .selected-status {
@@ -626,10 +743,11 @@ const capabilityDomains = [
   .selected-link {
     color: var(--colour-fg);
     text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
   }
 
   .selected-link:hover {
-    color: #f43f5e;
+    color: var(--accent-about, #f43f5e);
   }
 
   .selected-desc {
@@ -643,7 +761,7 @@ const capabilityDomains = [
     font-family: var(--font-sans);
     font-size: var(--text-xs);
     font-weight: 600;
-    color: #f43f5e;
+    color: var(--accent-about, #f43f5e);
     text-decoration: none;
     margin-top: auto;
   }
@@ -663,6 +781,7 @@ const capabilityDomains = [
     border: 1px solid var(--colour-border);
     border-radius: var(--radius-lg);
     padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
   }
 
   .capability-domain-title {
@@ -693,7 +812,7 @@ const capabilityDomains = [
   }
 
   .check-bullet {
-    color: #f43f5e;
+    color: var(--accent-about, #f43f5e);
     font-weight: bold;
     font-size: 11px;
     flex-shrink: 0;
@@ -708,6 +827,7 @@ const capabilityDomains = [
     border: 1px solid var(--colour-border);
     border-radius: var(--radius-lg);
     padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
   }
 
   .edu-header {
@@ -726,7 +846,7 @@ const capabilityDomains = [
   .edu-school {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    color: #f43f5e;
+    color: var(--accent-about, #f43f5e);
   }
 
   .edu-period {
@@ -741,22 +861,77 @@ const capabilityDomains = [
     line-height: var(--leading-relaxed);
   }
 
+  .world-nav-section {
+    margin-bottom: var(--space-16);
+  }
+
+  .world-nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .district-nav-card {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-4);
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all var(--duration-fast) var(--ease-out);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .district-nav-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .district-nav-card--work:hover { border-color: var(--accent-work, #f59e0b); }
+  .district-nav-card--research:hover { border-color: var(--accent-research, #38bdf8); }
+  .district-nav-card--studio:hover { border-color: var(--accent-studio, #fb923c); }
+  .district-nav-card--writing:hover { border-color: var(--accent-writing, #34d399); }
+  .district-nav-card--people:hover { border-color: var(--accent-people, #a78bfa); }
+
+  .nav-district-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--colour-fg-subtle);
+    margin-bottom: 2px;
+  }
+
+  .nav-district-name {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--colour-fg);
+    margin-bottom: 2px;
+  }
+
+  .nav-district-sub {
+    font-size: 11px;
+    color: var(--colour-fg-muted);
+  }
+
   .contact-section {
-    margin-top: var(--space-12);
+    margin-top: var(--space-8);
   }
 
   .contact-card {
-    background: linear-gradient(135deg, rgba(244, 63, 94, 0.08) 0%, rgba(15, 23, 42, 0.8) 100%);
-    border: 1px solid rgba(244, 63, 94, 0.3);
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-left: 4px solid var(--accent-about, #f43f5e);
     border-radius: var(--radius-lg);
     padding: var(--space-8);
+    box-shadow: var(--shadow-sm);
   }
 
   .contact-label {
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 700;
-    color: #f43f5e;
+    color: var(--accent-about, #f43f5e);
     letter-spacing: 0.08em;
     margin-bottom: var(--space-2);
     display: block;
@@ -788,7 +963,7 @@ const capabilityDomains = [
     align-items: center;
     justify-content: center;
     padding: 10px 20px;
-    background: #f43f5e;
+    background: var(--accent-about, #f43f5e);
     color: #ffffff;
     font-weight: 600;
     font-size: var(--text-sm);
@@ -798,27 +973,28 @@ const capabilityDomains = [
   }
 
   .contact-btn:hover {
-    filter: brightness(1.15);
+    opacity: 0.9;
     transform: translateY(-1px);
   }
 
   .contact-btn--subtle {
     background: transparent;
-    border: 1px solid rgba(244, 63, 94, 0.4);
-    color: #f43f5e;
+    color: var(--colour-fg);
+    border: 1px solid var(--colour-border);
   }
 
   .contact-btn--subtle:hover {
-    background: rgba(244, 63, 94, 0.12);
+    border-color: var(--accent-about, #f43f5e);
+    color: var(--accent-about, #f43f5e);
   }
 
-  @media (max-width: 860px) {
+  @media (max-width: 768px) {
     .identity-grid {
       grid-template-columns: 1fr;
     }
     .timeline-row {
       grid-template-columns: 1fr;
-      gap: var(--space-4);
+      gap: var(--space-3);
     }
   }
 </style>

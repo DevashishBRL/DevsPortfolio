@@ -1,7 +1,7 @@
 ---
 /**
  * /people/ — Community, Mentorship, Leadership and Shared Growth
- * Color identity: PURPLE (#a78bfa)
+ * Color identity: PURPLE (#a78bfa / var(--accent-people))
  * Personality: Community, collaboration, leadership, mentorship, teaching, and shared growth.
  */
 import PageLayout from '../../layouts/PageLayout.astro';
@@ -13,29 +13,35 @@ const base = import.meta.env.BASE_URL;
 <PageLayout
   title="People — Mentorship, Leadership & Community"
   description="Collaborative leadership, engineering peer mentorship, design thinking facilitation, and student communities by Devashish Tambade."
-  label="04 / PEOPLE"
-  heading="Community, Leadership & Shared Growth"
+  label="05 / THE COMMONS"
+  heading="Better things happen together."
   subheading="Engineering is about building functional physical systems. But it is equally about investing in the people, teams, and collaborative communities around you."
 >
   <div class="people-experience">
-    <!-- District Accent Stripe -->
+    <!-- District Identity Banner -->
     <div class="district-badge-row">
       <div class="district-badge-pill">
         <span class="badge-dot" aria-hidden="true"></span>
-        <span>THE COMMONS // PURPLE ACCENT</span>
+        <span>DISTRICT 05 // THE COMMONS</span>
       </div>
-      <span class="district-meta">{communityActivities.length} Active Leadership & Mentorship Records</span>
+      <a href={`${base}#miniature-world-3d`} class="district-world-link" title="View The Commons in 3D Miniature Terrarium">
+        <span>Locate in World</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+        </svg>
+      </a>
     </div>
 
-    <!-- People Manifesto / Collaborative Thesis -->
+    <!-- People Manifesto / Collaborative Ethos -->
     <section class="people-narrative-section" aria-labelledby="people-narrative-heading">
       <div class="narrative-card">
-        <span class="narrative-kicker">COLLABORATIVE ETHOS</span>
+        <span class="narrative-kicker">COMMUNITY PHILOSOPHY</span>
         <h2 class="narrative-lead" id="people-narrative-heading">
           Technical excellence without mentorship is incomplete.
         </h2>
         <p class="narrative-body">
-          Throughout my time in engineering and product development, some of the most rewarding work hasn't been in CAD software or code compilers, but in working side-by-side with fellow students, de-mystifying complex engineering concepts, and helping peers build confidence in their own technical problem-solving.
+          The best engineering communities share knowledge freely, ask difficult questions without fear, and build capabilities in one another. Throughout my time in engineering and product development, some of the most rewarding work hasn't been in CAD software or code compilers, but in working side-by-side with fellow students, de-mystifying complex engineering concepts, and helping peers build confidence in their own technical problem-solving.
         </p>
       </div>
     </section>
@@ -73,6 +79,44 @@ const base = import.meta.env.BASE_URL;
               </ul>
             )}
           </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- Contributions Timeline Section -->
+    <section class="contributions-timeline-section" aria-labelledby="timeline-heading">
+      <div class="section-heading-bar">
+        <div class="heading-icon-wrap">
+          <span class="timeline-dot" aria-hidden="true"></span>
+          <h2 class="section-title" id="timeline-heading">A Record of Contributions</h2>
+        </div>
+      </div>
+
+      <div class="timeline-sequence">
+        {communityActivities.map((activity) => (
+          <div class="timeline-item">
+            <div class="timeline-time-col">
+              <span class="timeline-period-pill">{activity.period}</span>
+              <span class="timeline-org-name">{activity.organisation}</span>
+            </div>
+            <div class="timeline-dot-connector" aria-hidden="true">
+              <span class="dot-node"></span>
+            </div>
+            <div class="timeline-detail-col">
+              <div class="timeline-role-row">
+                <span class="timeline-role-tag">{activity.role}</span>
+                <h3 class="timeline-title">{activity.title}</h3>
+              </div>
+              <p class="timeline-description">{activity.description}</p>
+              {activity.tags && activity.tags.length > 0 && (
+                <div class="timeline-tags">
+                  {activity.tags.map(t => (
+                    <span class="mini-tag">{t}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         ))}
       </div>
     </section>
@@ -124,8 +168,8 @@ const base = import.meta.env.BASE_URL;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-block: var(--space-4);
-    margin-bottom: var(--space-10);
+    padding-block: var(--space-3);
+    margin-bottom: var(--space-8);
     border-bottom: 1px solid var(--colour-border-subtle);
   }
 
@@ -133,9 +177,9 @@ const base = import.meta.env.BASE_URL;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(167, 139, 250, 0.10);
-    border: 1px solid rgba(167, 139, 250, 0.28);
-    color: #a78bfa;
+    background: rgba(167, 139, 250, 0.08);
+    border: 1px solid rgba(167, 139, 250, 0.25);
+    color: var(--accent-people, #a78bfa);
     padding: 4px 12px;
     border-radius: 9999px;
     font-family: var(--font-mono);
@@ -148,35 +192,51 @@ const base = import.meta.env.BASE_URL;
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #a78bfa;
-    box-shadow: 0 0 8px #a78bfa;
+    background: var(--accent-people, #a78bfa);
+    box-shadow: 0 0 8px rgba(167, 139, 250, 0.8);
   }
 
-  .district-meta {
+  .district-world-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--colour-fg-subtle);
+    font-size: 11px;
+    color: var(--colour-fg-muted);
+    text-decoration: none;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    border: 1px solid var(--colour-border-subtle);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .district-world-link:hover {
+    color: var(--accent-people, #a78bfa);
+    border-color: rgba(167, 139, 250, 0.4);
+    background: rgba(167, 139, 250, 0.06);
+    transform: translateY(-1px);
   }
 
   .people-narrative-section {
-    margin-bottom: var(--space-16);
+    margin-bottom: var(--space-12);
   }
 
   .narrative-card {
-    background: linear-gradient(135deg, rgba(167, 139, 250, 0.06) 0%, rgba(15, 23, 42, 0.7) 100%);
-    border: 1px solid rgba(167, 139, 250, 0.25);
-    border-left: 4px solid #a78bfa;
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-left: 4px solid var(--accent-people, #a78bfa);
     border-radius: var(--radius-lg);
     padding: var(--space-8);
+    box-shadow: var(--shadow-sm);
   }
 
   .narrative-kicker {
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 700;
-    color: #a78bfa;
+    color: var(--accent-people, #a78bfa);
     letter-spacing: 0.08em;
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-2);
     display: block;
   }
 
@@ -204,7 +264,7 @@ const base = import.meta.env.BASE_URL;
     align-items: center;
     justify-content: space-between;
     padding-bottom: var(--space-3);
-    border-bottom: 1px solid var(--colour-border);
+    border-bottom: 1px solid var(--colour-border-subtle);
     margin-bottom: var(--space-8);
   }
 
@@ -218,12 +278,19 @@ const base = import.meta.env.BASE_URL;
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #a78bfa;
-    box-shadow: 0 0 10px #a78bfa;
+    background: var(--accent-people, #a78bfa);
+    box-shadow: 0 0 10px rgba(167, 139, 250, 0.7);
+  }
+
+  .timeline-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-people, #a78bfa);
   }
 
   .values-glyph {
-    color: #a78bfa;
+    color: var(--accent-people, #a78bfa);
     font-size: 14px;
   }
 
@@ -254,12 +321,13 @@ const base = import.meta.env.BASE_URL;
     flex-direction: column;
     justify-content: space-between;
     transition: all var(--duration-fast) var(--ease-out);
+    box-shadow: var(--shadow-sm);
   }
 
   .initiative-card:hover {
     border-color: rgba(167, 139, 250, 0.45);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-md);
   }
 
   .initiative-header {
@@ -273,9 +341,9 @@ const base = import.meta.env.BASE_URL;
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 600;
-    color: #a78bfa;
-    background: rgba(167, 139, 250, 0.12);
-    border: 1px solid rgba(167, 139, 250, 0.25);
+    color: var(--accent-people, #a78bfa);
+    background: rgba(167, 139, 250, 0.10);
+    border: 1px solid rgba(167, 139, 250, 0.22);
     padding: 2px 8px;
     border-radius: 4px;
   }
@@ -295,7 +363,7 @@ const base = import.meta.env.BASE_URL;
 
   .initiative-org {
     font-size: var(--text-xs);
-    color: #a78bfa;
+    color: var(--accent-people, #a78bfa);
     font-family: var(--font-mono);
     margin-bottom: var(--space-3);
   }
@@ -323,9 +391,119 @@ const base = import.meta.env.BASE_URL;
     font-size: 10px;
     padding: 2px 8px;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--colour-surface-elevated, rgba(0, 0, 0, 0.04));
     border: 1px solid var(--colour-border-subtle);
     color: var(--colour-fg-muted);
+  }
+
+  .contributions-timeline-section {
+    margin-bottom: var(--space-16);
+  }
+
+  .timeline-sequence {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    position: relative;
+    padding-left: var(--space-4);
+  }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 160px auto 1fr;
+    gap: var(--space-6);
+    align-items: flex-start;
+  }
+
+  .timeline-time-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: right;
+  }
+
+  .timeline-period-pill {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-people, #a78bfa);
+  }
+
+  .timeline-org-name {
+    font-size: 11px;
+    color: var(--colour-fg-subtle);
+  }
+
+  .timeline-dot-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    padding-top: 4px;
+  }
+
+  .dot-node {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent-people, #a78bfa);
+    border: 2px solid var(--colour-surface);
+    box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.3);
+  }
+
+  .timeline-detail-col {
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-6);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .timeline-role-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .timeline-role-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent-people, #a78bfa);
+    background: rgba(167, 139, 250, 0.08);
+    border: 1px solid rgba(167, 139, 250, 0.2);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .timeline-title {
+    font-size: var(--text-md);
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .timeline-description {
+    font-size: var(--text-xs);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-3);
+  }
+
+  .timeline-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .mini-tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    background: var(--colour-surface-elevated, rgba(0, 0, 0, 0.04));
+    border: 1px solid var(--colour-border-subtle);
+    color: var(--colour-fg-subtle);
   }
 
   .mentorship-values-section {
@@ -343,6 +521,7 @@ const base = import.meta.env.BASE_URL;
     border: 1px solid var(--colour-border);
     border-radius: var(--radius-lg);
     padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
   }
 
   .value-title {
@@ -362,6 +541,16 @@ const base = import.meta.env.BASE_URL;
     .initiatives-grid,
     .values-grid {
       grid-template-columns: 1fr;
+    }
+    .timeline-item {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+    .timeline-time-col {
+      text-align: left;
+    }
+    .timeline-dot-connector {
+      display: none;
     }
   }
 </style>

@@ -1,7 +1,7 @@
 ---
 /**
  * /studio/ — KLA Interactives & Experimental Systems
- * Color identity: ORANGE (#fb923c)
+ * Color identity: ORANGE (#fb923c / var(--accent-studio))
  * Personality: Experimentation, imagination, prototyping, visual thinking and creative freedom.
  * Single Source of Truth: Pulls directly from Astro Content Collections ('products') managed via Pages CMS.
  */
@@ -13,7 +13,7 @@ const base = import.meta.env.BASE_URL;
 // Live products from CMS collection
 const allProducts = await getCollection('products');
 
-// Sort: featured first
+// Sort: featured first, then alphabetical
 const sortedProducts = allProducts.sort((a, b) => {
   if (a.data.featured && !b.data.featured) return -1;
   if (!a.data.featured && b.data.featured) return 1;
@@ -29,20 +29,26 @@ const statusLabels: Record<string, string> = {
 ---
 
 <PageLayout
-  title="Studio — KLA Interactives & Creative Prototyping"
-  description="KLA Interactives: A software playground and product laboratory crafting thoughtful tools around how people actually think and work."
-  label="03 / STUDIO"
-  heading="Experimentation & Digital Tools for Thought"
-  subheading="A creative playground and software foundry exploring focused digital utilities, visual knowledge mapping, and intentional productivity."
+  title="Studio — KLA Interactives & The Foundry"
+  description="KLA Interactives: A software playground and product foundry crafting thoughtful tools around how people actually think and work."
+  label="03 / THE FOUNDRY"
+  heading="Ideas become things people can use."
+  subheading="A creative technology studio exploring focused digital utilities, visual knowledge mapping, and intentional productivity."
 >
   <div class="studio-experience">
-    <!-- District Accent Stripe -->
+    <!-- District Identity Banner -->
     <div class="district-badge-row">
       <div class="district-badge-pill">
         <span class="badge-dot" aria-hidden="true"></span>
-        <span>THE FOUNDRY // ORANGE ACCENT</span>
+        <span>DISTRICT 03 // THE FOUNDRY</span>
       </div>
-      <span class="district-meta">{allProducts.length} Product Prototypes in Development</span>
+      <a href={`${base}#miniature-world-3d`} class="district-world-link" title="View The Foundry in 3D Miniature Terrarium">
+        <span>Locate in World</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+        </svg>
+      </a>
     </div>
 
     <!-- Studio Manifest -->
@@ -53,12 +59,48 @@ const statusLabels: Record<string, string> = {
           Building software around human cognitive reality, not corporate compliance.
         </h2>
         <p class="manifesto-body">
-          Most modern tools demand that humans adapt to the database. At KLA Interactives, we prototype software designed around mental friction: reducing context switching, organizing sprawling research notes before writing, and removing dread from high-stakes workflows.
+          Most modern digital tools demand that humans adapt to the database. At KLA Interactives, we prototype software designed around mental friction: reducing context switching, organizing sprawling research notes before writing, and removing dread from high-stakes workflows.
         </p>
       </div>
     </section>
 
-    <!-- Products Gallery -->
+    <!-- KLA Interactives Identity Block -->
+    <section class="kla-identity-section" aria-labelledby="kla-heading">
+      <div class="kla-card">
+        <div class="kla-header">
+          <div>
+            <span class="kla-label">INDEPENDENT PRODUCT STUDIO</span>
+            <h2 class="kla-title" id="kla-heading">KLA Interactives</h2>
+          </div>
+          <span class="kla-tagline">Software that maps to cognition</span>
+        </div>
+        <p class="kla-desc">
+          KLA Interactives is an independent software workshop focused on creating digital thought tools. Rather than chasing growth hacks or bloated enterprise suites, every project originates from observing real workflow friction: blank-page paralysis, chaotic browser multitasking, and disconnected knowledge webs.
+        </p>
+        <div class="kla-pillars">
+          <div class="pillar">
+            <span class="pillar-bullet">◈</span>
+            <div>
+              <strong>Structure Before Prose:</strong> Tools that help you frame complex architectures before writing a single sentence.
+            </div>
+          </div>
+          <div class="pillar">
+            <span class="pillar-bullet">◈</span>
+            <div>
+              <strong>Calm Workspaces:</strong> Browser environments that isolate intent and protect sustained focus.
+            </div>
+          </div>
+          <div class="pillar">
+            <span class="pillar-bullet">◈</span>
+            <div>
+              <strong>Spatial Knowledge:</strong> Systems that treat ideas as connected terrains rather than isolated bullet lists.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products Showcase -->
     <section class="studio-products-section" aria-labelledby="products-heading">
       <div class="section-heading-bar">
         <div class="heading-icon-wrap">
@@ -97,6 +139,12 @@ const statusLabels: Record<string, string> = {
               </ul>
             )}
 
+            {product.data.note && (
+              <p class="product-note">
+                <span class="note-bullet">ⓘ</span> {product.data.note}
+              </p>
+            )}
+
             <div class="card-action-bar">
               <a href={`${base}studio/${product.slug}/`} class="inspect-btn">
                 <span>Inspect Tool Concept</span>
@@ -108,6 +156,26 @@ const statusLabels: Record<string, string> = {
             </div>
           </article>
         ))}
+      </div>
+    </section>
+
+    <!-- Studio Call to Action -->
+    <section class="studio-cta-section" aria-labelledby="cta-heading">
+      <div class="studio-cta-card">
+        <span class="cta-kicker">FOUNDRY COLLABORATION</span>
+        <h2 class="cta-title" id="cta-heading">Have an idea worth exploring? Or a workflow that software gets wrong?</h2>
+        <p class="cta-body">
+          We build tools to solve genuine cognitive friction. If you're tackling tricky information architecture problems or want to discuss early prototype feedback, reach out to the studio.
+        </p>
+        <div class="cta-actions">
+          <a href="mailto:ka24911@bristol.ac.uk" class="cta-primary-btn">
+            <span>Work with the Foundry</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </div>
       </div>
     </section>
   </div>
@@ -125,8 +193,8 @@ const statusLabels: Record<string, string> = {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-block: var(--space-4);
-    margin-bottom: var(--space-10);
+    padding-block: var(--space-3);
+    margin-bottom: var(--space-8);
     border-bottom: 1px solid var(--colour-border-subtle);
   }
 
@@ -134,9 +202,9 @@ const statusLabels: Record<string, string> = {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(251, 146, 60, 0.10);
-    border: 1px solid rgba(251, 146, 60, 0.28);
-    color: #fb923c;
+    background: rgba(251, 146, 60, 0.08);
+    border: 1px solid rgba(251, 146, 60, 0.25);
+    color: var(--accent-studio, #fb923c);
     padding: 4px 12px;
     border-radius: 9999px;
     font-family: var(--font-mono);
@@ -149,33 +217,49 @@ const statusLabels: Record<string, string> = {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #fb923c;
-    box-shadow: 0 0 8px #fb923c;
+    background: var(--accent-studio, #fb923c);
+    box-shadow: 0 0 8px rgba(251, 146, 60, 0.8);
   }
 
-  .district-meta {
+  .district-world-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--colour-fg-subtle);
+    font-size: 11px;
+    color: var(--colour-fg-muted);
+    text-decoration: none;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    border: 1px solid var(--colour-border-subtle);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .district-world-link:hover {
+    color: var(--accent-studio, #fb923c);
+    border-color: rgba(251, 146, 60, 0.4);
+    background: rgba(251, 146, 60, 0.06);
+    transform: translateY(-1px);
   }
 
   .studio-manifesto {
-    margin-bottom: var(--space-16);
+    margin-bottom: var(--space-12);
   }
 
   .manifesto-card {
-    background: linear-gradient(135deg, rgba(251, 146, 60, 0.06) 0%, rgba(15, 23, 42, 0.7) 100%);
-    border: 1px solid rgba(251, 146, 60, 0.25);
-    border-left: 4px solid #fb923c;
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-left: 4px solid var(--accent-studio, #fb923c);
     border-radius: var(--radius-lg);
     padding: var(--space-8);
+    box-shadow: var(--shadow-sm);
   }
 
   .manifesto-tag {
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 700;
-    color: #fb923c;
+    color: var(--accent-studio, #fb923c);
     letter-spacing: 0.08em;
     margin-bottom: var(--space-3);
   }
@@ -195,6 +279,80 @@ const statusLabels: Record<string, string> = {
     max-width: 70ch;
   }
 
+  .kla-identity-section {
+    margin-bottom: var(--space-16);
+  }
+
+  .kla-card {
+    background: var(--colour-surface-elevated, var(--colour-surface));
+    border: 1px solid var(--colour-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .kla-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-4);
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .kla-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-studio, #fb923c);
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .kla-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--colour-fg);
+  }
+
+  .kla-tagline {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--colour-fg-subtle);
+  }
+
+  .kla-desc {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-relaxed);
+    max-width: 72ch;
+    margin-bottom: var(--space-6);
+  }
+
+  .kla-pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-4);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--colour-border-subtle);
+  }
+
+  .pillar {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: var(--text-xs);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-normal);
+  }
+
+  .pillar-bullet {
+    color: var(--accent-studio, #fb923c);
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+
   .studio-products-section {
     margin-bottom: var(--space-16);
   }
@@ -204,7 +362,7 @@ const statusLabels: Record<string, string> = {
     align-items: center;
     justify-content: space-between;
     padding-bottom: var(--space-3);
-    border-bottom: 1px solid var(--colour-border);
+    border-bottom: 1px solid var(--colour-border-subtle);
     margin-bottom: var(--space-8);
   }
 
@@ -218,8 +376,8 @@ const statusLabels: Record<string, string> = {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #fb923c;
-    box-shadow: 0 0 10px #fb923c;
+    background: var(--accent-studio, #fb923c);
+    box-shadow: 0 0 10px rgba(251, 146, 60, 0.7);
   }
 
   .section-title {
@@ -250,16 +408,17 @@ const statusLabels: Record<string, string> = {
     justify-content: space-between;
     transition: all var(--duration-fast) var(--ease-out);
     position: relative;
+    box-shadow: var(--shadow-sm);
   }
 
   .product-canvas-card:hover {
     border-color: rgba(251, 146, 60, 0.45);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-md);
   }
 
   .product-canvas-card.is-flagship {
-    border-left: 3px solid #fb923c;
+    border-left: 3px solid var(--accent-studio, #fb923c);
   }
 
   .card-status-strip {
@@ -275,7 +434,7 @@ const statusLabels: Record<string, string> = {
     gap: 6px;
     font-family: var(--font-mono);
     font-size: 11px;
-    color: #fb923c;
+    color: var(--accent-studio, #fb923c);
     font-weight: 600;
   }
 
@@ -283,8 +442,8 @@ const statusLabels: Record<string, string> = {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #fb923c;
-    box-shadow: 0 0 6px #fb923c;
+    background: var(--accent-studio, #fb923c);
+    box-shadow: 0 0 6px var(--accent-studio, #fb923c);
   }
 
   .platform-badge {
@@ -310,13 +469,13 @@ const statusLabels: Record<string, string> = {
   }
 
   .product-link:hover {
-    color: #fb923c;
+    color: var(--accent-studio, #fb923c);
   }
 
   .product-subtitle {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    color: #fb923c;
+    color: var(--accent-studio, #fb923c);
     margin-bottom: var(--space-3);
   }
 
@@ -324,13 +483,13 @@ const statusLabels: Record<string, string> = {
     font-size: var(--text-sm);
     color: var(--colour-fg-muted);
     line-height: var(--leading-relaxed);
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-5);
   }
 
   .product-tags {
     list-style: none;
     padding: 0;
-    margin: 0 0 var(--space-6) 0;
+    margin: 0 0 var(--space-4) 0;
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
@@ -341,9 +500,26 @@ const statusLabels: Record<string, string> = {
     font-size: 10px;
     padding: 2px 8px;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--colour-surface-elevated, rgba(0, 0, 0, 0.04));
     border: 1px solid var(--colour-border-subtle);
     color: var(--colour-fg-muted);
+  }
+
+  .product-note {
+    font-size: 11px;
+    font-style: italic;
+    color: var(--colour-fg-subtle);
+    margin-bottom: var(--space-4);
+    padding: 6px 10px;
+    background: rgba(251, 146, 60, 0.04);
+    border-left: 2px solid rgba(251, 146, 60, 0.4);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+
+  .note-bullet {
+    color: var(--accent-studio, #fb923c);
+    font-style: normal;
+    margin-right: 2px;
   }
 
   .card-action-bar {
@@ -360,7 +536,7 @@ const statusLabels: Record<string, string> = {
     font-family: var(--font-sans);
     font-size: var(--text-xs);
     font-weight: 600;
-    color: #fb923c;
+    color: var(--accent-studio, #fb923c);
     text-decoration: none;
     padding: 8px 12px;
     border-radius: var(--radius-sm);
@@ -375,8 +551,74 @@ const statusLabels: Record<string, string> = {
     transform: translateX(2px);
   }
 
+  .studio-cta-section {
+    margin-top: var(--space-8);
+  }
+
+  .studio-cta-card {
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-left: 4px solid var(--accent-studio, #fb923c);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .cta-kicker {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent-studio, #fb923c);
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-2);
+    display: block;
+  }
+
+  .cta-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--colour-fg);
+    margin-bottom: var(--space-3);
+  }
+
+  .cta-body {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-relaxed);
+    max-width: 65ch;
+    margin-bottom: var(--space-6);
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: var(--space-4);
+  }
+
+  .cta-primary-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: #ffffff;
+    background: var(--accent-studio, #fb923c);
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .cta-primary-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
   @media (max-width: 640px) {
     .products-showcase-grid {
+      grid-template-columns: 1fr;
+    }
+    .kla-pillars {
       grid-template-columns: 1fr;
     }
   }

@@ -1,13 +1,22 @@
-﻿---
+---
 /**
  * /writing/ — AnyBody Can Design articles index.
+ * Single Source of Truth: Uses Astro Content Collection ('writing') from Pages CMS.
+ * Color identity: EMERALD / MINT (#34d399 / var(--accent-writing))
  */
 import PageLayout from '../../layouts/PageLayout.astro';
-import { authoredArticles } from '../../data/content';
+import { getCollection, getEntry } from 'astro:content';
 import NewsletterCTA from '../../components/NewsletterCTA.astro';
-import { getEntry } from 'astro:content';
 
 const base = import.meta.env.BASE_URL;
+
+// Live articles from 'writing' collection, excluding drafts
+const allArticles = await getCollection('writing', ({ data }) => !data.draft);
+
+// Sort articles chronologically descending
+const sortedArticles = allArticles.sort((a, b) => 
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
 
 // Optional CMS-managed newsletter configuration from src/content/site/newsletter.json
 const newsletterEntry = await getEntry('site', 'newsletter');
@@ -17,74 +26,381 @@ const newsletterData = newsletterEntry?.data;
 <PageLayout
   title="Writing — AnyBody Can Design"
   description="AnyBody Can Design: design thinking, usability observations and practical engineering writing by Devashish Tambade."
-  label="Writing — AnyBody Can Design"
-  heading="AnyBody Can Design"
-  subheading="An independent space for design thinking, usability observations and writing about how things work."
+  label="04 / ANYBODY CAN DESIGN"
+  heading="Design is a way of thinking."
+  subheading="An independent publication exploring design not as a siloed profession, but as a deliberate discipline of observation, empathy, and clarity."
 >
+  <div class="writing-experience">
+    <!-- District Identity Banner -->
+    <div class="district-badge-row">
+      <div class="district-badge-pill">
+        <span class="badge-dot" aria-hidden="true"></span>
+        <span>DISTRICT 04 // ANYBODY CAN DESIGN</span>
+      </div>
+      <a href={`${base}#miniature-world-3d`} class="district-world-link" title="View in 3D Miniature Terrarium">
+        <span>Locate in World</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+        </svg>
+      </a>
+    </div>
 
-  <section class="section" aria-labelledby="writing-series-heading">
-    <div class="container">
-      <div class="writing-intro">
-        <p class="writing-intro-text">
-          <strong>AnyBody Can Design</strong> is a writing series about design — not as a profession, but as a way of seeing. Each piece explores an idea through observation, engineering, or lived experience.
+    <!-- Publication Manifesto -->
+    <section class="writing-manifesto-section" aria-labelledby="manifesto-heading">
+      <div class="manifesto-card">
+        <span class="manifesto-tag">PUBLICATION PHILOSOPHY</span>
+        <h2 class="manifesto-lead" id="manifesto-heading">
+          Design begins with watching, not answering.
+        </h2>
+        <p class="manifesto-body">
+          <strong>AnyBody Can Design</strong> is an essay series exploring how physical affordances, software workflows, and human behavior intersect. It starts from the belief that designing thoughtfully isn't reserved for titleholders — it belongs to anyone curious enough to notice how things fail in human hands.
         </p>
       </div>
+    </section>
 
-      <!-- LinkedIn Newsletter Subscription Section -->
-      <div class="newsletter-section">
-        <NewsletterCTA
-          coverImage={newsletterData?.coverImage}
-          description={newsletterData?.description}
-        />
+    <!-- LinkedIn Newsletter Subscription Section -->
+    <div class="newsletter-section">
+      <NewsletterCTA
+        coverImage={newsletterData?.coverImage}
+        description={newsletterData?.description}
+      />
+    </div>
+
+    <!-- Articles Section -->
+    <section class="articles-section" aria-labelledby="articles-heading">
+      <div class="section-heading-bar">
+        <div class="heading-icon-wrap">
+          <span class="emerald-dot" aria-hidden="true"></span>
+          <h2 class="section-title" id="articles-heading">Published Essays & Notes</h2>
+        </div>
+        <span class="heading-count">{sortedArticles.length} Essays</span>
       </div>
 
-      <h2 class="section-title" id="writing-series-heading" style="margin-top: var(--space-10); margin-bottom: var(--space-6);">Articles</h2>
-      <div class="article-list" role="list">
-        {authoredArticles.map(article => {
-          const href = article.href ?? article.externalUrl ?? '#';
-          const date = new Date(article.date);
+      <div class="article-editorial-list" role="list">
+        {sortedArticles.map((article) => {
+          const date = new Date(article.data.date);
           const formattedDate = date.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+          const targetUrl = article.data.externalUrl ?? `${base}writing/${article.slug}/`;
+          const isExternal = !!article.data.externalUrl;
+
           return (
-            <div role="listitem">
-              <a href={href} class="article-card" aria-label={`Read: ${article.title}`}>
-                <time class="article-date" datetime={article.date}>{formattedDate}</time>
-                <div class="article-content">
-                  <h3 class="article-title">{article.title}</h3>
-                  <p class="article-excerpt">{article.description}</p>
-                  <ul class="article-tags" role="list">
-                    {article.tags.map(t => <li class="tag">{t}</li>)}
+            <article class="editorial-article-row" role="listitem">
+              <div class="article-meta-col">
+                <time class="article-date" datetime={article.data.date}>{formattedDate}</time>
+                {article.data.series && (
+                  <span class="article-series-tag">{article.data.series}</span>
+                )}
+              </div>
+
+              <div class="article-body-col">
+                <h3 class="article-title">
+                  <a href={targetUrl} class="article-title-link" target={isExternal ? '_blank' : undefined} rel={isExternal ? 'noopener noreferrer' : undefined}>
+                    {article.data.title}
+                  </a>
+                </h3>
+                <p class="article-excerpt">{article.data.description}</p>
+                {article.data.tags && article.data.tags.length > 0 && (
+                  <ul class="article-tags-list" aria-label="Article topics">
+                    {article.data.tags.map(t => (
+                      <li class="article-tag">{t}</li>
+                    ))}
                   </ul>
-                </div>
-                <div class="article-arrow" aria-hidden="true">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                )}
+              </div>
+
+              <div class="article-action-col">
+                <a href={targetUrl} class="read-action-btn" aria-label={`Read ${article.data.title}`} target={isExternal ? '_blank' : undefined} rel={isExternal ? 'noopener noreferrer' : undefined}>
+                  <span>Read</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
                   </svg>
-                </div>
-              </a>
-            </div>
+                </a>
+              </div>
+            </article>
           );
         })}
       </div>
-    </div>
-  </section>
-
+    </section>
+  </div>
 </PageLayout>
 
 <style>
-  .writing-intro {
-    max-width: 640px;
-    padding: var(--space-6);
-    background: var(--colour-bg-subtle);
-    border-left: 3px solid var(--colour-accent);
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  .writing-experience {
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    padding-block-end: var(--space-20);
   }
-  .writing-intro-text {
-    font-size: var(--text-md);
+
+  .district-badge-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: var(--space-3);
+    margin-bottom: var(--space-8);
+    border-bottom: 1px solid var(--colour-border-subtle);
+  }
+
+  .district-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(52, 211, 153, 0.08);
+    border: 1px solid rgba(52, 211, 153, 0.25);
+    color: var(--accent-writing, #34d399);
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-writing, #34d399);
+    box-shadow: 0 0 8px rgba(52, 211, 153, 0.8);
+  }
+
+  .district-world-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
     color: var(--colour-fg-muted);
-    line-height: var(--leading-loose);
-    max-width: none;
+    text-decoration: none;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    border: 1px solid var(--colour-border-subtle);
+    transition: all var(--duration-fast) var(--ease-out);
   }
+
+  .district-world-link:hover {
+    color: var(--accent-writing, #34d399);
+    border-color: rgba(52, 211, 153, 0.4);
+    background: rgba(52, 211, 153, 0.06);
+    transform: translateY(-1px);
+  }
+
+  .writing-manifesto-section {
+    margin-bottom: var(--space-10);
+  }
+
+  .manifesto-card {
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-left: 4px solid var(--accent-writing, #34d399);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .manifesto-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent-writing, #34d399);
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-2);
+    display: block;
+  }
+
+  .manifesto-lead {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    color: var(--colour-fg);
+    line-height: var(--leading-tight);
+    margin-bottom: var(--space-4);
+  }
+
+  .manifesto-body {
+    font-size: var(--text-base);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-relaxed);
+    max-width: 70ch;
+  }
+
   .newsletter-section {
-    margin-top: var(--space-8);
+    margin-bottom: var(--space-16);
+  }
+
+  .articles-section {
+    margin-bottom: var(--space-16);
+  }
+
+  .section-heading-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--colour-border-subtle);
+    margin-bottom: var(--space-8);
+  }
+
+  .heading-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .emerald-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-writing, #34d399);
+    box-shadow: 0 0 10px rgba(52, 211, 153, 0.7);
+  }
+
+  .section-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--colour-fg);
+  }
+
+  .heading-count {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--colour-fg-subtle);
+  }
+
+  .article-editorial-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .editorial-article-row {
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    gap: var(--space-6);
+    align-items: center;
+    background: var(--colour-surface);
+    border: 1px solid var(--colour-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    transition: all var(--duration-fast) var(--ease-out);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .editorial-article-row:hover {
+    border-color: rgba(52, 211, 153, 0.45);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .article-meta-col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .article-date {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--colour-fg-subtle);
+  }
+
+  .article-series-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent-writing, #34d399);
+    background: rgba(52, 211, 153, 0.08);
+    border: 1px solid rgba(52, 211, 153, 0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    width: fit-content;
+  }
+
+  .article-body-col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .article-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .article-title-link {
+    color: var(--colour-fg);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .article-title-link:hover {
+    color: var(--accent-writing, #34d399);
+  }
+
+  .article-excerpt {
+    font-size: var(--text-sm);
+    color: var(--colour-fg-muted);
+    line-height: var(--leading-relaxed);
+    margin: 0;
+    max-width: 65ch;
+  }
+
+  .article-tags-list {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .article-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: var(--colour-surface-elevated, rgba(0, 0, 0, 0.04));
+    border: 1px solid var(--colour-border-subtle);
+    color: var(--colour-fg-muted);
+  }
+
+  .article-action-col {
+    padding-left: var(--space-4);
+  }
+
+  .read-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-writing, #34d399);
+    background: rgba(52, 211, 153, 0.08);
+    border: 1px solid rgba(52, 211, 153, 0.22);
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: all var(--duration-fast) var(--ease-out);
+    white-space: nowrap;
+  }
+
+  .read-action-btn:hover {
+    background: rgba(52, 211, 153, 0.18);
+    border-color: rgba(52, 211, 153, 0.45);
+    transform: translateX(2px);
+  }
+
+  @media (max-width: 640px) {
+    .editorial-article-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+    .article-action-col {
+      padding-left: 0;
+    }
   }
 </style>
